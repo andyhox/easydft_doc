@@ -29,7 +29,6 @@ easydft 适用于所有用户，能够集成主流 DFT 软件，并基于 `pymat
    :maxdepth: 1
    :caption: 目录
    :hidden:
-
-   docs/LVFP/LVFP_index
+   
    api/modules
    
