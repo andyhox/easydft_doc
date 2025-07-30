@@ -22,12 +22,9 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
-    'sphinx_markdown_tables',
     'recommonmark',
     'rst2pdf.pdfbuilder',
-    'sphinxcontrib.mermaid',
 ]
-mermaid_output_format = 'raw'
 pygments_style = 'friendly'
 highlight_language = 'python'
 source_suffix = {
