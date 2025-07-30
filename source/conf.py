@@ -22,7 +22,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
-    'recommonmark',
+    'myst_parser',
     'rst2pdf.pdfbuilder',
 ]
 pygments_style = 'friendly'
