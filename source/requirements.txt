@@ -2,3 +2,6 @@ sphinx
 myst_parser
 rst2pdf
 sphinx_rtd_theme
+pymatgen
+ase
+jobflow-remote
