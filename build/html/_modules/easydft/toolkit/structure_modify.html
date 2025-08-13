@@ -1,0 +1,710 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>easydft.toolkit.structure_modify &mdash; easydft 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            easydft
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">easydft</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">easydft</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">easydft.toolkit.structure_modify</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for easydft.toolkit.structure_modify</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span><span class="p">,</span> <span class="n">Molecule</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core.lattice</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lattice</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core.surface</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlabGenerator</span><span class="p">,</span> <span class="n">Slab</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.analysis.interfaces.coherent_interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoherentInterfaceBuilder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.analysis.interfaces.zsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">ZSLGenerator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.transformations.advanced_transformations</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlabTransformation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.ase</span><span class="w"> </span><span class="kn">import</span> <span class="n">AseAtomsAdaptor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core.operations</span><span class="w"> </span><span class="kn">import</span> <span class="n">SymmOp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.analysis.adsorption</span><span class="w"> </span><span class="kn">import</span> <span class="n">AdsorbateSiteFinder</span><span class="p">,</span> <span class="n">plot_slab</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.build.molecule</span><span class="w"> </span><span class="kn">import</span> <span class="n">molecule</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">combinations</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<div class="viewcode-block" id="BulkModify">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.BulkModify">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BulkModify</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Crystal structure strain processing tool.</span>
+<span class="sd">    Supports applying various strains to the structure, including lattice, volume, and angle strains.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+<div class="viewcode-block" id="BulkModify.add_lattice_strain">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.BulkModify.add_lattice_strain">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_lattice_strain</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">Slab</span><span class="o">|</span><span class="n">Structure</span><span class="p">,</span> <span class="n">strain_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply strain in the specified direction to the initial structure.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            structure (Structure): Initial structure</span>
+<span class="sd">            strain_list (list): List of strains, e.g. [-0.01, 0, 0.01]</span>
+<span class="sd">            mode (str): Strain mode, such as &#39;a&#39;, &#39;b&#39;, &#39;c&#39;, or &#39;all&#39;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Key is the strain value, value is the strained structure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">lattice</span>
+        <span class="n">strained_structures</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;a&#39;</span><span class="p">:</span>
+            <span class="n">strain_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span>
+            <span class="n">strain_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span>
+            <span class="n">strain_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+            <span class="n">strain_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid mode. Use &#39;a&#39;, &#39;b&#39;, &#39;c&#39;, or &#39;all&#39;.&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">strain</span> <span class="ow">in</span> <span class="n">strain_list</span><span class="p">:</span>
+            <span class="c1"># 初始晶格参数</span>
+            <span class="n">new_lattice_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">lattice</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">c</span><span class="p">]</span>
+            
+            <span class="c1"># 根据mode选择施加应变的轴</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">strain_indices</span><span class="p">:</span>
+                <span class="n">new_lattice_params</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_lattice_params</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">strain</span><span class="p">)</span>
+
+            <span class="n">new_lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="o">.</span><span class="n">from_parameters</span><span class="p">(</span><span class="o">*</span><span class="n">new_lattice_params</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">gamma</span><span class="p">)</span>
+            <span class="n">new_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="p">(</span><span class="n">new_lattice</span><span class="p">,</span> <span class="n">structure</span><span class="o">.</span><span class="n">species</span><span class="p">,</span> <span class="n">structure</span><span class="o">.</span><span class="n">frac_coords</span><span class="p">)</span>
+            <span class="n">strained_structures</span><span class="p">[</span><span class="n">strain</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_structure</span>
+
+        <span class="k">return</span> <span class="n">strained_structures</span></div>
+
+    
+<div class="viewcode-block" id="BulkModify.add_volume_strain">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.BulkModify.add_volume_strain">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_volume_strain</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span> <span class="n">strain_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply isotropic volume strain to the initial structure.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            structure (Structure): Initial structure</span>
+<span class="sd">            strain_list (list): List of strains, e.g. [-0.01, 0, 0.01]</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Key is the strain value, value is the strained structure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">lattice</span>
+        <span class="n">strained_structures</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">strain</span> <span class="ow">in</span> <span class="n">strain_list</span><span class="p">:</span>
+            <span class="c1"># 计算体积应变因子，并取三次方根</span>
+            <span class="n">strain_factor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">strain</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span>
+            
+            <span class="c1"># 新的晶格参数，等比例缩放</span>
+            <span class="n">new_lattice_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">lattice</span><span class="o">.</span><span class="n">a</span> <span class="o">*</span> <span class="n">strain_factor</span><span class="p">,</span> 
+                                  <span class="n">lattice</span><span class="o">.</span><span class="n">b</span> <span class="o">*</span> <span class="n">strain_factor</span><span class="p">,</span> 
+                                  <span class="n">lattice</span><span class="o">.</span><span class="n">c</span> <span class="o">*</span> <span class="n">strain_factor</span><span class="p">]</span>
+
+            <span class="n">new_lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="o">.</span><span class="n">from_parameters</span><span class="p">(</span><span class="o">*</span><span class="n">new_lattice_params</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">gamma</span><span class="p">)</span>
+            <span class="n">new_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="p">(</span><span class="n">new_lattice</span><span class="p">,</span> <span class="n">structure</span><span class="o">.</span><span class="n">species</span><span class="p">,</span> <span class="n">structure</span><span class="o">.</span><span class="n">frac_coords</span><span class="p">)</span>
+            <span class="n">strained_structures</span><span class="p">[</span><span class="n">strain</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_structure</span>
+
+        <span class="k">return</span> <span class="n">strained_structures</span></div>
+
+    
+<div class="viewcode-block" id="BulkModify.add_angle_strain">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.BulkModify.add_angle_strain">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_angle_strain</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span> <span class="n">strain_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply angle strain to the initial structure.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            structure (Structure): Initial structure</span>
+<span class="sd">            strain_list (List[float]): List of strains, e.g. [-0.01, 0, 0.01]</span>
+<span class="sd">            mode (str): Strain mode, can be &#39;alpha&#39;, &#39;beta&#39;, or &#39;gamma&#39;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Key is the strain value, value is the strained structure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">lattice</span>
+        <span class="n">strained_structures</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># 选择施加应变的角度</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;alpha&#39;</span><span class="p">:</span>
+            <span class="n">angle_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;beta&#39;</span><span class="p">:</span>
+            <span class="n">angle_index</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span>
+            <span class="n">angle_index</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid mode. Use &#39;alpha&#39;, &#39;beta&#39;, &#39;gamma&#39;.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># 获取初始的角度参数</span>
+        <span class="n">initial_angles</span> <span class="o">=</span> <span class="p">[</span><span class="n">lattice</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">gamma</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">strain</span> <span class="ow">in</span> <span class="n">strain_list</span><span class="p">:</span>
+            <span class="c1"># 复制初始角度</span>
+            <span class="n">new_angles</span> <span class="o">=</span> <span class="n">initial_angles</span><span class="p">[:]</span>
+            
+            <span class="c1"># 对指定角度施加应变</span>
+            <span class="n">new_angles</span><span class="p">[</span><span class="n">angle_index</span><span class="p">]</span> <span class="o">*=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">strain</span><span class="p">)</span>
+
+            <span class="c1"># 创建新的晶格</span>
+            <span class="n">new_lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="o">.</span><span class="n">from_parameters</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="o">*</span><span class="n">new_angles</span><span class="p">)</span>
+            <span class="n">new_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="p">(</span><span class="n">new_lattice</span><span class="p">,</span> <span class="n">structure</span><span class="o">.</span><span class="n">species</span><span class="p">,</span> <span class="n">structure</span><span class="o">.</span><span class="n">frac_coords</span><span class="p">)</span>
+            <span class="n">strained_structures</span><span class="p">[</span><span class="n">strain</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_structure</span>
+
+        <span class="k">return</span> <span class="n">strained_structures</span></div>
+</div>
+
+
+<div class="viewcode-block" id="SlabModify">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.SlabModify">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SlabModify</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Slab structure generation and modification tool.</span>
+<span class="sd">    Supports slab generation, splitting, fixing, strain, and other operations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SlabModify.fix_orthogonal">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.SlabModify.fix_orthogonal">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fix_orthogonal</span><span class="p">(</span><span class="n">slab</span><span class="p">:</span> <span class="n">Slab</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Orthogonalize the slab lattice.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            slab (Slab): Slab structure</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Slab: Orthogonalized slab</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">slab</span><span class="o">.</span><span class="n">get_orthogonal_c_slab</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SlabModify.gen_all_slabs">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.SlabModify.gen_all_slabs">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen_all_slabs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+        <span class="n">structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span>
+        <span class="n">miller_index</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+        <span class="n">min_slab_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">min_vacuum_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate all symmetrically equivalent slab structures.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            structure (Structure): Initial structure</span>
+<span class="sd">            miller_index (tuple): Miller index</span>
+<span class="sd">            min_slab_size (float): Slab thickness</span>
+<span class="sd">            min_vacuum_size (float): Vacuum thickness</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            list: List of slab structures</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">slabgen</span> <span class="o">=</span> <span class="n">SlabGenerator</span><span class="p">(</span><span class="n">initial_structure</span><span class="o">=</span><span class="n">structure</span><span class="p">,</span> 
+                                <span class="n">miller_index</span><span class="o">=</span><span class="n">miller_index</span><span class="p">,</span> 
+                                <span class="n">min_slab_size</span><span class="o">=</span><span class="n">min_slab_size</span><span class="p">,</span> 
+                                <span class="n">min_vacuum_size</span><span class="o">=</span><span class="n">min_vacuum_size</span><span class="p">,</span>
+                                <span class="n">center_slab</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                <span class="n">in_unit_planes</span><span class="o">=</span><span class="kc">True</span><span class="p">,)</span>
+        <span class="n">slabs</span> <span class="o">=</span> <span class="n">slabgen</span><span class="o">.</span><span class="n">get_slabs</span><span class="p">(</span><span class="n">symmetrize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">slabs</span></div>
+
+    
+<div class="viewcode-block" id="SlabModify.amorphous_gen_slab">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.SlabModify.amorphous_gen_slab">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">amorphous_gen_slab</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                           <span class="n">structure</span><span class="p">,</span> 
+                           <span class="n">miller_index</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+                           <span class="n">min_slab_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+                           <span class="n">min_vacuum_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> 
+                           <span class="n">shift</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate an amorphous slab structure.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            structure (Structure): Initial structure</span>
+<span class="sd">            miller_index (tuple): Miller index</span>
+<span class="sd">            min_slab_size (float): Slab thickness</span>
+<span class="sd">            min_vacuum_size (float): Vacuum thickness</span>
+<span class="sd">            shift (float): Slab shift</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Slab: Slab structure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">slabgen</span> <span class="o">=</span> <span class="n">SlabTransformation</span><span class="p">(</span><span class="n">miller_index</span><span class="o">=</span><span class="n">miller_index</span><span class="p">,</span>
+                                     <span class="n">min_slab_size</span><span class="o">=</span><span class="n">min_slab_size</span><span class="p">,</span>
+                                     <span class="n">min_vacuum_size</span><span class="o">=</span><span class="n">min_vacuum_size</span><span class="p">,</span>
+                                     <span class="n">center_slab</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                     <span class="n">in_unit_planes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                     <span class="n">shift</span><span class="o">=</span><span class="n">shift</span><span class="p">,</span>
+                                     <span class="p">)</span>
+        <span class="n">slab</span> <span class="o">=</span> <span class="n">slabgen</span><span class="o">.</span><span class="n">apply_transformation</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">slab</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">alpha</span> <span class="o">!=</span> <span class="mi">90</span> <span class="ow">and</span> <span class="n">slab</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">beta</span> <span class="o">!=</span> <span class="mi">90</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="s2">&quot;Slab is not orthogonal, fix it.&quot;</span><span class="p">)</span>
+            <span class="n">slab</span> <span class="o">=</span> <span class="n">SlabModify</span><span class="o">.</span><span class="n">fix_orthogonal</span><span class="p">(</span><span class="n">slab</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">slab</span></div>
+
+
+<div class="viewcode-block" id="SlabModify.gen_slab">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.SlabModify.gen_slab">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen_slab</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span> 
+                 <span class="n">miller_index</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> 
+                 <span class="n">min_slab_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> 
+                 <span class="n">min_vacuum_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+                 <span class="n">shift</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                 <span class="n">in_unit_planes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a slab structure.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            structure (Structure): Initial structure</span>
+<span class="sd">            miller_index (tuple): Miller index</span>
+<span class="sd">            min_slab_size (float): Slab thickness</span>
+<span class="sd">            min_vacuum_size (float): Vacuum thickness</span>
+<span class="sd">            shift (float): Slab shift</span>
+<span class="sd">            in_unit_planes (bool): Whether to generate in unit planes</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Slab: Slab structure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">slabgen</span> <span class="o">=</span> <span class="n">SlabGenerator</span><span class="p">(</span><span class="n">initial_structure</span><span class="o">=</span><span class="n">structure</span><span class="p">,</span>
+                                <span class="n">miller_index</span><span class="o">=</span><span class="n">miller_index</span><span class="p">,</span>
+                                <span class="n">min_slab_size</span><span class="o">=</span><span class="n">min_slab_size</span><span class="p">,</span>
+                                <span class="n">min_vacuum_size</span><span class="o">=</span><span class="n">min_vacuum_size</span><span class="p">,</span>
+                                <span class="n">in_unit_planes</span><span class="o">=</span><span class="n">in_unit_planes</span><span class="p">,)</span>
+
+        <span class="n">slab</span> <span class="o">=</span> <span class="n">slabgen</span><span class="o">.</span><span class="n">get_slab</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="n">shift</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">slab</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">alpha</span> <span class="o">!=</span> <span class="mi">90</span> <span class="ow">and</span> <span class="n">slab</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">beta</span> <span class="o">!=</span> <span class="mi">90</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="s2">&quot;Slab is not orthogonal, fix it.&quot;</span><span class="p">)</span>
+            <span class="n">slab</span> <span class="o">=</span> <span class="n">SlabModify</span><span class="o">.</span><span class="n">fix_orthogonal</span><span class="p">(</span><span class="n">slab</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">slab</span></div>
+
+
+<div class="viewcode-block" id="SlabModify.fix_slab">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.SlabModify.fix_slab">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fix_slab</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> 
+                 <span class="n">slab</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span> 
+                 <span class="n">min_fix_ratio</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+                 <span class="n">max_fix_ratio</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fix part of the atoms in the slab structure (selective dynamics).</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            slab (Structure): Slab structure</span>
+<span class="sd">            min_fix_ratio (float): Fractional coordinate threshold for fixing lower atoms</span>
+<span class="sd">            max_fix_ratio (float): Fractional coordinate threshold for fixing upper atoms (optional)</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Structure: Structure with selective_dynamics property added</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">fixed_atoms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">max_fix_ratio</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># 标记固定的原子</span>
+            <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">slab</span><span class="o">.</span><span class="n">sites</span><span class="p">:</span>
+                <span class="c1"># 如果原子的分数坐标在要固定的层数范围内，则固定原子</span>
+                <span class="k">if</span> <span class="n">site</span><span class="o">.</span><span class="n">frac_coords</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">min_fix_ratio</span><span class="p">:</span>
+                    <span class="n">fixed_atoms</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>  <span class="c1"># 固定</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">fixed_atoms</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">])</span>  <span class="c1"># 不固定</span>
+
+            <span class="c1"># 为 slab 添加选择性动态属性</span>
+            <span class="n">slab</span><span class="o">.</span><span class="n">add_site_property</span><span class="p">(</span><span class="s2">&quot;selective_dynamics&quot;</span><span class="p">,</span> <span class="n">fixed_atoms</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">slab</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">slab</span><span class="o">.</span><span class="n">sites</span><span class="p">:</span>
+                <span class="c1"># 如果原子的分数坐标在要固定的层数范围内，则固定原子</span>
+                <span class="k">if</span> <span class="n">site</span><span class="o">.</span><span class="n">frac_coords</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">min_fix_ratio</span> <span class="ow">or</span> <span class="n">site</span><span class="o">.</span><span class="n">frac_coords</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">max_fix_ratio</span><span class="p">:</span>
+                    <span class="n">fixed_atoms</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>  <span class="c1"># 固定</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">fixed_atoms</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">])</span>  <span class="c1"># 不固定</span>
+
+            <span class="c1"># 为 slab 添加选择性动态属性</span>
+            <span class="n">slab</span><span class="o">.</span><span class="n">add_site_property</span><span class="p">(</span><span class="s2">&quot;selective_dynamics&quot;</span><span class="p">,</span> <span class="n">fixed_atoms</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">slab</span></div>
+
+
+<div class="viewcode-block" id="SlabModify.add_strain">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.SlabModify.add_strain">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_strain</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">Slab</span><span class="o">|</span><span class="n">Structure</span><span class="p">,</span> <span class="n">strain_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply strain to the slab structure.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            structure (Slab|Structure): Slab or structure</span>
+<span class="sd">            strain_list (list): List of strains</span>
+<span class="sd">            mode (str): Strain mode</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Dictionary of strained structures</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">BulkModify</span><span class="o">.</span><span class="n">add_lattice_strain</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure</span><span class="p">,</span> <span class="n">strain_list</span><span class="o">=</span><span class="n">strain_list</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="SlabModify.split_mol">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.SlabModify.split_mol">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">split_mol</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                   <span class="n">slab</span><span class="p">:</span> <span class="n">Slab</span><span class="o">|</span><span class="n">Structure</span><span class="p">,</span>
+                   <span class="n">boundary_frac</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                   <span class="n">cubic_size</span><span class="p">:</span> <span class="nb">int</span>
+                   <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Split the slab by the interface to generate molecule and base structures.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            slab (Slab|Structure): Slab structure</span>
+<span class="sd">            boundary_frac (float): Interface fraction</span>
+<span class="sd">            cubic_size (int): Molecule box size</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            (mol_structure, base_structure): Molecule structure and base structure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 分解结构</span>
+        <span class="n">mol_sites</span> <span class="o">=</span> <span class="p">[</span><span class="n">site</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">slab</span><span class="o">.</span><span class="n">sites</span> <span class="k">if</span> <span class="n">site</span><span class="o">.</span><span class="n">frac_coords</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">boundary_frac</span><span class="p">]</span>
+        <span class="n">base_sites</span> <span class="o">=</span> <span class="p">[</span><span class="n">site</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">slab</span><span class="o">.</span><span class="n">sites</span> <span class="k">if</span> <span class="n">site</span><span class="o">.</span><span class="n">frac_coords</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">boundary_frac</span><span class="p">]</span>
+        
+        <span class="c1"># 生成mol盒子，base结构</span>
+        <span class="n">mol_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_sites</span><span class="p">(</span><span class="n">mol_sites</span><span class="p">)</span>
+        <span class="n">new_lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="o">.</span><span class="n">cubic</span><span class="p">(</span><span class="n">cubic_size</span><span class="p">)</span>
+        <span class="c1"># 计算分子在笛卡尔坐标下的中心</span>
+        <span class="n">cart_coords</span> <span class="o">=</span> <span class="n">mol_structure</span><span class="o">.</span><span class="n">cart_coords</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cart_coords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># 计算平移向量，将分子中心移到盒子中心</span>
+        <span class="n">shift_vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cubic_size</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">cubic_size</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">cubic_size</span><span class="o">/</span><span class="mi">2</span><span class="p">])</span> <span class="o">-</span> <span class="n">center</span>
+        <span class="c1"># 对所有原子进行平移</span>
+        <span class="n">new_cart_coords</span> <span class="o">=</span> <span class="n">cart_coords</span> <span class="o">+</span> <span class="n">shift_vector</span>
+        <span class="c1"># 将新坐标转换为在新晶格下的分数坐标</span>
+        <span class="n">new_frac_coords</span> <span class="o">=</span> <span class="n">new_lattice</span><span class="o">.</span><span class="n">get_fractional_coords</span><span class="p">(</span><span class="n">new_cart_coords</span><span class="p">)</span>
+        <span class="c1"># 用新的晶格、原有的原子种类和新分数坐标构造新的结构</span>
+        <span class="n">mol_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="p">(</span><span class="n">new_lattice</span><span class="p">,</span> <span class="n">mol_structure</span><span class="o">.</span><span class="n">species</span><span class="p">,</span> <span class="n">new_frac_coords</span><span class="p">)</span>
+        
+        <span class="n">base_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_sites</span><span class="p">(</span><span class="n">base_sites</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">mol_structure</span><span class="p">,</span> <span class="n">base_structure</span></div>
+
+    
+<div class="viewcode-block" id="SlabModify.split_heter">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.SlabModify.split_heter">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">split_heter</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                   <span class="n">slab</span><span class="p">:</span> <span class="n">Slab</span><span class="o">|</span><span class="n">Structure</span><span class="p">,</span>
+                   <span class="n">boundary_frac</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                   <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Split the heterojunction slab by the interface to generate film and substrate structures.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            slab (Slab|Structure): Slab structure</span>
+<span class="sd">            boundary_frac (float): Interface fraction</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            (film_structure, substrate_structure): Film structure and substrate structure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 分解结构</span>
+        <span class="n">film_sites</span> <span class="o">=</span> <span class="p">[</span><span class="n">site</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">slab</span><span class="o">.</span><span class="n">sites</span> <span class="k">if</span> <span class="n">site</span><span class="o">.</span><span class="n">frac_coords</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">boundary_frac</span><span class="p">]</span>
+        <span class="n">substrate_sites</span> <span class="o">=</span> <span class="p">[</span><span class="n">site</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">slab</span><span class="o">.</span><span class="n">sites</span> <span class="k">if</span> <span class="n">site</span><span class="o">.</span><span class="n">frac_coords</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">boundary_frac</span><span class="p">]</span>
+        
+        <span class="c1"># 生成mol盒子，base结构</span>
+        <span class="n">film_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_sites</span><span class="p">(</span><span class="n">film_sites</span><span class="p">)</span>
+        <span class="n">substrate_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_sites</span><span class="p">(</span><span class="n">substrate_sites</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">film_structure</span><span class="p">,</span> <span class="n">substrate_structure</span></div>
+</div>
+
+    
+<div class="viewcode-block" id="HeterojunctionModify">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.HeterojunctionModify">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HeterojunctionModify</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Heterojunction interface generation and modification tool.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">film_structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span>
+                 <span class="n">substrate_structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span>
+                 <span class="n">film_miller_index</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+                 <span class="n">substrate_miller_index</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+                 <span class="n">zslgen</span> <span class="o">=</span> <span class="n">ZSLGenerator</span><span class="p">()):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the heterojunction modifier.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            film_structure (Structure): Film structure</span>
+<span class="sd">            substrate_structure (Structure): Substrate structure</span>
+<span class="sd">            film_miller_index (tuple): Film Miller index</span>
+<span class="sd">            substrate_miller_index (tuple): Substrate Miller index</span>
+<span class="sd">            zslgen: ZSLGenerator instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">film_structure</span> <span class="o">=</span> <span class="n">film_structure</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">substrate_structure</span> <span class="o">=</span> <span class="n">substrate_structure</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">film_miller_index</span> <span class="o">=</span> <span class="n">film_miller_index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">substrate_miller_index</span> <span class="o">=</span> <span class="n">substrate_miller_index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zslgen</span> <span class="o">=</span> <span class="n">zslgen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cib</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen_cib</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terminations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cib</span><span class="o">.</span><span class="n">terminations</span>
+
+<div class="viewcode-block" id="HeterojunctionModify.gen_cib">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.HeterojunctionModify.gen_cib">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen_cib</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a CoherentInterfaceBuilder object.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            CoherentInterfaceBuilder: Interface builder</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">CoherentInterfaceBuilder</span><span class="p">(</span><span class="n">substrate_structure</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">substrate_structure</span><span class="p">,</span> 
+                                        <span class="n">film_structure</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">film_structure</span><span class="p">,</span> 
+                                        <span class="n">film_miller</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">film_miller_index</span><span class="p">,</span> 
+                                        <span class="n">substrate_miller</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">substrate_miller_index</span><span class="p">,</span>
+                                        <span class="n">zslgen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">zslgen</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HeterojunctionModify.gen_heter_interface">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.HeterojunctionModify.gen_heter_interface">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen_heter_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                            <span class="n">termination</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+                            <span class="n">gap</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
+                            <span class="n">vacuum_over_film</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">20.0</span><span class="p">,</span>
+                            <span class="n">film_thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                            <span class="n">substrate_thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                            <span class="n">in_layers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate heterojunction interface structures.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            termination (tuple): Termination</span>
+<span class="sd">            gap (float): Gap</span>
+<span class="sd">            vacuum_over_film (float): Vacuum thickness above the film</span>
+<span class="sd">            film_thickness (float): Film thickness</span>
+<span class="sd">            substrate_thickness (float): Substrate thickness</span>
+<span class="sd">            in_layers (bool): Whether in units of layers</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            list: List of interface structures</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Raised if no interface is generated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">termination</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">termination</span><span class="p">)</span>
+
+        <span class="n">interfaces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cib</span><span class="o">.</span><span class="n">get_interfaces</span><span class="p">(</span><span class="n">termination</span><span class="o">=</span><span class="n">termination</span><span class="p">,</span> <span class="n">gap</span><span class="o">=</span><span class="n">gap</span><span class="p">,</span> <span class="n">vacuum_over_film</span><span class="o">=</span><span class="n">vacuum_over_film</span><span class="p">,</span> 
+                                       <span class="n">film_thickness</span><span class="o">=</span><span class="n">film_thickness</span><span class="p">,</span> <span class="n">substrate_thickness</span><span class="o">=</span><span class="n">substrate_thickness</span><span class="p">,</span> 
+                                       <span class="n">in_layers</span><span class="o">=</span><span class="n">in_layers</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">interfaces</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No interfaces generated by gen_heter_interface&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">interfaces</span></div>
+</div>
+
+    
+<div class="viewcode-block" id="AbsorptionModify">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.AbsorptionModify">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AbsorptionModify</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Molecular adsorption related structure processing tool.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="AbsorptionModify.ase2pmg">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.AbsorptionModify.ase2pmg">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ase2pmg</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">absorption_molecule</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Molecule</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Convert an ASE molecule object to a pymatgen Molecule.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            absorption_molecule (str): Molecule name</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Molecule: pymatgen Molecule object</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">ase_molecule</span> <span class="o">=</span> <span class="n">molecule</span><span class="p">(</span><span class="n">absorption_molecule</span><span class="p">)</span>
+        <span class="n">pmg_molecule</span> <span class="o">=</span> <span class="n">AseAtomsAdaptor</span><span class="o">.</span><span class="n">get_molecule</span><span class="p">(</span><span class="n">ase_molecule</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pmg_molecule</span></div>
+
+
+<div class="viewcode-block" id="AbsorptionModify.find_adsorption_sites">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.AbsorptionModify.find_adsorption_sites">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_adsorption_sites</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">slab</span><span class="p">:</span> <span class="n">Slab</span><span class="o">|</span><span class="n">Structure</span><span class="p">,</span> <span class="n">adsorp_gap</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Find adsorption sites on the slab surface.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            slab (Slab|Structure): Slab structure</span>
+<span class="sd">            adsorp_gap (float): Adsorption height</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Adsorption site information</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">asf</span> <span class="o">=</span> <span class="n">AdsorbateSiteFinder</span><span class="p">(</span><span class="n">slab</span><span class="p">)</span>
+        <span class="n">adsorption_sites</span> <span class="o">=</span> <span class="n">asf</span><span class="o">.</span><span class="n">find_adsorption_sites</span><span class="p">(</span><span class="n">distance</span><span class="o">=</span><span class="n">adsorp_gap</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">adsorption_sites</span></div>
+</div>
+
+
+<div class="viewcode-block" id="gen_substitute_structures">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.gen_substitute_structures">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">gen_substitute_structures</span><span class="p">(</span>
+    <span class="n">structure</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Slab</span><span class="p">,</span> <span class="n">Structure</span><span class="p">],</span>
+    <span class="n">substitute_element</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+    <span class="n">dopant</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+    <span class="n">dopant_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">max_structures</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> 
+    <span class="n">save</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Structure</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate structures by substituting or removing specific elements in a given structure.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        structure (Union[Slab, Structure]): The input structure (pymatgen Slab or Structure object).</span>
+<span class="sd">        substitute_element (Union[Element, str]): The element to be substituted (can be Element or string).</span>
+<span class="sd">        dopant (Union[Element, str, None]): The dopant element to substitute in, or None/&quot;vac&quot;/&quot;vacancy&quot; for vacancy.</span>
+<span class="sd">        dopant_num (int): Number of sites to substitute or remove.</span>
+<span class="sd">        max_structures (int, optional): Maximum number of generated structures to return. Default is 20.</span>
+<span class="sd">        save (bool, optional): Whether to save the generated structures as CIF files. Default is True.</span>
+<span class="sd">        save_path (str, optional): Directory to save the CIF files. Required if save is True.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[Structure]: A list of generated structures with the specified substitutions or vacancies.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        - Symmetry operations are ignored.</span>
+<span class="sd">        - If dopant is None, &quot;vac&quot;, &quot;vacancy&quot;, or &quot;none&quot;, the selected sites will be removed (vacancy).</span>
+<span class="sd">        - If dopant_num is 0, returns a copy of the original structure.</span>
+<span class="sd">        - If the number of possible combinations exceeds max_structures, a random subset is returned.</span>
+<span class="sd">        - If save is True and save_path is provided, the generated structures are saved as CIF files in the specified directory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">substitute_element</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">substitute_element</span> <span class="o">=</span> <span class="n">Element</span><span class="p">(</span><span class="n">substitute_element</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dopant</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">dopant</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;vac&quot;</span><span class="p">,</span> <span class="s2">&quot;vacancy&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">]:</span>
+            <span class="n">dopant</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dopant</span> <span class="o">=</span> <span class="n">Element</span><span class="p">(</span><span class="n">dopant</span><span class="p">)</span>
+
+    <span class="n">substitute_indices</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">site</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">site</span><span class="o">.</span><span class="n">specie</span> <span class="o">==</span> <span class="n">substitute_element</span>
+    <span class="p">]</span>
+    <span class="n">total_substitute</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">substitute_indices</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">total_substitute</span> <span class="o">&lt;</span> <span class="n">dopant_num</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;number of </span><span class="si">{</span><span class="n">substitute_element</span><span class="si">}</span><span class="s2"> sites are less than </span><span class="si">{</span><span class="n">dopant_num</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">dopant_num</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">structure</span><span class="o">.</span><span class="n">copy</span><span class="p">()]</span>  
+
+    <span class="n">all_combos</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">combinations</span><span class="p">(</span><span class="n">substitute_indices</span><span class="p">,</span> <span class="n">dopant_num</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_combos</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_structures</span><span class="p">:</span>
+        <span class="n">sampled_combos</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">all_combos</span><span class="p">,</span> <span class="n">max_structures</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sampled_combos</span> <span class="o">=</span> <span class="n">all_combos</span>
+
+    <span class="n">structures</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="n">save</span> <span class="ow">and</span> <span class="n">save_path</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">count</span><span class="p">,</span> <span class="n">combo</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sampled_combos</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">new_struct</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">dopant</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">combo</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                <span class="k">del</span> <span class="n">new_struct</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">combo</span><span class="p">:</span>
+                <span class="n">new_struct</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">dopant</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">save</span> <span class="ow">and</span> <span class="n">save_path</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;struct</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">.cif&quot;</span>
+            <span class="n">new_struct</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+        
+        <span class="n">structures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_struct</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">structures</span></div>
+
+    
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, andyhox.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

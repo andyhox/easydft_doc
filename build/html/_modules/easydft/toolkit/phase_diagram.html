@@ -1,0 +1,236 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>easydft.toolkit.phase_diagram &mdash; easydft 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            easydft
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">easydft</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">easydft</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">easydft.toolkit.phase_diagram</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for easydft.toolkit.phase_diagram</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.entries.computed_entries</span><span class="w"> </span><span class="kn">import</span> <span class="n">ComputedEntry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.analysis.phase_diagram</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.vasp.outputs</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vasprun</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">monty.serialization</span><span class="w"> </span><span class="kn">import</span> <span class="n">dumpfn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+
+<div class="viewcode-block" id="ProcessEntries">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.phase_diagram.ProcessEntries">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProcessEntries</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Traverse all calculation tasks in the current path and generate computed entries.</span>
+<span class="sd">    </span>
+<span class="sd">    Note: Make sure all calculation tasks in the current path are available.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_path</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Initialize the ProcessEntries instance.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            input_path: Working directory</span>
+<span class="sd">            output_path: Path to entries.json</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            entries.json</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_path</span> <span class="o">=</span> <span class="n">input_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="n">output_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gen_entries</span><span class="p">()</span>
+        
+<div class="viewcode-block" id="ProcessEntries.parse_calc_dirs">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.phase_diagram.ProcessEntries.parse_calc_dirs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_calc_dirs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Search all calculation directories and find folders containing vasprun.xml.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            calc_dirs: List[str], all directory paths containing vasprun.xml</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">calc_dirs</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_path</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;vasprun.xml&#39;</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="n">calc_dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No vasprun.xml in </span><span class="si">{</span><span class="n">root</span><span class="si">}</span><span class="s2">, pls check&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">calc_dirs</span></div>
+
+    
+<div class="viewcode-block" id="ProcessEntries.gen_entries">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.phase_diagram.ProcessEntries.gen_entries">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen_entries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Generate computed entries, with entry_id as the calculation directory name by default.</span>
+<span class="sd">        </span>
+<span class="sd">        If output_path is None, do not save the json file.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            entries: List[ComputedEntry]</span>
+<span class="sd">            entries.json</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">entries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">calc_dirs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_calc_dirs</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">calc_dir</span> <span class="ow">in</span> <span class="n">calc_dirs</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">vasprun</span> <span class="o">=</span> <span class="n">Vasprun</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">calc_dir</span><span class="p">,</span> <span class="s1">&#39;vasprun.xml&#39;</span><span class="p">))</span>
+                <span class="n">entry_id</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">calc_dir</span><span class="p">)</span>
+                <span class="n">entry</span> <span class="o">=</span> <span class="n">vasprun</span><span class="o">.</span><span class="n">get_computed_entry</span><span class="p">(</span><span class="n">entry_id</span><span class="o">=</span><span class="n">entry_id</span><span class="p">)</span>
+                <span class="n">entries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully created entry for </span><span class="si">{</span><span class="n">calc_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in </span><span class="si">{</span><span class="n">calc_dir</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="p">:</span>
+            <span class="n">dumpfn</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Entries saved to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">entries</span> <span class="o">=</span> <span class="n">entries</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">entries</span></div>
+
+    
+<div class="viewcode-block" id="ProcessEntries.parse_stable_entry_id">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.phase_diagram.ProcessEntries.parse_stable_entry_id">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_stable_entry_id</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> 
+        <span class="n">entries</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ComputedEntry</span><span class="p">],</span> 
+        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;simple&#39;</span><span class="p">,</span> <span class="c1"># &#39;simple&#39; | &#39;compound&#39;</span>
+        <span class="n">elements</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">terminal_compositions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Composition</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Parse the entry_id of stable entries.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            entries: List[ComputedEntry]</span>
+<span class="sd">            mode: &#39;simple&#39; | &#39;compound&#39;</span>
+<span class="sd">                &#39;simple&#39;: ordinary phase diagram, elements must be specified</span>
+<span class="sd">                &#39;compound&#39;: compound phase diagram, terminal_compositions must be specified</span>
+<span class="sd">            elements: List of elements (required if mode=&#39;simple&#39;)</span>
+<span class="sd">            terminal_compositions: Terminal compositions (required if mode=&#39;compound&#39;)</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            stable_entry_id: List[str]</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If required parameters are missing or mode is not supported</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">stable_entry_id</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;simple&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">elements</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please specify elements&quot;</span><span class="p">)</span>
+            <span class="n">PD</span> <span class="o">=</span> <span class="n">PhaseDiagram</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="n">elements</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;compound&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">terminal_compositions</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please specify terminal_compositions&quot;</span><span class="p">)</span>
+            <span class="n">PD</span> <span class="o">=</span> <span class="n">CompoundPhaseDiagram</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span> <span class="n">terminal_compositions</span><span class="o">=</span><span class="n">terminal_compositions</span><span class="p">,</span> <span class="n">normalize_terminal_compositions</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported mode: </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">. Use &#39;simple&#39; or &#39;compound&#39;.&quot;</span><span class="p">)</span>
+        <span class="n">stable_entries</span> <span class="o">=</span> <span class="n">PD</span><span class="o">.</span><span class="n">stable_entries</span>
+        <span class="n">entry_map</span> <span class="o">=</span> <span class="p">{(</span><span class="n">entry</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span><span class="n">reduced_formula</span><span class="p">,</span> <span class="n">entry</span><span class="o">.</span><span class="n">energy_per_atom</span><span class="p">):</span> <span class="n">entry</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">entries</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">stable_entry</span> <span class="ow">in</span> <span class="n">stable_entries</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">stable_entry</span><span class="o">.</span><span class="n">formula</span> <span class="ow">in</span> <span class="n">entry_map</span><span class="p">:</span>
+                <span class="n">stable_entry_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry_map</span><span class="p">[</span><span class="n">stable_entry</span><span class="o">.</span><span class="n">formula</span><span class="p">]</span><span class="o">.</span><span class="n">entry_id</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">stable_entry_id</span></div>
+</div>
+
+        
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, andyhox.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,515 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>easydft.toolkit.electronic_properties &mdash; easydft 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            easydft
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">easydft</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">easydft</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">easydft.toolkit.electronic_properties</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for easydft.toolkit.electronic_properties</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.vasp.outputs</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vasprun</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.electronic_structure.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrbitalType</span><span class="p">,</span> <span class="n">Spin</span><span class="p">,</span> <span class="n">Orbital</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.electronic_structure.bandstructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">BandStructureSymmLine</span><span class="p">,</span> <span class="n">BandStructure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core.periodic_table</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">easydft.core.parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">VasprunParser</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+        
+
+<div class="viewcode-block" id="Analyzer">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.electronic_properties.Analyzer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Analyzer</span><span class="p">():</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">work_dir</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">file_path</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">save_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> 
+        <span class="n">output_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span> <span class="o">=</span> <span class="n">work_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">file_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="n">output_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_data</span> <span class="o">=</span> <span class="n">save_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_input</span><span class="p">()</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Either &#39;work_dir&#39; or &#39;input_file&#39; must be provided.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;output_path MUST be provided&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">NotADirectoryError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="si">}</span><span class="s2"> is not a directory&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Analyzer.save_to_csv">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.electronic_properties.Analyzer.save_to_csv">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_to_csv</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> 
+        <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;output_path MUST be provided&quot;</span><span class="p">)</span>
+            <span class="n">save_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="p">),</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+</div>
+
+        
+<div class="viewcode-block" id="DosAnalyzer">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.electronic_properties.DosAnalyzer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DosAnalyzer</span><span class="p">(</span><span class="n">Analyzer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    VASP density of states (DOS) parser.</span>
+<span class="sd">    Supports extraction of element/orbital projected DOS and output as pandas DataFrame.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">ORBITAL_MAP</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="n">OrbitalType</span><span class="o">.</span><span class="n">s</span><span class="p">,</span>
+        <span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="n">OrbitalType</span><span class="o">.</span><span class="n">p</span><span class="p">,</span>
+        <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="n">OrbitalType</span><span class="o">.</span><span class="n">d</span><span class="p">,</span>
+        <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="n">OrbitalType</span><span class="o">.</span><span class="n">f</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">SUB_ORBITAL_MAP</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="n">Orbital</span><span class="o">.</span><span class="n">s</span><span class="p">,</span>
+        <span class="s2">&quot;p_y&quot;</span><span class="p">:</span> <span class="n">Orbital</span><span class="o">.</span><span class="n">py</span><span class="p">,</span>
+        <span class="s2">&quot;p_z&quot;</span><span class="p">:</span> <span class="n">Orbital</span><span class="o">.</span><span class="n">pz</span><span class="p">,</span>
+        <span class="s2">&quot;p_x&quot;</span><span class="p">:</span> <span class="n">Orbital</span><span class="o">.</span><span class="n">px</span><span class="p">,</span>
+        <span class="s2">&quot;d_</span><span class="si">{xy}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">Orbital</span><span class="o">.</span><span class="n">dxy</span><span class="p">,</span>
+        <span class="s2">&quot;d_</span><span class="si">{yz}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">Orbital</span><span class="o">.</span><span class="n">dyz</span><span class="p">,</span>
+        <span class="s2">&quot;d_{z^2}&quot;</span><span class="p">:</span> <span class="n">Orbital</span><span class="o">.</span><span class="n">dz2</span><span class="p">,</span>
+        <span class="s2">&quot;d_</span><span class="si">{xz}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">Orbital</span><span class="o">.</span><span class="n">dxz</span><span class="p">,</span>
+        <span class="s2">&quot;d_{x^2-y^2}&quot;</span><span class="p">:</span> <span class="n">Orbital</span><span class="o">.</span><span class="n">dx2</span><span class="p">,</span>
+        <span class="s2">&quot;f_{y(3x^2-y^2)}&quot;</span><span class="p">:</span> <span class="n">Orbital</span><span class="o">.</span><span class="n">f_3</span><span class="p">,</span>
+        <span class="s2">&quot;f_</span><span class="si">{xyz}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">Orbital</span><span class="o">.</span><span class="n">f_2</span><span class="p">,</span>
+        <span class="s2">&quot;f_{yz^2}&quot;</span><span class="p">:</span> <span class="n">Orbital</span><span class="o">.</span><span class="n">f_1</span><span class="p">,</span>
+        <span class="s2">&quot;f_{z^3}&quot;</span><span class="p">:</span> <span class="n">Orbital</span><span class="o">.</span><span class="n">f0</span><span class="p">,</span>
+        <span class="s2">&quot;f_{xz^2}&quot;</span><span class="p">:</span> <span class="n">Orbital</span><span class="o">.</span><span class="n">f1</span><span class="p">,</span>
+        <span class="s2">&quot;f_{z(x^2-y^2)}&quot;</span><span class="p">:</span> <span class="n">Orbital</span><span class="o">.</span><span class="n">f2</span><span class="p">,</span>
+        <span class="s2">&quot;f_{x(x^2-3y^2)}&quot;</span><span class="p">:</span> <span class="n">Orbital</span><span class="o">.</span><span class="n">f3</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">work_dir</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">vasprun_file</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">save_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> 
+        <span class="n">output_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="p">):</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the DOS parser.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            vasprun_file (str): Path to the VASP vasprun.xml file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">work_dir</span><span class="o">=</span><span class="n">work_dir</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="n">vasprun_file</span><span class="p">,</span> <span class="n">save_data</span><span class="o">=</span><span class="n">save_data</span><span class="p">,</span> <span class="n">output_path</span><span class="o">=</span><span class="n">output_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parse_vasprun_file</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vasprun_parser</span> <span class="o">=</span> <span class="n">VasprunParser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vasprun_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vasprun</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vasprun_parser</span><span class="o">.</span><span class="n">vasprun</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vasprun</span><span class="o">.</span><span class="n">complete_dos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">symbols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vasprun</span><span class="o">.</span><span class="n">atomic_symbols</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_spin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vasprun</span><span class="o">.</span><span class="n">is_spin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lorbit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vasprun</span><span class="o">.</span><span class="n">incar</span><span class="p">[</span><span class="s1">&#39;LORBIT&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_vasprun_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="p">:</span>
+            <span class="n">vasprun_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="p">,</span> <span class="s1">&#39;vasprun.xml&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vasprun_file</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">vasprun_file</span> <span class="o">=</span> <span class="n">vasprun_file</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;vasprun.xml not found in work_dir: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">vasprun_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;vasprun_file not found: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Either work_dir or vasprun_file must be provided&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vasprun_file</span>
+        
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_dos_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">densities</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add DOS data to the data dictionary (supports spin polarization).</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): Data dictionary</span>
+<span class="sd">            key (str): Data key name</span>
+<span class="sd">            densities (dict): Spin-resolved densities</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Updated data dictionary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_spin</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">_up&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">densities</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">_down&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">densities</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">down</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">densities</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_valid_dos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">densities_dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine whether the DOS data is valid (not all zeros).</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            densities_dict (dict): Spin-resolved densities</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether valid</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">densities_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">spin</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">,</span> <span class="n">Spin</span><span class="o">.</span><span class="n">down</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_spin</span> <span class="k">else</span> <span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">spin</span> <span class="ow">in</span> <span class="n">densities_dict</span> <span class="ow">and</span> 
+                <span class="n">densities_dict</span><span class="p">[</span><span class="n">spin</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> 
+                <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">densities_dict</span><span class="p">[</span><span class="n">spin</span><span class="p">],</span> <span class="mi">0</span><span class="p">)):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="DosAnalyzer.parse_element_spd_dos">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.electronic_properties.DosAnalyzer.parse_element_spd_dos">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_element_spd_dos</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse element-projected (s/p/d) DOS.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            pd.DataFrame: DataFrame containing energy, total DOS, and element-projected DOS.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Energy&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dos</span><span class="o">.</span><span class="n">energies</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">dos</span><span class="o">.</span><span class="n">efermi</span><span class="p">}</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_dos_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;tdos&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dos</span><span class="o">.</span><span class="n">densities</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbols</span><span class="p">:</span>
+            <span class="n">element_spd_dos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dos</span><span class="o">.</span><span class="n">get_element_spd_dos</span><span class="p">(</span><span class="n">Element</span><span class="p">(</span><span class="n">element</span><span class="p">))</span>
+            
+            <span class="k">for</span> <span class="n">orb_name</span><span class="p">,</span> <span class="n">orb_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ORBITAL_MAP</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">orb_type</span> <span class="ow">in</span> <span class="n">element_spd_dos</span><span class="p">:</span>
+                    <span class="n">densities</span> <span class="o">=</span> <span class="n">element_spd_dos</span><span class="p">[</span><span class="n">orb_type</span><span class="p">]</span><span class="o">.</span><span class="n">densities</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid_dos</span><span class="p">(</span><span class="n">densities</span><span class="p">):</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_dos_data</span><span class="p">(</span>
+                            <span class="n">data</span><span class="p">,</span> 
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">element</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">orb_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> 
+                            <span class="n">densities</span>
+                        <span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_to_csv</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;element_spd_dos.csv&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+
+    
+<div class="viewcode-block" id="DosAnalyzer.parse_orbital_spd_dos">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.electronic_properties.DosAnalyzer.parse_orbital_spd_dos">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_orbital_spd_dos</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse orbital-projected DOS by summing over all atomic sites of each element.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pd.DataFrame: A DataFrame with energy and summed orbital DOS for each element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lorbit</span> <span class="o">&lt;</span> <span class="mi">11</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Orbital-projected DOS requires LORBIT &gt;= 11.&quot;</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Energy&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dos</span><span class="o">.</span><span class="n">energies</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">dos</span><span class="o">.</span><span class="n">efermi</span><span class="p">}</span>
+        
+        <span class="c1"># Initialize an empty dict to accumulate summed densities</span>
+        <span class="n">orbital_dos_sum</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">element</span><span class="p">:</span> <span class="p">{</span><span class="n">orb_label</span><span class="p">:</span> <span class="p">{</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">Spin</span><span class="o">.</span><span class="n">down</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span> <span class="k">for</span> <span class="n">orb_label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SUB_ORBITAL_MAP</span><span class="p">}</span>
+            <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbols</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Loop over all sites</span>
+        <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vasprun</span><span class="o">.</span><span class="n">final_structure</span><span class="o">.</span><span class="n">sites</span><span class="p">:</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="n">site</span><span class="o">.</span><span class="n">specie</span><span class="o">.</span><span class="n">symbol</span>
+
+            <span class="k">for</span> <span class="n">orb_label</span><span class="p">,</span> <span class="n">orb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SUB_ORBITAL_MAP</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="c1"># Prefer newer API that requires explicit orbital; fallback to older mapping-based API</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">dos_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dos</span><span class="o">.</span><span class="n">get_site_orbital_dos</span><span class="p">(</span><span class="n">site</span><span class="o">=</span><span class="n">site</span><span class="p">,</span> <span class="n">orbital</span><span class="o">=</span><span class="n">orb</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="n">get_site_orbital_dos_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dos</span><span class="p">,</span> <span class="s2">&quot;get_site_orbital_dos&quot;</span><span class="p">)</span>
+                    <span class="n">site_dos_map</span> <span class="o">=</span> <span class="n">get_site_orbital_dos_fn</span><span class="p">(</span><span class="n">site</span><span class="p">)</span>
+                    <span class="n">dos_obj</span> <span class="o">=</span> <span class="n">site_dos_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">orb</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">dos_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">densities_dict</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dos_obj</span><span class="p">,</span> <span class="s2">&quot;densities&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">densities_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="k">for</span> <span class="n">spin</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">,</span> <span class="n">Spin</span><span class="o">.</span><span class="n">down</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_spin</span> <span class="k">else</span> <span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">]:</span>
+                    <span class="n">densities</span> <span class="o">=</span> <span class="n">densities_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">spin</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">densities</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">orbital_dos_sum</span><span class="p">[</span><span class="n">element</span><span class="p">][</span><span class="n">orb_label</span><span class="p">][</span><span class="n">spin</span><span class="p">],</span> <span class="nb">float</span><span class="p">):</span>
+                        <span class="n">orbital_dos_sum</span><span class="p">[</span><span class="n">element</span><span class="p">][</span><span class="n">orb_label</span><span class="p">][</span><span class="n">spin</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">densities</span><span class="p">)</span>
+                    <span class="n">orbital_dos_sum</span><span class="p">[</span><span class="n">element</span><span class="p">][</span><span class="n">orb_label</span><span class="p">][</span><span class="n">spin</span><span class="p">]</span> <span class="o">+=</span> <span class="n">densities</span>
+
+        <span class="c1"># Add each element-orbital&#39;s DOS into data</span>
+        <span class="k">for</span> <span class="n">element</span><span class="p">,</span> <span class="n">orb_dos</span> <span class="ow">in</span> <span class="n">orbital_dos_sum</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">orb_label</span><span class="p">,</span> <span class="n">spin_dict</span> <span class="ow">in</span> <span class="n">orb_dos</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid_dos</span><span class="p">(</span><span class="n">spin_dict</span><span class="p">):</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_dos_data</span><span class="p">(</span>
+                        <span class="n">data</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">element</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">orb_label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">spin_dict</span>
+                    <span class="p">)</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_to_csv</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;orbital_spd_dos.csv&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="DosAnalyzer.parse_element_dos">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.electronic_properties.DosAnalyzer.parse_element_dos">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_element_dos</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse element total DOS.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            pd.DataFrame: DataFrame containing energy, total DOS, and element total DOS.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Energy&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dos</span><span class="o">.</span><span class="n">energies</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">dos</span><span class="o">.</span><span class="n">efermi</span><span class="p">}</span>
+        
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_dos_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;tdos&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dos</span><span class="o">.</span><span class="n">densities</span><span class="p">)</span>
+
+        <span class="n">element_dos_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dos</span><span class="o">.</span><span class="n">get_element_dos</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbols</span><span class="p">:</span>
+            <span class="n">el</span> <span class="o">=</span> <span class="n">Element</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">element_dos_dict</span><span class="p">:</span>
+                <span class="n">densities</span> <span class="o">=</span> <span class="n">element_dos_dict</span><span class="p">[</span><span class="n">el</span><span class="p">]</span><span class="o">.</span><span class="n">densities</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid_dos</span><span class="p">(</span><span class="n">densities</span><span class="p">):</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_dos_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">el</span><span class="p">),</span> <span class="n">densities</span><span class="p">)</span>
+                    
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_to_csv</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;element_dos.csv&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+</div>
+
+
+<div class="viewcode-block" id="BandstructureAnalyzer">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.electronic_properties.BandstructureAnalyzer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BandstructureAnalyzer</span><span class="p">(</span><span class="n">Analyzer</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">work_dir</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">vasprun_file</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">save_data</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">output_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="p">):</span>
+        
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">work_dir</span><span class="o">=</span><span class="n">work_dir</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="n">vasprun_file</span><span class="p">,</span> <span class="n">save_data</span><span class="o">=</span><span class="n">save_data</span><span class="p">,</span> <span class="n">output_path</span><span class="o">=</span><span class="n">output_path</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vasprun_parser</span> <span class="o">=</span> <span class="n">VasprunParser</span><span class="p">(</span><span class="n">vasprun_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vasprun</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vasprun_parser</span><span class="o">.</span><span class="n">vasprun</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bandstructure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vasprun</span><span class="o">.</span><span class="n">get_band_structure</span><span class="p">(</span><span class="n">line_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kpoint_distances</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_kpoint_distances</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bandstructure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BandStructureSymmLine</span> <span class="o">|</span> <span class="n">BandStructure</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bandstructure</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_spin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vasprun</span><span class="o">.</span><span class="n">is_spin</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">kpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bandstructure</span><span class="o">.</span><span class="n">kpoints</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">efermi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bandstructure</span><span class="o">.</span><span class="n">efermi</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bands</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bandstructure</span><span class="o">.</span><span class="n">bands</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">band_gap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bandstructure</span><span class="o">.</span><span class="n">get_band_gap</span><span class="p">()[</span><span class="s1">&#39;energy&#39;</span><span class="p">]</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_gap_direct</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bandstructure</span><span class="o">.</span><span class="n">get_band_gap</span><span class="p">()[</span><span class="s1">&#39;direct&#39;</span><span class="p">]</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">vbm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bandstructure</span><span class="o">.</span><span class="n">get_vbm</span><span class="p">()[</span><span class="s1">&#39;energy&#39;</span><span class="p">]</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cbm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bandstructure</span><span class="o">.</span><span class="n">get_cbm</span><span class="p">()[</span><span class="s1">&#39;energy&#39;</span><span class="p">]</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nkpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kpoints</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calculate_kpoint_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">distances</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nkpoints</span><span class="p">):</span>
+            <span class="n">dist</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">kpoints</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">frac_coords</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">kpoints</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">frac_coords</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">distances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">dist</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">distances</span>
+    
+<div class="viewcode-block" id="BandstructureAnalyzer.parse_normal_bandstructure">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.electronic_properties.BandstructureAnalyzer.parse_normal_bandstructure">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_normal_bandstructure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse normal bandstructure.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">base_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">band_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bands</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">k_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nkpoints</span><span class="p">):</span>
+                <span class="n">kpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kpoints</span><span class="p">[</span><span class="n">k_idx</span><span class="p">]</span>
+                <span class="n">kpoint_info</span> <span class="o">=</span> <span class="n">kpoint</span><span class="o">.</span><span class="n">label</span> <span class="k">if</span> <span class="n">kpoint</span><span class="o">.</span><span class="n">label</span> <span class="k">else</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">c</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">kpoint</span><span class="o">.</span><span class="n">frac_coords</span><span class="p">)</span>
+                
+                <span class="n">base_data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">&quot;band_index&quot;</span><span class="p">:</span> <span class="n">band_idx</span><span class="p">,</span>
+                    <span class="s2">&quot;k_idx&quot;</span><span class="p">:</span> <span class="n">k_idx</span><span class="p">,</span>
+                    <span class="s2">&quot;kpoint&quot;</span><span class="p">:</span> <span class="n">kpoint_info</span><span class="p">,</span>
+                    <span class="s2">&quot;kpoint_distance&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kpoint_distances</span><span class="p">[</span><span class="n">k_idx</span><span class="p">]</span>
+                <span class="p">})</span>
+        
+        <span class="n">base_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">base_data</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_spin</span><span class="p">:</span>
+            <span class="n">energy_data</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">band_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bands</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">k_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nkpoints</span><span class="p">):</span>
+                    <span class="n">energy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bands</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">][</span><span class="n">band_idx</span><span class="p">,</span> <span class="n">k_idx</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">efermi</span>
+                    <span class="n">energy_data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                        <span class="s2">&quot;band_index&quot;</span><span class="p">:</span> <span class="n">band_idx</span><span class="p">,</span>
+                        <span class="s2">&quot;k_idx&quot;</span><span class="p">:</span> <span class="n">k_idx</span><span class="p">,</span>
+                        <span class="s2">&quot;energy&quot;</span><span class="p">:</span> <span class="n">energy</span>
+                    <span class="p">})</span>
+            <span class="n">energy_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">energy_data</span><span class="p">)</span>
+            <span class="n">combined_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">base_df</span><span class="p">,</span> <span class="n">energy_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;band_index&quot;</span><span class="p">,</span> <span class="s2">&quot;k_idx&quot;</span><span class="p">])</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">up_data</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">band_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bands</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">k_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nkpoints</span><span class="p">):</span>
+                    <span class="n">energy_up</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bands</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">][</span><span class="n">band_idx</span><span class="p">,</span> <span class="n">k_idx</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">efermi</span>
+                    <span class="n">up_data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                        <span class="s2">&quot;band_index&quot;</span><span class="p">:</span> <span class="n">band_idx</span><span class="p">,</span>
+                        <span class="s2">&quot;k_idx&quot;</span><span class="p">:</span> <span class="n">k_idx</span><span class="p">,</span>
+                        <span class="s2">&quot;energy_up&quot;</span><span class="p">:</span> <span class="n">energy_up</span>
+                    <span class="p">})</span>
+            <span class="n">up_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">up_data</span><span class="p">)</span>
+            
+            <span class="n">down_data</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">band_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bands</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">k_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nkpoints</span><span class="p">):</span>
+                    <span class="n">energy_down</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bands</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">down</span><span class="p">][</span><span class="n">band_idx</span><span class="p">,</span> <span class="n">k_idx</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">efermi</span>
+                    <span class="n">down_data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                        <span class="s2">&quot;band_index&quot;</span><span class="p">:</span> <span class="n">band_idx</span><span class="p">,</span>
+                        <span class="s2">&quot;k_idx&quot;</span><span class="p">:</span> <span class="n">k_idx</span><span class="p">,</span>
+                        <span class="s2">&quot;energy_down&quot;</span><span class="p">:</span> <span class="n">energy_down</span>
+                    <span class="p">})</span>
+            <span class="n">down_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">down_data</span><span class="p">)</span>
+            
+            <span class="n">combined_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">base_df</span><span class="p">,</span> <span class="n">up_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;band_index&quot;</span><span class="p">,</span> <span class="s2">&quot;k_idx&quot;</span><span class="p">])</span>
+            <span class="n">combined_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">combined_df</span><span class="p">,</span> <span class="n">down_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;band_index&quot;</span><span class="p">,</span> <span class="s2">&quot;k_idx&quot;</span><span class="p">])</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_to_csv</span><span class="p">(</span><span class="n">combined_df</span><span class="p">,</span> <span class="s2">&quot;band.csv&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">combined_df</span></div>
+</div>
+
+    
+<span class="c1"># TODO: </span>
+<span class="c1">#   - 实现投影能带（projected bandstructure）功能</span>
+<span class="c1">#   - 支持元素/轨道分波能带的提取与输出</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, andyhox.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

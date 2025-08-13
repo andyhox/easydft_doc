@@ -1,0 +1,661 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>easydft.toolkit.aimd &mdash; easydft 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            easydft
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">easydft</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">easydft</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">easydft.toolkit.aimd</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for easydft.toolkit.aimd</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">Molecular dynamics data processing toolkit.</span>
+<span class="sd">Features:</span>
+<span class="sd">1. Read VASP XDATCAR and OSZICAR files</span>
+<span class="sd">2. Convert to PDB format trajectory</span>
+<span class="sd">3. Plot energy and temperature curves</span>
+<span class="sd">4. Handle periodic boundary conditions</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+
+<span class="n">mpl</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>  <span class="c1"># No GUI mode</span>
+
+
+<div class="viewcode-block" id="EnergyTempReader">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.aimd.EnergyTempReader">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EnergyTempReader</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read energy and temperature data from OSZICAR file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">oszicar_path</span><span class="o">=</span><span class="s2">&quot;OSZICAR&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the energy and temperature reader.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            oszicar_path (str): Path to the OSZICAR file, default &quot;OSZICAR&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">energy</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oszicar_path</span> <span class="o">=</span> <span class="n">oszicar_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_oszicar</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_oszicar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read the content of the OSZICAR file and extract temperature and energy data.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            IOError: Raised if the file does not exist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">oszicar_path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;OSZICAR file does not exist: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">oszicar_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reading energy and temperature data from OSZICAR...&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">oszicar_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;E0=&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>  <span class="c1"># Temperature</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">energy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">6</span><span class="p">]))</span>  </div>
+
+
+
+<div class="viewcode-block" id="XDATCARParser">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.aimd.XDATCARParser">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">XDATCARParser</span><span class="p">(</span><span class="n">EnergyTempReader</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    XDATCAR file parser.</span>
+<span class="sd">    Inherits from EnergyTempReader.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xdatcar_path</span><span class="o">=</span><span class="s2">&quot;XDATCAR&quot;</span><span class="p">,</span> <span class="n">oszicar_path</span><span class="o">=</span><span class="s2">&quot;OSZICAR&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the XDATCAR parser.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            xdatcar_path (str): Path to the XDATCAR file, default &quot;XDATCAR&quot;</span>
+<span class="sd">            oszicar_path (str): Path to the OSZICAR file, default &quot;OSZICAR&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">oszicar_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xdatcar_path</span> <span class="o">=</span> <span class="n">xdatcar_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_variables</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parse_xdatcar</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize internal variables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">NPT</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timestep</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># Default time step of 1fs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_frame</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lowrange</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uprange</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_xdatcar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse the XDATCAR file to get the number of frames, NPT status, lattice information, etc.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            IOError: Raised if the file does not exist.</span>
+<span class="sd">            ValueError: Raised if the file format is incorrect.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parsing XDATCAR file...&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdatcar_path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;XDATCAR file does not exist: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">xdatcar_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdatcar_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="c1"># Calculate the total number of frames</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span> <span class="k">if</span> <span class="s2">&quot;Direct&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            
+            <span class="c1"># Check if it&#39;s an NPT simulation</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">NPT</span> <span class="o">=</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="s2">&quot;Direct configuration&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            
+            <span class="c1"># Read lattice information</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">NPT</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_read_lattice_info</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Total frames: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="si">}</span><span class="s1">, NPT simulation: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">NPT</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uprange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_lattice_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_handle</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read lattice information, including lattice constants, angles, element types, and quantities.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            file_handle: File handle</span>
+<span class="sd">        </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Raised if the file format does not meet VASP 5.x requirements.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">file_handle</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scaling_factor</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">file_handle</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+        
+        <span class="c1"># Read lattice vectors</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">file_handle</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_factor</span>
+        
+        <span class="c1"># Calculate lattice constants</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        
+        <span class="c1"># Calculate lattice angles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> 
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> 
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> 
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+
+        <span class="c1"># Read element information</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">element_list</span> <span class="o">=</span> <span class="n">file_handle</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">element_amount</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">file_handle</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Requires VASP 5.x format XDATCAR!&#39;</span><span class="p">)</span>
+            
+        <span class="c1"># Generate element type list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_elements</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">elem</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">element_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_amount</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">total_elements</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">elem</span><span class="p">]</span> <span class="o">*</span> <span class="n">count</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_atom</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">element_amount</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atomic_position</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">total_atom</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cartesian_position</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">total_atom</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+<div class="viewcode-block" id="XDATCARParser.set_time_range">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.aimd.XDATCARParser.set_time_range">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_time_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the analysis time range (frame interval).</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            begin (int): Start frame (0-based)</span>
+<span class="sd">            end (int): End frame (None means last frame)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">-</span> <span class="mi">1</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">lowrange</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">begin</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uprange</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Setting time range: frames </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lowrange</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">uprange</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="XDATCARParser.parse_step">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.aimd.XDATCARParser.parse_step">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse atomic positions for the specified frame.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            step (int): Frame number (0-based)</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            numpy.ndarray: Cartesian coordinates of atoms</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Raised if the frame number is out of range.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">step</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">step</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Frame number </span><span class="si">{</span><span class="n">step</span><span class="si">}</span><span class="s1"> is out of range (0-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+            
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdatcar_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="c1"># Locate to the specified frame</span>
+            <span class="n">current_step</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">while</span> <span class="n">current_step</span> <span class="o">&lt;</span> <span class="n">step</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">if</span> <span class="s2">&quot;Direct&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">current_step</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">current_step</span> <span class="o">==</span> <span class="n">step</span><span class="p">:</span>
+                        <span class="k">break</span>
+            
+            <span class="c1"># Read atomic positions</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_atom</span><span class="p">):</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="n">positions</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">3</span><span class="p">]])</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">atomic_position</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cartesian_position</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomic_position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cartesian_position</span></div>
+
+
+<div class="viewcode-block" id="XDATCARParser.write_pdb_frame">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.aimd.XDATCARParser.write_pdb_frame">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_pdb_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_data</span><span class="p">,</span> <span class="n">frame_number</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write a single frame of PDB data.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            frame_data (numpy.ndarray): Atomic coordinates</span>
+<span class="sd">            frame_number (int): Frame number</span>
+<span class="sd">            output_file (str): Output file path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="c1"># Write header information</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MODEL     </span><span class="si">{</span><span class="n">frame_number</span><span class="si">:</span><span class="s2">&gt;5</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;REMARK   Converted from XDATCAR</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;REMARK   Using VASP toolkit</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;CRYST1</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">9.3f</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">9.3f</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s1">9.3f</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="si">:</span><span class="s1">7.2f</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="si">:</span><span class="s1">7.2f</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="si">:</span><span class="s1">7.2f</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            
+            <span class="c1"># Write atomic coordinates</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_elements</span><span class="p">,</span> <span class="n">frame_data</span><span class="p">)):</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;ATOM  </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">&gt;5</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">elem</span><span class="si">:</span><span class="s1">4</span><span class="si">}</span><span class="s1"> MOL     1    &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">8.3f</span><span class="si">}{</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">8.3f</span><span class="si">}{</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s1">8.3f</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;  1.00  0.00          </span><span class="si">{</span><span class="n">elem</span><span class="si">:</span><span class="s1">&gt;2</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;TER</span><span class="se">\n</span><span class="s1">ENDMDL</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="XDATCARParser.unwrap_pbc">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.aimd.XDATCARParser.unwrap_pbc">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unwrap_pbc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_pos</span><span class="p">,</span> <span class="n">prev_pos</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle periodic boundary conditions.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            current_pos (numpy.ndarray): Current frame coordinates</span>
+<span class="sd">            prev_pos (numpy.ndarray): Previous frame coordinates</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: (Updated previous frame coordinates, displacement vector)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">current_pos</span> <span class="o">-</span> <span class="n">prev_pos</span>
+        <span class="n">new_prev</span> <span class="o">=</span> <span class="n">current_pos</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+        <span class="c1"># Handle periodicity in each direction</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">diff</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">diff</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">diff</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">diff</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        
+        <span class="k">return</span> <span class="n">new_prev</span><span class="p">,</span> <span class="n">diff</span></div>
+
+
+<div class="viewcode-block" id="XDATCARParser.center_molecule">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.aimd.XDATCARParser.center_molecule">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">center_molecule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">center_atom</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Center the molecule at the specified atom.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            positions (numpy.ndarray): Atomic coordinates</span>
+<span class="sd">            center_atom (int): Index of the center atom (0-based)</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            numpy.ndarray: Centered coordinates</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            IndexError: Raised if the specified atom does not exist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">center_atom</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Specified atom does not exist!&quot;</span><span class="p">)</span>
+            
+        <span class="n">centered</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">center_pos</span> <span class="o">=</span> <span class="n">centered</span><span class="p">[</span><span class="n">center_atom</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+        <span class="c1"># Adjust each atom&#39;s position</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">centered</span><span class="p">)):</span>
+            <span class="n">displacement</span> <span class="o">=</span> <span class="n">centered</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">center_pos</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">displacement</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">centered</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">displacement</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">centered</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        
+        <span class="k">return</span> <span class="n">centered</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MDPlotter">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.aimd.MDPlotter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MDPlotter</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Molecular dynamics energy and temperature curve plotting tool.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">output_prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the plotting tool.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            parser (XDATCARParser): Data parser</span>
+<span class="sd">            output_prefix (str): Output file prefix</span>
+<span class="sd">            dpi (int): Image resolution</span>
+<span class="sd">            figsize (tuple): Image size (inches)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">parser</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_prefix</span> <span class="o">=</span> <span class="n">output_prefix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dpi</span> <span class="o">=</span> <span class="n">dpi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">figsize</span> <span class="o">=</span> <span class="n">figsize</span>
+
+<div class="viewcode-block" id="MDPlotter.plot_profiles">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.aimd.MDPlotter.plot_profiles">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot and save energy and temperature curves.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Prepare data</span>
+        <span class="n">time_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">lowrange</span><span class="p">,</span> 
+            <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">uprange</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">temp</span><span class="p">))</span>
+            <span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">timestep</span>
+            
+        <span class="n">temp_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">temp</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">lowrange</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">uprange</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">energy_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">energy</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">lowrange</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">uprange</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">label_fontsize</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="n">tick_fontsize</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="n">title_fontsize</span> <span class="o">=</span> <span class="mi">10</span>
+        
+        <span class="c1"># Create figure</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">figsize</span><span class="p">)</span>
+        
+        <span class="c1"># Temperature subplot</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_points</span><span class="p">,</span> <span class="n">temp_data</span><span class="p">,</span> <span class="s1">&#39;b-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time (fs)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">label_fontsize</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Temperature (K)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">label_fontsize</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Temperature Curve&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">title_fontsize</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">tick_fontsize</span><span class="p">)</span>
+        
+        <span class="c1"># Energy subplot</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_points</span><span class="p">,</span> <span class="n">energy_data</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time (fs)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">label_fontsize</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Energy (eV)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">label_fontsize</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Energy Curve&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">title_fontsize</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">tick_fontsize</span><span class="p">)</span>
+        
+        <span class="c1"># Save figure</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+        <span class="n">output_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_prefix</span><span class="si">}</span><span class="s1">ENERGY.png&#39;</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dpi</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Energy curve plot saved: </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        
+        <span class="c1"># Save data files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_data</span><span class="p">(</span><span class="n">time_points</span><span class="p">,</span> <span class="n">temp_data</span><span class="p">,</span> <span class="s1">&#39;Temperature.dat&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_data</span><span class="p">(</span><span class="n">time_points</span><span class="p">,</span> <span class="n">energy_data</span><span class="p">,</span> <span class="s1">&#39;Energy.dat&#39;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_save_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_points</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save data to file.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            time_points (array): Time points</span>
+<span class="sd">            data (array): Data values</span>
+<span class="sd">            filename (str): File name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_prefix</span><span class="si">}{</span><span class="n">filename</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Time(fs)   Value</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">time_points</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">d</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Data file saved: </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="MDProcessor">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.aimd.MDProcessor">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MDProcessor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Molecular dynamics data processing controller.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xdatcar_path</span><span class="o">=</span><span class="s2">&quot;XDATCAR&quot;</span><span class="p">,</span> <span class="n">oszicar_path</span><span class="o">=</span><span class="s2">&quot;OSZICAR&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the processor.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            xdatcar_path (str): Path to the XDATCAR file, default &quot;XDATCAR&quot;</span>
+<span class="sd">            oszicar_path (str): Path to the OSZICAR file, default &quot;OSZICAR&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xdatcar_path</span> <span class="o">=</span> <span class="n">xdatcar_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oszicar_path</span> <span class="o">=</span> <span class="n">oszicar_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="kc">None</span>
+        
+<div class="viewcode-block" id="MDProcessor.process">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.aimd.MDProcessor.process">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Main processing function.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            begin (int): Start frame, default 0</span>
+<span class="sd">            end (int): End frame, default None (all frames)</span>
+<span class="sd">            timestep (float): Time step (fs), default 1.0</span>
+<span class="sd">            output_pdb (str/bool):</span>
+<span class="sd">                - str: Specify output path</span>
+<span class="sd">                - True: Use default path &quot;XDATCAR.pdb&quot;</span>
+<span class="sd">                - False/None: Do not output</span>
+<span class="sd">            interval (int): Output interval, default 1</span>
+<span class="sd">            unwrap_pbc (bool): Whether to handle periodic boundary, default False</span>
+<span class="sd">            center_atom (int): Center atom (1-based), default None</span>
+<span class="sd">            plot_profiles (bool): Whether to plot curves, default False</span>
+<span class="sd">            output_prefix (str): Output prefix, default &quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize parser</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">XDATCARParser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdatcar_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">oszicar_path</span><span class="p">)</span>
+        
+        <span class="c1"># Set parameters</span>
+        <span class="n">begin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;begin&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">timestep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;timestep&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">timestep</span> <span class="o">=</span> <span class="n">timestep</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">set_time_range</span><span class="p">(</span><span class="n">begin</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        
+        <span class="c1"># PDB conversion</span>
+        <span class="n">output_pdb</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;output_pdb&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">output_pdb</span><span class="p">:</span>
+            <span class="n">pdb_path</span> <span class="o">=</span> <span class="s2">&quot;XDATCAR.pdb&quot;</span> <span class="k">if</span> <span class="n">output_pdb</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="n">output_pdb</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_convert_to_pdb</span><span class="p">(</span>
+                <span class="n">pdb_path</span><span class="o">=</span><span class="n">pdb_path</span><span class="p">,</span>
+                <span class="n">interval</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;interval&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">unwrap_pbc</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;unwrap_pbc&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                <span class="n">center_atom</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;center_atom&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="p">)</span>
+        
+        <span class="c1"># Plot curves</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;plot_profiles&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_plot_profiles</span><span class="p">(</span>
+                <span class="n">output_prefix</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;output_prefix&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="p">)</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_convert_to_pdb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pdb_path</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">unwrap_pbc</span><span class="p">,</span> <span class="n">center_atom</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute PDB conversion.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            pdb_path (str): Output PDB file path</span>
+<span class="sd">            interval (int): Frame output interval</span>
+<span class="sd">            unwrap_pbc (bool): Whether to handle periodic boundary</span>
+<span class="sd">            center_atom (int): Center atom (1-based)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pdb_path</span><span class="p">):</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">pdb_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pdb_path</span><span class="si">}</span><span class="s2">.bak&quot;</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">pdb_path</span><span class="p">)</span>
+        
+        <span class="n">prev_pos</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">real_pos</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">frame_count</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Starting conversion to PDB format, output path: </span><span class="si">{</span><span class="n">pdb_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Frame interval: </span><span class="si">{</span><span class="n">interval</span><span class="si">}</span><span class="s1">, Handle PBC: </span><span class="si">{</span><span class="n">unwrap_pbc</span><span class="si">}</span><span class="s1">, Center atom: </span><span class="si">{</span><span class="n">center_atom</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">lowrange</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">uprange</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">frame</span> <span class="o">%</span> <span class="n">interval</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+                    
+            <span class="c1"># Parse the current frame</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">parse_step</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+            
+            <span class="c1"># Handle periodic boundary conditions</span>
+            <span class="k">if</span> <span class="n">unwrap_pbc</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">frame</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">lowrange</span><span class="p">:</span>
+                    <span class="n">real_pos</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">center_atom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">real_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">center_molecule</span><span class="p">(</span>
+                            <span class="n">real_pos</span><span class="p">,</span> <span class="n">center_atom</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">prev_pos</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">prev_pos</span><span class="p">,</span> <span class="n">disp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">unwrap_pbc</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">prev_pos</span><span class="p">)</span>
+                    <span class="n">real_pos</span> <span class="o">+=</span> <span class="n">disp</span>
+                    <span class="k">if</span> <span class="n">center_atom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">real_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">center_molecule</span><span class="p">(</span>
+                            <span class="n">real_pos</span><span class="p">,</span> <span class="n">center_atom</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">cartesian_position</span> <span class="o">=</span> <span class="n">real_pos</span>
+            
+            <span class="c1"># Write the PDB frame</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">write_pdb_frame</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">cartesian_position</span><span class="p">,</span> 
+                <span class="n">frame_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> 
+                <span class="n">pdb_path</span>
+            <span class="p">)</span>
+            <span class="n">frame_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Conversion completed, total </span><span class="si">{</span><span class="n">frame_count</span><span class="si">}</span><span class="s1"> frames converted&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Time interval: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">timestep</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">interval</span><span class="si">}</span><span class="s1">fs&#39;</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_plot_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot energy and temperature curves.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            output_prefix (str): Output file prefix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Starting to plot energy and temperature curves, prefix: </span><span class="si">{</span><span class="n">output_prefix</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">plotter</span> <span class="o">=</span> <span class="n">MDPlotter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="p">,</span> <span class="n">output_prefix</span><span class="p">)</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">plot_profiles</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, andyhox.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

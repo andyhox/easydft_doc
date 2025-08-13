@@ -1,0 +1,1127 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>easydft.toolkit package &mdash; easydft 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="easydft.workflow package" href="easydft.workflow.html" />
+    <link rel="prev" title="easydft package" href="easydft.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            easydft
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">easydft</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="easydft.html">easydft package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="easydft.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">easydft.toolkit package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="easydft.workflow.html">easydft.workflow package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="easydft.html#module-easydft">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">easydft</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">easydft</a></li>
+          <li class="breadcrumb-item"><a href="easydft.html">easydft package</a></li>
+      <li class="breadcrumb-item active">easydft.toolkit package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/easydft.toolkit.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="easydft-toolkit-package">
+<h1>easydft.toolkit package<a class="headerlink" href="#easydft-toolkit-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-easydft.toolkit.aimd">
+<span id="easydft-toolkit-aimd-module"></span><h2>easydft.toolkit.aimd module<a class="headerlink" href="#module-easydft.toolkit.aimd" title="Link to this heading"></a></h2>
+<p>Molecular dynamics data processing toolkit.
+Features:
+1. Read VASP XDATCAR and OSZICAR files
+2. Convert to PDB format trajectory
+3. Plot energy and temperature curves
+4. Handle periodic boundary conditions</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.toolkit.aimd.EnergyTempReader">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.toolkit.aimd.</span></span><span class="sig-name descname"><span class="pre">EnergyTempReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oszicar_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'OSZICAR'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/aimd.html#EnergyTempReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.aimd.EnergyTempReader" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Read energy and temperature data from OSZICAR file.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.toolkit.aimd.MDPlotter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.toolkit.aimd.</span></span><span class="sig-name descname"><span class="pre">MDPlotter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(5,</span> <span class="pre">4)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/aimd.html#MDPlotter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.aimd.MDPlotter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Molecular dynamics energy and temperature curve plotting tool.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.aimd.MDPlotter.plot_profiles">
+<span class="sig-name descname"><span class="pre">plot_profiles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/aimd.html#MDPlotter.plot_profiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.aimd.MDPlotter.plot_profiles" title="Link to this definition"></a></dt>
+<dd><p>Plot and save energy and temperature curves.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.toolkit.aimd.MDProcessor">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.toolkit.aimd.</span></span><span class="sig-name descname"><span class="pre">MDProcessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xdatcar_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'XDATCAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oszicar_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'OSZICAR'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/aimd.html#MDProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.aimd.MDProcessor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Molecular dynamics data processing controller.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.aimd.MDProcessor.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/aimd.html#MDProcessor.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.aimd.MDProcessor.process" title="Link to this definition"></a></dt>
+<dd><p>Main processing function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>begin</strong> (<em>int</em>) – Start frame, default 0</p></li>
+<li><p><strong>end</strong> (<em>int</em>) – End frame, default None (all frames)</p></li>
+<li><p><strong>timestep</strong> (<em>float</em>) – Time step (fs), default 1.0</p></li>
+<li><p><strong>output_pdb</strong> (<em>str/bool</em>) – <ul>
+<li><p>str: Specify output path</p></li>
+<li><p>True: Use default path “XDATCAR.pdb”</p></li>
+<li><p>False/None: Do not output</p></li>
+</ul>
+</p></li>
+<li><p><strong>interval</strong> (<em>int</em>) – Output interval, default 1</p></li>
+<li><p><strong>unwrap_pbc</strong> (<em>bool</em>) – Whether to handle periodic boundary, default False</p></li>
+<li><p><strong>center_atom</strong> (<em>int</em>) – Center atom (1-based), default None</p></li>
+<li><p><strong>plot_profiles</strong> (<em>bool</em>) – Whether to plot curves, default False</p></li>
+<li><p><strong>output_prefix</strong> (<em>str</em>) – Output prefix, default “”</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.toolkit.aimd.XDATCARParser">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.toolkit.aimd.</span></span><span class="sig-name descname"><span class="pre">XDATCARParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xdatcar_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'XDATCAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oszicar_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'OSZICAR'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/aimd.html#XDATCARParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.aimd.XDATCARParser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#easydft.toolkit.aimd.EnergyTempReader" title="easydft.toolkit.aimd.EnergyTempReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnergyTempReader</span></code></a></p>
+<p>XDATCAR file parser.
+Inherits from EnergyTempReader.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.aimd.XDATCARParser.center_molecule">
+<span class="sig-name descname"><span class="pre">center_molecule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_atom</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/aimd.html#XDATCARParser.center_molecule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.aimd.XDATCARParser.center_molecule" title="Link to this definition"></a></dt>
+<dd><p>Center the molecule at the specified atom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>positions</strong> (<em>numpy.ndarray</em>) – Atomic coordinates</p></li>
+<li><p><strong>center_atom</strong> (<em>int</em>) – Index of the center atom (0-based)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Centered coordinates</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>IndexError</strong> – Raised if the specified atom does not exist.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.aimd.XDATCARParser.parse_step">
+<span class="sig-name descname"><span class="pre">parse_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">step</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/aimd.html#XDATCARParser.parse_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.aimd.XDATCARParser.parse_step" title="Link to this definition"></a></dt>
+<dd><p>Parse atomic positions for the specified frame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>step</strong> (<em>int</em>) – Frame number (0-based)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Cartesian coordinates of atoms</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Raised if the frame number is out of range.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.aimd.XDATCARParser.set_time_range">
+<span class="sig-name descname"><span class="pre">set_time_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">begin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/aimd.html#XDATCARParser.set_time_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.aimd.XDATCARParser.set_time_range" title="Link to this definition"></a></dt>
+<dd><p>Set the analysis time range (frame interval).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>begin</strong> (<em>int</em>) – Start frame (0-based)</p></li>
+<li><p><strong>end</strong> (<em>int</em>) – End frame (None means last frame)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.aimd.XDATCARParser.unwrap_pbc">
+<span class="sig-name descname"><span class="pre">unwrap_pbc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev_pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/aimd.html#XDATCARParser.unwrap_pbc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.aimd.XDATCARParser.unwrap_pbc" title="Link to this definition"></a></dt>
+<dd><p>Handle periodic boundary conditions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>current_pos</strong> (<em>numpy.ndarray</em>) – Current frame coordinates</p></li>
+<li><p><strong>prev_pos</strong> (<em>numpy.ndarray</em>) – Previous frame coordinates</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(Updated previous frame coordinates, displacement vector)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.aimd.XDATCARParser.write_pdb_frame">
+<span class="sig-name descname"><span class="pre">write_pdb_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/aimd.html#XDATCARParser.write_pdb_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.aimd.XDATCARParser.write_pdb_frame" title="Link to this definition"></a></dt>
+<dd><p>Write a single frame of PDB data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frame_data</strong> (<em>numpy.ndarray</em>) – Atomic coordinates</p></li>
+<li><p><strong>frame_number</strong> (<em>int</em>) – Frame number</p></li>
+<li><p><strong>output_file</strong> (<em>str</em>) – Output file path</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-easydft.toolkit.electronic_properties">
+<span id="easydft-toolkit-electronic-properties-module"></span><h2>easydft.toolkit.electronic_properties module<a class="headerlink" href="#module-easydft.toolkit.electronic_properties" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.Analyzer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.toolkit.electronic_properties.</span></span><span class="sig-name descname"><span class="pre">Analyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">work_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/electronic_properties.html#Analyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.electronic_properties.Analyzer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.Analyzer.save_to_csv">
+<span class="sig-name descname"><span class="pre">save_to_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/easydft/toolkit/electronic_properties.html#Analyzer.save_to_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.electronic_properties.Analyzer.save_to_csv" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.BandstructureAnalyzer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.toolkit.electronic_properties.</span></span><span class="sig-name descname"><span class="pre">BandstructureAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">work_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vasprun_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/electronic_properties.html#BandstructureAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.electronic_properties.BandstructureAnalyzer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#easydft.toolkit.electronic_properties.Analyzer" title="easydft.toolkit.electronic_properties.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Analyzer</span></code></a></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.BandstructureAnalyzer.band_gap">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">band_gap</span></span><a class="headerlink" href="#easydft.toolkit.electronic_properties.BandstructureAnalyzer.band_gap" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.BandstructureAnalyzer.bands">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bands</span></span><a class="headerlink" href="#easydft.toolkit.electronic_properties.BandstructureAnalyzer.bands" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.BandstructureAnalyzer.bandstructure">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bandstructure</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">BandStructureSymmLine</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">BandStructure</span></em><a class="headerlink" href="#easydft.toolkit.electronic_properties.BandstructureAnalyzer.bandstructure" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.BandstructureAnalyzer.cbm">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cbm</span></span><a class="headerlink" href="#easydft.toolkit.electronic_properties.BandstructureAnalyzer.cbm" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.BandstructureAnalyzer.efermi">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">efermi</span></span><a class="headerlink" href="#easydft.toolkit.electronic_properties.BandstructureAnalyzer.efermi" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.BandstructureAnalyzer.is_gap_direct">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_gap_direct</span></span><a class="headerlink" href="#easydft.toolkit.electronic_properties.BandstructureAnalyzer.is_gap_direct" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.BandstructureAnalyzer.is_spin">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_spin</span></span><a class="headerlink" href="#easydft.toolkit.electronic_properties.BandstructureAnalyzer.is_spin" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.BandstructureAnalyzer.kpoints">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kpoints</span></span><a class="headerlink" href="#easydft.toolkit.electronic_properties.BandstructureAnalyzer.kpoints" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.BandstructureAnalyzer.nkpoints">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nkpoints</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#easydft.toolkit.electronic_properties.BandstructureAnalyzer.nkpoints" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.BandstructureAnalyzer.parse_normal_bandstructure">
+<span class="sig-name descname"><span class="pre">parse_normal_bandstructure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/easydft/toolkit/electronic_properties.html#BandstructureAnalyzer.parse_normal_bandstructure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.electronic_properties.BandstructureAnalyzer.parse_normal_bandstructure" title="Link to this definition"></a></dt>
+<dd><p>Parse normal bandstructure.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.BandstructureAnalyzer.vbm">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vbm</span></span><a class="headerlink" href="#easydft.toolkit.electronic_properties.BandstructureAnalyzer.vbm" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.DosAnalyzer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.toolkit.electronic_properties.</span></span><span class="sig-name descname"><span class="pre">DosAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">work_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vasprun_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/electronic_properties.html#DosAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.electronic_properties.DosAnalyzer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#easydft.toolkit.electronic_properties.Analyzer" title="easydft.toolkit.electronic_properties.Analyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Analyzer</span></code></a></p>
+<p>VASP density of states (DOS) parser.
+Supports extraction of element/orbital projected DOS and output as pandas DataFrame.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.DosAnalyzer.ORBITAL_MAP">
+<span class="sig-name descname"><span class="pre">ORBITAL_MAP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'d':</span> <span class="pre">OrbitalType.d,</span> <span class="pre">'f':</span> <span class="pre">OrbitalType.f,</span> <span class="pre">'p':</span> <span class="pre">OrbitalType.p,</span> <span class="pre">'s':</span> <span class="pre">OrbitalType.s}</span></em><a class="headerlink" href="#easydft.toolkit.electronic_properties.DosAnalyzer.ORBITAL_MAP" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.DosAnalyzer.SUB_ORBITAL_MAP">
+<span class="sig-name descname"><span class="pre">SUB_ORBITAL_MAP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'d_{x^2-y^2}':</span> <span class="pre">Orbital.dx2,</span> <span class="pre">'d_{xy}':</span> <span class="pre">Orbital.dxy,</span> <span class="pre">'d_{xz}':</span> <span class="pre">Orbital.dxz,</span> <span class="pre">'d_{yz}':</span> <span class="pre">Orbital.dyz,</span> <span class="pre">'d_{z^2}':</span> <span class="pre">Orbital.dz2,</span> <span class="pre">'f_{x(x^2-3y^2)}':</span> <span class="pre">Orbital.f3,</span> <span class="pre">'f_{xyz}':</span> <span class="pre">Orbital.f_2,</span> <span class="pre">'f_{xz^2}':</span> <span class="pre">Orbital.f1,</span> <span class="pre">'f_{y(3x^2-y^2)}':</span> <span class="pre">Orbital.f_3,</span> <span class="pre">'f_{yz^2}':</span> <span class="pre">Orbital.f_1,</span> <span class="pre">'f_{z(x^2-y^2)}':</span> <span class="pre">Orbital.f2,</span> <span class="pre">'f_{z^3}':</span> <span class="pre">Orbital.f0,</span> <span class="pre">'p_x':</span> <span class="pre">Orbital.px,</span> <span class="pre">'p_y':</span> <span class="pre">Orbital.py,</span> <span class="pre">'p_z':</span> <span class="pre">Orbital.pz,</span> <span class="pre">'s':</span> <span class="pre">Orbital.s}</span></em><a class="headerlink" href="#easydft.toolkit.electronic_properties.DosAnalyzer.SUB_ORBITAL_MAP" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.DosAnalyzer.parse_element_dos">
+<span class="sig-name descname"><span class="pre">parse_element_dos</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/easydft/toolkit/electronic_properties.html#DosAnalyzer.parse_element_dos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.electronic_properties.DosAnalyzer.parse_element_dos" title="Link to this definition"></a></dt>
+<dd><p>Parse element total DOS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame containing energy, total DOS, and element total DOS.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.DosAnalyzer.parse_element_spd_dos">
+<span class="sig-name descname"><span class="pre">parse_element_spd_dos</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/easydft/toolkit/electronic_properties.html#DosAnalyzer.parse_element_spd_dos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.electronic_properties.DosAnalyzer.parse_element_spd_dos" title="Link to this definition"></a></dt>
+<dd><p>Parse element-projected (s/p/d) DOS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame containing energy, total DOS, and element-projected DOS.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.electronic_properties.DosAnalyzer.parse_orbital_spd_dos">
+<span class="sig-name descname"><span class="pre">parse_orbital_spd_dos</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/easydft/toolkit/electronic_properties.html#DosAnalyzer.parse_orbital_spd_dos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.electronic_properties.DosAnalyzer.parse_orbital_spd_dos" title="Link to this definition"></a></dt>
+<dd><p>Parse orbital-projected DOS by summing over all atomic sites of each element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A DataFrame with energy and summed orbital DOS for each element.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-easydft.toolkit.frequency">
+<span id="easydft-toolkit-frequency-module"></span><h2>easydft.toolkit.frequency module<a class="headerlink" href="#module-easydft.toolkit.frequency" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.toolkit.frequency.AnalyticFreqProcessor">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.toolkit.frequency.</span></span><span class="sig-name descname"><span class="pre">AnalyticFreqProcessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outcar_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">298.15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">101325.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/frequency.html#AnalyticFreqProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.frequency.AnalyticFreqProcessor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>VASP OUTCAR vibrational frequency post-processing tool.
+Supports automatic parsing of vibrational frequencies, imaginary frequencies, electronic energy, and calculation of thermochemical corrections for adsorbed and gas-phase molecules.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.frequency.AnalyticFreqProcessor.compute_adsorbate_thermo">
+<span class="sig-name descname"><span class="pre">compute_adsorbate_thermo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/easydft/toolkit/frequency.html#AnalyticFreqProcessor.compute_adsorbate_thermo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.frequency.AnalyticFreqProcessor.compute_adsorbate_thermo" title="Link to this definition"></a></dt>
+<dd><p>Calculate the zero-point energy and Helmholtz free energy correction for adsorbates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>{‘zpe’: float, ‘helmholtz_energy’: float}</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.frequency.AnalyticFreqProcessor.compute_gas_thermo">
+<span class="sig-name descname"><span class="pre">compute_gas_thermo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmetry_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'linear'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/easydft/toolkit/frequency.html#AnalyticFreqProcessor.compute_gas_thermo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.frequency.AnalyticFreqProcessor.compute_gas_thermo" title="Link to this definition"></a></dt>
+<dd><p>Calculate thermodynamic functions for ideal gas molecules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spin</strong> (<em>float</em>) – Number of unpaired electrons / 2.</p></li>
+<li><p><strong>atoms</strong> – ASE Atoms object or list of atomic symbols.</p></li>
+<li><p><strong>symmetry_number</strong> (<em>int</em>) – Molecular symmetry number (can be obtained by parse_symmetrynumber).</p></li>
+<li><p><strong>geometry</strong> (<em>str</em>) – ‘linear’/’nonlinear’/’monoatomic’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>{‘zpe’, ‘gibbs_energy’, ‘enthalpy’, ‘entropy’}</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="easydft.toolkit.frequency.AnalyticFreqProcessor.epot">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">epot</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#easydft.toolkit.frequency.AnalyticFreqProcessor.epot" title="Link to this definition"></a></dt>
+<dd><p>Read the electronic energy (without entropy) from the OUTCAR file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Electronic energy (eV).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="easydft.toolkit.frequency.AnalyticFreqProcessor.imag_freqs">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">imag_freqs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#easydft.toolkit.frequency.AnalyticFreqProcessor.imag_freqs" title="Link to this definition"></a></dt>
+<dd><p>Get imaginary frequencies (cm^-1), automatically parse if not already done.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of imaginary frequencies (cm^-1).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="easydft.toolkit.frequency.AnalyticFreqProcessor.vib_energies">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vib_energies</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#easydft.toolkit.frequency.AnalyticFreqProcessor.vib_energies" title="Link to this definition"></a></dt>
+<dd><p>Get real vibrational energies (eV), automatically parse if not already done.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of real vibrational energies (eV).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-easydft.toolkit.neb">
+<span id="easydft-toolkit-neb-module"></span><h2>easydft.toolkit.neb module<a class="headerlink" href="#module-easydft.toolkit.neb" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.toolkit.neb.IDPP_path">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.toolkit.neb.</span></span><span class="sig-name descname"><span class="pre">IDPP_path</span></span><a class="reference internal" href="../_modules/easydft/toolkit/neb.html#IDPP_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.neb.IDPP_path" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>NEB path generation tool based on the IDPP algorithm.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.neb.IDPP_path.gen_path">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gen_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nimages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idpp_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Structure</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/easydft/toolkit/neb.html#IDPP_path.gen_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.neb.IDPP_path.gen_path" title="Link to this definition"></a></dt>
+<dd><p>Generate the IDPP path and save as POSCAR files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_path</strong> (<em>Path</em>) – Directory to save NEB path</p></li>
+<li><p><strong>initial_structure</strong> (<em>Structure</em>) – Initial structure</p></li>
+<li><p><strong>final_structure</strong> (<em>Structure</em>) – Final structure</p></li>
+<li><p><strong>nimages</strong> (<em>int</em>) – Number of intermediate images (total images = nimages+2)</p></li>
+<li><p><strong>idpp_params</strong> (<em>dict</em>) – IDPP algorithm parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of optimized path structures</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[Structure]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.toolkit.neb.NEB_analysis">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.toolkit.neb.</span></span><span class="sig-name descname"><span class="pre">NEB_analysis</span></span><a class="reference internal" href="../_modules/easydft/toolkit/neb.html#NEB_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.neb.NEB_analysis" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>NEB path energy barrier and diffusion property analysis tool.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.neb.NEB_analysis.analysis">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nimages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_D_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/easydft/toolkit/neb.html#NEB_analysis.analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.neb.NEB_analysis.analysis" title="Link to this definition"></a></dt>
+<dd><p>NEB path energy barrier and diffusion property analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>Path</em>) – Directory containing NEB images</p></li>
+<li><p><strong>nimages</strong> (<em>int</em>) – Number of intermediate images</p></li>
+<li><p><strong>temp</strong> (<em>float</em>) – Temperature (K)</p></li>
+<li><p><strong>element</strong> (<em>str</em>) – Element for diffusion coefficient calculation</p></li>
+<li><p><strong>calc_D_factor</strong> (<em>bool</em>) – Whether to calculate the diffusion factor</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Table of energy barrier and diffusion properties</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If the path or OSZICAR file does not exist</p></li>
+<li><p><strong>ValueError</strong> – If required parameters are missing</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.neb.NEB_analysis.get_pomass_from_potcar">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_pomass_from_potcar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">potcar_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/neb.html#NEB_analysis.get_pomass_from_potcar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.neb.NEB_analysis.get_pomass_from_potcar" title="Link to this definition"></a></dt>
+<dd><p>Get the atomic mass of the specified element from the POTCAR file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>potcar_path</strong> (<em>str</em>) – Path to the POTCAR file</p></li>
+<li><p><strong>element</strong> (<em>str</em>) – Element symbol</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Atomic mass (amu)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-easydft.toolkit.phase_diagram">
+<span id="easydft-toolkit-phase-diagram-module"></span><h2>easydft.toolkit.phase_diagram module<a class="headerlink" href="#module-easydft.toolkit.phase_diagram" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.toolkit.phase_diagram.ProcessEntries">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.toolkit.phase_diagram.</span></span><span class="sig-name descname"><span class="pre">ProcessEntries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/phase_diagram.html#ProcessEntries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.phase_diagram.ProcessEntries" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Traverse all calculation tasks in the current path and generate computed entries.</p>
+<p>Note: Make sure all calculation tasks in the current path are available.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.phase_diagram.ProcessEntries.gen_entries">
+<span class="sig-name descname"><span class="pre">gen_entries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/phase_diagram.html#ProcessEntries.gen_entries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.phase_diagram.ProcessEntries.gen_entries" title="Link to this definition"></a></dt>
+<dd><p>Generate computed entries, with entry_id as the calculation directory name by default.</p>
+<p>If output_path is None, do not save the json file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[ComputedEntry]
+entries.json</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>entries</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.phase_diagram.ProcessEntries.parse_calc_dirs">
+<span class="sig-name descname"><span class="pre">parse_calc_dirs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/phase_diagram.html#ProcessEntries.parse_calc_dirs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.phase_diagram.ProcessEntries.parse_calc_dirs" title="Link to this definition"></a></dt>
+<dd><p>Search all calculation directories and find folders containing vasprun.xml.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str], all directory paths containing vasprun.xml</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>calc_dirs</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.phase_diagram.ProcessEntries.parse_stable_entry_id">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_stable_entry_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">ComputedEntry</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'simple'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elements</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">terminal_compositions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Composition</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/phase_diagram.html#ProcessEntries.parse_stable_entry_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.phase_diagram.ProcessEntries.parse_stable_entry_id" title="Link to this definition"></a></dt>
+<dd><p>Parse the entry_id of stable entries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entries</strong> – List[ComputedEntry]</p></li>
+<li><p><strong>mode</strong> – ‘simple’ | ‘compound’
+‘simple’: ordinary phase diagram, elements must be specified
+‘compound’: compound phase diagram, terminal_compositions must be specified</p></li>
+<li><p><strong>elements</strong> – List of elements (required if mode=’simple’)</p></li>
+<li><p><strong>terminal_compositions</strong> – Terminal compositions (required if mode=’compound’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[str]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>stable_entry_id</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If required parameters are missing or mode is not supported</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-easydft.toolkit.structure_modify">
+<span id="easydft-toolkit-structure-modify-module"></span><h2>easydft.toolkit.structure_modify module<a class="headerlink" href="#module-easydft.toolkit.structure_modify" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.AbsorptionModify">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.toolkit.structure_modify.</span></span><span class="sig-name descname"><span class="pre">AbsorptionModify</span></span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#AbsorptionModify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.AbsorptionModify" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Molecular adsorption related structure processing tool.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.AbsorptionModify.ase2pmg">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ase2pmg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">absorption_molecule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Molecule</span></span></span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#AbsorptionModify.ase2pmg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.AbsorptionModify.ase2pmg" title="Link to this definition"></a></dt>
+<dd><p>Convert an ASE molecule object to a pymatgen Molecule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>absorption_molecule</strong> (<em>str</em>) – Molecule name</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>pymatgen Molecule object</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Molecule</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.AbsorptionModify.find_adsorption_sites">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">find_adsorption_sites</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slab</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Slab</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adsorp_gap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#AbsorptionModify.find_adsorption_sites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.AbsorptionModify.find_adsorption_sites" title="Link to this definition"></a></dt>
+<dd><p>Find adsorption sites on the slab surface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>slab</strong> (<em>Slab</em><em>|</em><em>Structure</em>) – Slab structure</p></li>
+<li><p><strong>adsorp_gap</strong> (<em>float</em>) – Adsorption height</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Adsorption site information</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.BulkModify">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.toolkit.structure_modify.</span></span><span class="sig-name descname"><span class="pre">BulkModify</span></span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#BulkModify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.BulkModify" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Crystal structure strain processing tool.
+Supports applying various strains to the structure, including lattice, volume, and angle strains.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.BulkModify.add_angle_strain">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_angle_strain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strain_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#BulkModify.add_angle_strain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.BulkModify.add_angle_strain" title="Link to this definition"></a></dt>
+<dd><p>Apply angle strain to the initial structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>structure</strong> (<em>Structure</em>) – Initial structure</p></li>
+<li><p><strong>strain_list</strong> (<em>List</em><em>[</em><em>float</em><em>]</em>) – List of strains, e.g. [-0.01, 0, 0.01]</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – Strain mode, can be ‘alpha’, ‘beta’, or ‘gamma’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Key is the strain value, value is the strained structure</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.BulkModify.add_lattice_strain">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_lattice_strain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Slab</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strain_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#BulkModify.add_lattice_strain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.BulkModify.add_lattice_strain" title="Link to this definition"></a></dt>
+<dd><p>Apply strain in the specified direction to the initial structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>structure</strong> (<em>Structure</em>) – Initial structure</p></li>
+<li><p><strong>strain_list</strong> (<em>list</em>) – List of strains, e.g. [-0.01, 0, 0.01]</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – Strain mode, such as ‘a’, ‘b’, ‘c’, or ‘all’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Key is the strain value, value is the strained structure</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.BulkModify.add_volume_strain">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_volume_strain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strain_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#BulkModify.add_volume_strain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.BulkModify.add_volume_strain" title="Link to this definition"></a></dt>
+<dd><p>Apply isotropic volume strain to the initial structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>structure</strong> (<em>Structure</em>) – Initial structure</p></li>
+<li><p><strong>strain_list</strong> (<em>list</em>) – List of strains, e.g. [-0.01, 0, 0.01]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Key is the strain value, value is the strained structure</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.HeterojunctionModify">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.toolkit.structure_modify.</span></span><span class="sig-name descname"><span class="pre">HeterojunctionModify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">film_structure:</span> <span class="pre">~pymatgen.core.structure.Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">substrate_structure:</span> <span class="pre">~pymatgen.core.structure.Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">film_miller_index:</span> <span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">substrate_miller_index:</span> <span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zslgen=&lt;pymatgen.analysis.interfaces.zsl.ZSLGenerator</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#HeterojunctionModify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.HeterojunctionModify" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Heterojunction interface generation and modification tool.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.HeterojunctionModify.gen_cib">
+<span class="sig-name descname"><span class="pre">gen_cib</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#HeterojunctionModify.gen_cib"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.HeterojunctionModify.gen_cib" title="Link to this definition"></a></dt>
+<dd><p>Generate a CoherentInterfaceBuilder object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Interface builder</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>CoherentInterfaceBuilder</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.HeterojunctionModify.gen_heter_interface">
+<span class="sig-name descname"><span class="pre">gen_heter_interface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">termination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vacuum_over_film</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">film_thickness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">substrate_thickness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_layers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#HeterojunctionModify.gen_heter_interface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.HeterojunctionModify.gen_heter_interface" title="Link to this definition"></a></dt>
+<dd><p>Generate heterojunction interface structures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>termination</strong> (<em>tuple</em>) – Termination</p></li>
+<li><p><strong>gap</strong> (<em>float</em>) – Gap</p></li>
+<li><p><strong>vacuum_over_film</strong> (<em>float</em>) – Vacuum thickness above the film</p></li>
+<li><p><strong>film_thickness</strong> (<em>float</em>) – Film thickness</p></li>
+<li><p><strong>substrate_thickness</strong> (<em>float</em>) – Substrate thickness</p></li>
+<li><p><strong>in_layers</strong> (<em>bool</em>) – Whether in units of layers</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of interface structures</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Raised if no interface is generated</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.SlabModify">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.toolkit.structure_modify.</span></span><span class="sig-name descname"><span class="pre">SlabModify</span></span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#SlabModify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.SlabModify" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Slab structure generation and modification tool.
+Supports slab generation, splitting, fixing, strain, and other operations.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.SlabModify.add_strain">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_strain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Slab</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strain_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#SlabModify.add_strain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.SlabModify.add_strain" title="Link to this definition"></a></dt>
+<dd><p>Apply strain to the slab structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>structure</strong> (<em>Slab</em><em>|</em><em>Structure</em>) – Slab or structure</p></li>
+<li><p><strong>strain_list</strong> (<em>list</em>) – List of strains</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – Strain mode</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary of strained structures</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.SlabModify.amorphous_gen_slab">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">amorphous_gen_slab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">miller_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_slab_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_vacuum_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#SlabModify.amorphous_gen_slab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.SlabModify.amorphous_gen_slab" title="Link to this definition"></a></dt>
+<dd><p>Generate an amorphous slab structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>structure</strong> (<em>Structure</em>) – Initial structure</p></li>
+<li><p><strong>miller_index</strong> (<em>tuple</em>) – Miller index</p></li>
+<li><p><strong>min_slab_size</strong> (<em>float</em>) – Slab thickness</p></li>
+<li><p><strong>min_vacuum_size</strong> (<em>float</em>) – Vacuum thickness</p></li>
+<li><p><strong>shift</strong> (<em>float</em>) – Slab shift</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Slab structure</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Slab</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.SlabModify.fix_orthogonal">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fix_orthogonal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slab</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Slab</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#SlabModify.fix_orthogonal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.SlabModify.fix_orthogonal" title="Link to this definition"></a></dt>
+<dd><p>Orthogonalize the slab lattice.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>slab</strong> (<em>Slab</em>) – Slab structure</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Orthogonalized slab</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Slab</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.SlabModify.fix_slab">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fix_slab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slab</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_fix_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_fix_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#SlabModify.fix_slab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.SlabModify.fix_slab" title="Link to this definition"></a></dt>
+<dd><p>Fix part of the atoms in the slab structure (selective dynamics).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>slab</strong> (<em>Structure</em>) – Slab structure</p></li>
+<li><p><strong>min_fix_ratio</strong> (<em>float</em>) – Fractional coordinate threshold for fixing lower atoms</p></li>
+<li><p><strong>max_fix_ratio</strong> (<em>float</em>) – Fractional coordinate threshold for fixing upper atoms (optional)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Structure with selective_dynamics property added</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Structure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.SlabModify.gen_all_slabs">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gen_all_slabs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">miller_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_slab_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_vacuum_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#SlabModify.gen_all_slabs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.SlabModify.gen_all_slabs" title="Link to this definition"></a></dt>
+<dd><p>Generate all symmetrically equivalent slab structures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>structure</strong> (<em>Structure</em>) – Initial structure</p></li>
+<li><p><strong>miller_index</strong> (<em>tuple</em>) – Miller index</p></li>
+<li><p><strong>min_slab_size</strong> (<em>float</em>) – Slab thickness</p></li>
+<li><p><strong>min_vacuum_size</strong> (<em>float</em>) – Vacuum thickness</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of slab structures</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.SlabModify.gen_slab">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gen_slab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">miller_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_slab_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_vacuum_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_unit_planes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#SlabModify.gen_slab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.SlabModify.gen_slab" title="Link to this definition"></a></dt>
+<dd><p>Generate a slab structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>structure</strong> (<em>Structure</em>) – Initial structure</p></li>
+<li><p><strong>miller_index</strong> (<em>tuple</em>) – Miller index</p></li>
+<li><p><strong>min_slab_size</strong> (<em>float</em>) – Slab thickness</p></li>
+<li><p><strong>min_vacuum_size</strong> (<em>float</em>) – Vacuum thickness</p></li>
+<li><p><strong>shift</strong> (<em>float</em>) – Slab shift</p></li>
+<li><p><strong>in_unit_planes</strong> (<em>bool</em>) – Whether to generate in unit planes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Slab structure</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Slab</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.SlabModify.split_heter">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">split_heter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slab</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Slab</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary_frac</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#SlabModify.split_heter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.SlabModify.split_heter" title="Link to this definition"></a></dt>
+<dd><p>Split the heterojunction slab by the interface to generate film and substrate structures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>slab</strong> (<em>Slab</em><em>|</em><em>Structure</em>) – Slab structure</p></li>
+<li><p><strong>boundary_frac</strong> (<em>float</em>) – Interface fraction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Film structure and substrate structure</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(film_structure, substrate_structure)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.SlabModify.split_mol">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">split_mol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slab</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Slab</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary_frac</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cubic_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#SlabModify.split_mol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.SlabModify.split_mol" title="Link to this definition"></a></dt>
+<dd><p>Split the slab by the interface to generate molecule and base structures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>slab</strong> (<em>Slab</em><em>|</em><em>Structure</em>) – Slab structure</p></li>
+<li><p><strong>boundary_frac</strong> (<em>float</em>) – Interface fraction</p></li>
+<li><p><strong>cubic_size</strong> (<em>int</em>) – Molecule box size</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Molecule structure and base structure</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(mol_structure, base_structure)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="easydft.toolkit.structure_modify.gen_substitute_structures">
+<span class="sig-prename descclassname"><span class="pre">easydft.toolkit.structure_modify.</span></span><span class="sig-name descname"><span class="pre">gen_substitute_structures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Slab</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">substitute_element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dopant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dopant_num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_structures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Structure</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/easydft/toolkit/structure_modify.html#gen_substitute_structures"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.structure_modify.gen_substitute_structures" title="Link to this definition"></a></dt>
+<dd><p>Generate structures by substituting or removing specific elements in a given structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>structure</strong> (<em>Union</em><em>[</em><em>Slab</em><em>, </em><em>Structure</em><em>]</em>) – The input structure (pymatgen Slab or Structure object).</p></li>
+<li><p><strong>substitute_element</strong> (<em>Union</em><em>[</em><em>Element</em><em>, </em><em>str</em><em>]</em>) – The element to be substituted (can be Element or string).</p></li>
+<li><p><strong>dopant</strong> (<em>Union</em><em>[</em><em>Element</em><em>, </em><em>str</em><em>, </em><em>None</em><em>]</em>) – The dopant element to substitute in, or None/”vac”/”vacancy” for vacancy.</p></li>
+<li><p><strong>dopant_num</strong> (<em>int</em>) – Number of sites to substitute or remove.</p></li>
+<li><p><strong>max_structures</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum number of generated structures to return. Default is 20.</p></li>
+<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to save the generated structures as CIF files. Default is True.</p></li>
+<li><p><strong>save_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory to save the CIF files. Required if save is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of generated structures with the specified substitutions or vacancies.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[Structure]</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Symmetry operations are ignored.</p></li>
+<li><p>If dopant is None, “vac”, “vacancy”, or “none”, the selected sites will be removed (vacancy).</p></li>
+<li><p>If dopant_num is 0, returns a copy of the original structure.</p></li>
+<li><p>If the number of possible combinations exceeds max_structures, a random subset is returned.</p></li>
+<li><p>If save is True and save_path is provided, the generated structures are saved as CIF files in the specified directory.</p></li>
+</ul>
+</dd></dl>
+
+</section>
+<section id="module-easydft.toolkit.workfunction">
+<span id="easydft-toolkit-workfunction-module"></span><h2>easydft.toolkit.workfunction module<a class="headerlink" href="#module-easydft.toolkit.workfunction" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.toolkit.workfunction.WorkFuncAnalyzer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.toolkit.workfunction.</span></span><span class="sig-name descname"><span class="pre">WorkFuncAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poscar_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locpot_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outcar_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_fig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/workfunction.html#WorkFuncAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.workfunction.WorkFuncAnalyzer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class for analyzing and visualizing the work function from VASP calculation outputs.</p>
+<p>This class extracts the planar-averaged electrostatic potential along the z-direction
+from VASP output files (POSCAR, LOCPOT, OUTCAR), computes the work function, and
+provides options to save the data and plot the results.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="easydft.toolkit.workfunction.WorkFuncAnalyzer.efermi">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">efermi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#easydft.toolkit.workfunction.WorkFuncAnalyzer.efermi" title="Link to this definition"></a></dt>
+<dd><p>Get the Fermi energy level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Fermi level in eV.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.workfunction.WorkFuncAnalyzer.plot_wf">
+<span class="sig-name descname"><span class="pre">plot_wf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/workfunction.html#WorkFuncAnalyzer.plot_wf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.workfunction.WorkFuncAnalyzer.plot_wf" title="Link to this definition"></a></dt>
+<dd><p>Plot the planar-averaged electrostatic potential and work function.</p>
+<p>The plot includes the Fermi level, vacuum level, and the calculated work function.
+The figure is saved as ‘planar_average_plot.png’ in the output_path directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong> – If plotting fails.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.toolkit.workfunction.WorkFuncAnalyzer.save_to_csv">
+<span class="sig-name descname"><span class="pre">save_to_csv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/workfunction.html#WorkFuncAnalyzer.save_to_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.workfunction.WorkFuncAnalyzer.save_to_csv" title="Link to this definition"></a></dt>
+<dd><p>Save the extracted electrostatic potential data to a CSV file.</p>
+<p>The file is saved as ‘workfunction.csv’ in the output_path directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong> – If saving fails.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="easydft.toolkit.workfunction.WorkFuncAnalyzer.vac_level">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vac_level</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#easydft.toolkit.workfunction.WorkFuncAnalyzer.vac_level" title="Link to this definition"></a></dt>
+<dd><p>Get the vacuum electrostatic potential level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The vacuum level in eV.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="easydft.toolkit.workfunction.WorkFuncAnalyzer.work_function">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">work_function</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#easydft.toolkit.workfunction.WorkFuncAnalyzer.work_function" title="Link to this definition"></a></dt>
+<dd><p>Get the calculated work function value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The work function in eV.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-easydft.toolkit">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-easydft.toolkit" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="easydft.html" class="btn btn-neutral float-left" title="easydft package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="easydft.workflow.html" class="btn btn-neutral float-right" title="easydft.workflow package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, andyhox.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,429 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>easydft.workflow package &mdash; easydft 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="easydft.toolkit package" href="easydft.toolkit.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            easydft
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">easydft</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="easydft.html">easydft package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="easydft.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="easydft.toolkit.html">easydft.toolkit package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">easydft.workflow package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="easydft.html#module-easydft">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">easydft</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">easydft</a></li>
+          <li class="breadcrumb-item"><a href="easydft.html">easydft package</a></li>
+      <li class="breadcrumb-item active">easydft.workflow package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/easydft.workflow.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="easydft-workflow-package">
+<h1>easydft.workflow package<a class="headerlink" href="#easydft-workflow-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-easydft.workflow.genwf">
+<span id="easydft-workflow-genwf-module"></span><h2>easydft.workflow.genwf module<a class="headerlink" href="#module-easydft.workflow.genwf" title="Link to this heading"></a></h2>
+<p>This module is used to generate VASP workflows, supporting various tasks such as structure optimization, static calculation, non-self-consistent calculation, adsorption energy, and adhesion energy.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.workflow.genwf.GenWF">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.workflow.genwf.</span></span><span class="sig-name descname"><span class="pre">GenWF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_custodian</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/workflow/genwf.html#GenWF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.workflow.genwf.GenWF" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>VASP workflow generator</p>
+<p>Used to generate different types of VASP calculation workflows based on the input structure, including double relaxation, relaxation+static, SCF+NonSCF, adsorption energy, adhesion energy, etc.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.workflow.genwf.GenWF.adhesive_work_flow">
+<span class="sig-name descname"><span class="pre">adhesive_work_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slabA_structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slabB_structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_frac</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slabrelax_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VaspInputSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slabstatic_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VaspInputSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/workflow/genwf.html#GenWF.adhesive_work_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.workflow.genwf.GenWF.adhesive_work_flow" title="Link to this definition"></a></dt>
+<dd><p>Adhesion energy workflow. Only supports models with clear interface boundaries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>slabA_structure</strong> (<em>Structure</em>) – Structure of slab A</p></li>
+<li><p><strong>slabB_structure</strong> (<em>Structure</em>) – Structure of slab B</p></li>
+<li><p><strong>fix_frac</strong> (<em>float</em>) – Fraction of fixed atoms</p></li>
+<li><p><strong>flow_name</strong> (<em>str</em>) – Workflow name</p></li>
+<li><p><strong>slabrelax_set</strong> (<em>VaspInputSet</em>) – Input set for slab relaxation</p></li>
+<li><p><strong>slabstatic_set</strong> (<em>VaspInputSet</em>) – Input set for slab static calculation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Adhesion energy workflow</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Flow</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.workflow.genwf.GenWF.adsorption_flow">
+<span class="sig-name descname"><span class="pre">adsorption_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundary_frac</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_frac</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slabrelax_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VaspInputSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molrelax_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VaspInputSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slabstatic_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VaspInputSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molstatic_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VaspInputSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Flow</span></span></span><a class="reference internal" href="../_modules/easydft/workflow/genwf.html#GenWF.adsorption_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.workflow.genwf.GenWF.adsorption_flow" title="Link to this definition"></a></dt>
+<dd><p>Adsorption energy workflow. Only supports models with clear interface boundaries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>boundary_frac</strong> (<em>float</em>) – Interface fraction</p></li>
+<li><p><strong>fix_frac</strong> (<em>float</em>) – Fraction of fixed atoms in the slab</p></li>
+<li><p><strong>flow_name</strong> (<em>str</em>) – Workflow name</p></li>
+<li><p><strong>slabrelax_set</strong> (<em>VaspInputSet</em>) – Input set for slab relaxation</p></li>
+<li><p><strong>molrelax_set</strong> (<em>VaspInputSet</em>) – Input set for molecule relaxation</p></li>
+<li><p><strong>slabstatic_set</strong> (<em>VaspInputSet</em>) – Input set for slab static calculation</p></li>
+<li><p><strong>molstatic_set</strong> (<em>VaspInputSet</em>) – Input set for molecule static calculation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Adsorption energy workflow</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Flow</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.workflow.genwf.GenWF.double_relax_flow">
+<span class="sig-name descname"><span class="pre">double_relax_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VaspInputSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VaspInputSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Flow</span></span></span><a class="reference internal" href="../_modules/easydft/workflow/genwf.html#GenWF.double_relax_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.workflow.genwf.GenWF.double_relax_flow" title="Link to this definition"></a></dt>
+<dd><p>Double relaxation workflow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flow_name</strong> (<em>str</em>) – Workflow name</p></li>
+<li><p><strong>job_name</strong> (<em>str</em>) – Job name</p></li>
+<li><p><strong>set1</strong> (<em>VaspInputSet</em>) – VaspInputSet for the first relaxation</p></li>
+<li><p><strong>set2</strong> (<em>VaspInputSet</em>) – VaspInputSet for the second relaxation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Double relaxation workflow</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Flow</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.workflow.genwf.GenWF.relax2scf2nonscf_flow">
+<span class="sig-name descname"><span class="pre">relax2scf2nonscf_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relaxset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VaspInputSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scfset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VaspInputSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nonscfset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VaspInputSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Flow</span></span></span><a class="reference internal" href="../_modules/easydft/workflow/genwf.html#GenWF.relax2scf2nonscf_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.workflow.genwf.GenWF.relax2scf2nonscf_flow" title="Link to this definition"></a></dt>
+<dd><p>Relaxation + SCF + NonSCF calculation workflow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flow_name</strong> (<em>str</em>) – Workflow name</p></li>
+<li><p><strong>relaxset</strong> (<em>VaspInputSet</em>) – Input set for relaxation</p></li>
+<li><p><strong>scfset</strong> (<em>VaspInputSet</em>) – Input set for SCF calculation</p></li>
+<li><p><strong>nonscfset</strong> (<em>VaspInputSet</em>) – Input set for NonSCF calculation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Relaxation + SCF + NonSCF workflow</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Flow</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.workflow.genwf.GenWF.relax2scf_flow">
+<span class="sig-name descname"><span class="pre">relax2scf_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relaxset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VaspInputSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scfset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VaspInputSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Flow</span></span></span><a class="reference internal" href="../_modules/easydft/workflow/genwf.html#GenWF.relax2scf_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.workflow.genwf.GenWF.relax2scf_flow" title="Link to this definition"></a></dt>
+<dd><p>Relaxation + static calculation workflow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flow_name</strong> (<em>str</em>) – Workflow name</p></li>
+<li><p><strong>relaxset</strong> (<em>VaspInputSet</em>) – Input set for relaxation</p></li>
+<li><p><strong>scfset</strong> (<em>VaspInputSet</em>) – Input set for static calculation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Relaxation + static calculation workflow</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Flow</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.workflow.genwf.GenWF.scf2nonscf_flow">
+<span class="sig-name descname"><span class="pre">scf2nonscf_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scfset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VaspInputSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nonscfset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VaspInputSet</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Flow</span></span></span><a class="reference internal" href="../_modules/easydft/workflow/genwf.html#GenWF.scf2nonscf_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.workflow.genwf.GenWF.scf2nonscf_flow" title="Link to this definition"></a></dt>
+<dd><p>SCF + NonSCF calculation workflow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flow_name</strong> (<em>str</em>) – Workflow name</p></li>
+<li><p><strong>scfset</strong> (<em>VaspInputSet</em>) – Input set for SCF calculation</p></li>
+<li><p><strong>nonscfset</strong> (<em>VaspInputSet</em>) – Input set for NonSCF calculation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>SCF + NonSCF workflow</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Flow</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.workflow.genwf.SubWF">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.workflow.genwf.</span></span><span class="sig-name descname"><span class="pre">SubWF</span></span><a class="reference internal" href="../_modules/easydft/workflow/genwf.html#SubWF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.workflow.genwf.SubWF" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Workflow submission utility class.</p>
+<p>Provides two submission methods: jobflow_remote and Fireworks.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.workflow.genwf.SubWF.sub_fireworks">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sub_fireworks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Flow</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/workflow/genwf.html#SubWF.sub_fireworks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.workflow.genwf.SubWF.sub_fireworks" title="Link to this definition"></a></dt>
+<dd><p>Submit the workflow using Fireworks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>flow</strong> (<em>Flow</em>) – Workflow object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.workflow.genwf.SubWF.sub_jfremote">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sub_jfremote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Flow</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">worker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resources</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/workflow/genwf.html#SubWF.sub_jfremote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.workflow.genwf.SubWF.sub_jfremote" title="Link to this definition"></a></dt>
+<dd><p>Submit the workflow using jobflow_remote.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flow</strong> (<em>Flow</em>) – Workflow object</p></li>
+<li><p><strong>project</strong> (<em>str</em>) – Project name</p></li>
+<li><p><strong>worker</strong> (<em>str</em>) – Worker name</p></li>
+<li><p><strong>resources</strong> (<em>dict</em>) – Resource configuration</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-easydft.workflow.jfremote">
+<span id="easydft-workflow-jfremote-module"></span><h2>easydft.workflow.jfremote module<a class="headerlink" href="#module-easydft.workflow.jfremote" title="Link to this heading"></a></h2>
+<p>This module is used to query VASP calculation results via jobflow_remote, including energy, structure, band structure, density of states, etc.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="easydft.workflow.jfremote.querydata">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">easydft.workflow.jfremote.</span></span><span class="sig-name descname"><span class="pre">querydata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jf_project</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/workflow/jfremote.html#querydata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.workflow.jfremote.querydata" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Utility class for querying the Jobflow remote database.
+Supports querying energy, structure, band structure, density of states, and more.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.workflow.jfremote.querydata.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">criteria</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/workflow/jfremote.html#querydata.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.workflow.jfremote.querydata.query" title="Link to this definition"></a></dt>
+<dd><p>Custom data query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>criteria</strong> (<em>dict</em>) – Query criteria.</p></li>
+<li><p><strong>properties</strong> (<em>dict</em><em> | </em><em>list</em>) – Properties to query.</p></li>
+<li><p><strong>load</strong> (<em>bool</em>) – Whether to load all objects.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Query result.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ConnectionError</strong> – If JobStore is not connected.</p></li>
+<li><p><strong>ValueError</strong> – If no result is found.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.workflow.jfremote.querydata.query_bandstructure">
+<span class="sig-name descname"><span class="pre">query_bandstructure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">criteria</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{'name':</span> <span class="pre">'non-scf</span> <span class="pre">line'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['output.vasp_objects.bandstructure']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">BandStructureSymmLine</span></span></span><a class="reference internal" href="../_modules/easydft/workflow/jfremote.html#querydata.query_bandstructure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.workflow.jfremote.querydata.query_bandstructure" title="Link to this definition"></a></dt>
+<dd><p>Query the band structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>criteria</strong> (<em>dict</em>) – Query criteria, default {“name”: “non-scf line”}.</p></li>
+<li><p><strong>properties</strong> (<em>dict</em><em> | </em><em>list</em>) – Properties to query, default [‘output.vasp_objects.bandstructure’].</p></li>
+<li><p><strong>load</strong> (<em>bool</em>) – Whether to load all objects.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>pymatgen BandStructureSymmLine object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>BandStructureSymmLine</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.workflow.jfremote.querydata.query_dos">
+<span class="sig-name descname"><span class="pre">query_dos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">criteria</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{'name':</span> <span class="pre">'non-scf</span> <span class="pre">uniform'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['output.vasp_objects.dos']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">CompleteDos</span></span></span><a class="reference internal" href="../_modules/easydft/workflow/jfremote.html#querydata.query_dos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.workflow.jfremote.querydata.query_dos" title="Link to this definition"></a></dt>
+<dd><p>Query the density of states (DOS).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>criteria</strong> (<em>dict</em>) – Query criteria, default {“name”: “non-scf uniform”}.</p></li>
+<li><p><strong>properties</strong> (<em>dict</em><em> | </em><em>list</em>) – Properties to query, default [‘output.vasp_objects.dos’].</p></li>
+<li><p><strong>load</strong> (<em>bool</em>) – Whether to load all objects.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>pymatgen CompleteDos object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CompleteDos</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.workflow.jfremote.querydata.query_final_energy">
+<span class="sig-name descname"><span class="pre">query_final_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">criteria</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['output.output.energy']</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/workflow/jfremote.html#querydata.query_final_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.workflow.jfremote.querydata.query_final_energy" title="Link to this definition"></a></dt>
+<dd><p>Query the final energy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>criteria</strong> (<em>dict</em>) – Query criteria.</p></li>
+<li><p><strong>properties</strong> (<em>dict</em><em> | </em><em>list</em>) – Properties to query, default [‘output.output.energy’].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Energy value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="easydft.workflow.jfremote.querydata.query_final_structure">
+<span class="sig-name descname"><span class="pre">query_final_structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">criteria</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['output.output.structure']</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Structure</span></span></span><a class="reference internal" href="../_modules/easydft/workflow/jfremote.html#querydata.query_final_structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.workflow.jfremote.querydata.query_final_structure" title="Link to this definition"></a></dt>
+<dd><p>Query the final structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>criteria</strong> (<em>dict</em>) – Query criteria.</p></li>
+<li><p><strong>properties</strong> (<em>dict</em><em> | </em><em>list</em>) – Properties to query, default [‘output.output.structure’].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>pymatgen Structure object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Structure</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-easydft.workflow">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-easydft.workflow" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="easydft.toolkit.html" class="btn btn-neutral float-left" title="easydft.toolkit package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, andyhox.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

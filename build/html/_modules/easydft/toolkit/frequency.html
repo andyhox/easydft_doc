@@ -1,0 +1,284 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>easydft.toolkit.frequency &mdash; easydft 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d75fae25" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            easydft
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">easydft</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">easydft</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">easydft.toolkit.frequency</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for easydft.toolkit.frequency</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.thermochemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">HarmonicThermo</span><span class="p">,</span> <span class="n">IdealGasThermo</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.build.molecule</span><span class="w"> </span><span class="kn">import</span> <span class="n">molecule</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.vasp.outputs</span><span class="w"> </span><span class="kn">import</span> <span class="n">Outcar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span>
+
+
+<div class="viewcode-block" id="AnalyticFreqProcessor">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.frequency.AnalyticFreqProcessor">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnalyticFreqProcessor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    VASP OUTCAR vibrational frequency post-processing tool.</span>
+<span class="sd">    Supports automatic parsing of vibrational frequencies, imaginary frequencies, electronic energy, and calculation of thermochemical corrections for adsorbed and gas-phase molecules.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Post-process vibrational frequency data from VASP OUTCAR files to compute thermochemical corrections,</span>
+<span class="sd">    including symmetry number detection via PySCF.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        outcar_path (str): Path to the OUTCAR file.</span>
+<span class="sd">        temp (float): Temperature in Kelvin.</span>
+<span class="sd">        pressure (float): Pressure in Pa.</span>
+<span class="sd">        _epot (float): Electronic energy without entropy contributions.</span>
+<span class="sd">        _vib_energies (np.ndarray): Array of real vibrational energies (eV).</span>
+<span class="sd">        _imag_freqs (np.ndarray): Array of imaginary frequencies (cm^-1).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcar_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">temp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">298.15</span><span class="p">,</span> <span class="n">pressure</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">101325.0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the frequency analysis processor.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            outcar_path (str): Path to the OUTCAR file.</span>
+<span class="sd">            temp (float): Temperature (K), default 298.15.</span>
+<span class="sd">            pressure (float): Pressure (Pa), default 101325.0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outcar_path</span> <span class="o">=</span> <span class="n">outcar_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pressure</span> <span class="o">=</span> <span class="n">pressure</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_epot</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vib_energies</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_imag_freqs</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">epot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read the electronic energy (without entropy) from the OUTCAR file.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Electronic energy (eV).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">outcar</span> <span class="o">=</span> <span class="n">Outcar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outcar_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_epot</span> <span class="o">=</span> <span class="n">outcar</span><span class="o">.</span><span class="n">final_energy_wo_entrp</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epot</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_frequencies</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse real and imaginary frequencies from the OUTCAR file.</span>
+<span class="sd">        </span>
+<span class="sd">        Sets:</span>
+<span class="sd">            self._vib_energies (np.ndarray): Real vibrational energies (eV)</span>
+<span class="sd">            self._imag_freqs (np.ndarray): Imaginary frequencies (cm^-1)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">real_energies</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">imag_freqs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">pattern_imag</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([-+]?[0-9]*\.?[0-9]+)\s+cm-1&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outcar_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;f/i=&#39;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s1">&#39;THz&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">match</span> <span class="o">=</span> <span class="n">pattern_imag</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                        <span class="n">imag_freqs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+                <span class="k">elif</span> <span class="s1">&#39;f  =&#39;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s1">&#39;cm-1&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">energy_meV</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+                        <span class="n">real_energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">energy_meV</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+                        <span class="k">continue</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vib_energies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">real_energies</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_imag_freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">imag_freqs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">vib_energies</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get real vibrational energies (eV), automatically parse if not already done.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            np.ndarray: Array of real vibrational energies (eV).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vib_energies</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parse_frequencies</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vib_energies</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">imag_freqs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get imaginary frequencies (cm^-1), automatically parse if not already done.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            np.ndarray: Array of imaginary frequencies (cm^-1).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imag_freqs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parse_frequencies</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imag_freqs</span>
+
+<div class="viewcode-block" id="AnalyticFreqProcessor.compute_adsorbate_thermo">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.frequency.AnalyticFreqProcessor.compute_adsorbate_thermo">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_adsorbate_thermo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the zero-point energy and Helmholtz free energy correction for adsorbates.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: {&#39;zpe&#39;: float, &#39;helmholtz_energy&#39;: float}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">thermo</span> <span class="o">=</span> <span class="n">HarmonicThermo</span><span class="p">(</span>
+            <span class="n">vib_energies</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vib_energies</span><span class="p">,</span>
+            <span class="n">potentialenergy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">epot</span><span class="p">,</span>
+            <span class="n">ignore_imag_modes</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;zpe&#39;</span><span class="p">:</span> <span class="n">thermo</span><span class="o">.</span><span class="n">get_ZPE_correction</span><span class="p">(),</span>
+            <span class="s1">&#39;helmholtz_energy&#39;</span><span class="p">:</span> <span class="n">thermo</span><span class="o">.</span><span class="n">get_helmholtz_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">)</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="AnalyticFreqProcessor.compute_gas_thermo">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.frequency.AnalyticFreqProcessor.compute_gas_thermo">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_gas_thermo</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">spin</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="p">,</span>
+        <span class="n">symmetry_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;linear&#39;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate thermodynamic functions for ideal gas molecules.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            spin (float): Number of unpaired electrons / 2.</span>
+<span class="sd">            atoms: ASE Atoms object or list of atomic symbols.</span>
+<span class="sd">            symmetry_number (int): Molecular symmetry number (can be obtained by parse_symmetrynumber).</span>
+<span class="sd">            geometry (str): &#39;linear&#39;/&#39;nonlinear&#39;/&#39;monoatomic&#39;.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: {&#39;zpe&#39;, &#39;gibbs_energy&#39;, &#39;enthalpy&#39;, &#39;entropy&#39;}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">thermo</span> <span class="o">=</span> <span class="n">IdealGasThermo</span><span class="p">(</span>
+            <span class="n">vib_energies</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vib_energies</span><span class="p">,</span>
+            <span class="n">potentialenergy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">epot</span><span class="p">,</span>
+            <span class="n">ignore_imag_modes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">spin</span><span class="o">=</span><span class="n">spin</span><span class="p">,</span>
+            <span class="n">symmetrynumber</span><span class="o">=</span><span class="n">symmetry_number</span><span class="p">,</span>
+            <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span>
+            <span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;zpe&#39;</span><span class="p">:</span> <span class="n">thermo</span><span class="o">.</span><span class="n">get_ZPE_correction</span><span class="p">(),</span>
+            <span class="s1">&#39;gibbs_energy&#39;</span><span class="p">:</span> <span class="n">thermo</span><span class="o">.</span><span class="n">get_gibbs_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressure</span><span class="p">),</span>
+            <span class="s1">&#39;enthalpy&#39;</span><span class="p">:</span> <span class="n">thermo</span><span class="o">.</span><span class="n">get_enthalpy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">),</span>
+            <span class="s1">&#39;entropy&#39;</span><span class="p">:</span> <span class="n">thermo</span><span class="o">.</span><span class="n">get_entropy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressure</span><span class="p">)</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
+<span class="c1"># if __name__ == &#39;__main__&#39;:</span>
+<span class="c1">#     # 示例运行</span>
+<span class="c1">#     h2_atoms = molecule(&#39;H2&#39;)</span>
+<span class="c1">#     processor = AnalyticFreqProcessor(&#39;/public/home/39041fcf59/ehukai/AA/COFs/H2/zpe/OUTCAR&#39;)</span>
+<span class="c1">#     gas_results = processor.compute_gas_thermo(spin=0, atoms=h2_atoms, symmetry_number=2, geometry=&#39;linear&#39;)</span>
+<span class="c1">#     pprint(gas_results)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, andyhox.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
