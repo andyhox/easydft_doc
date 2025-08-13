@@ -254,11 +254,6 @@
     <span class="c1">#                          criteria: dict = {&quot;name&quot;:&quot;fit_elastic_tensor&quot;},</span>
     <span class="c1">#                          properties: dict | list = [&#39;output.elastic_tensor.raw&#39;],</span>
     <span class="c1">#                          load: bool = False):</span>
-    <span class="c1">#     &#39;&#39;&#39;</span>
-    <span class="c1">#     criteria: 查询条件, 默认值: criteria = {&quot;name&quot;:&quot;fit_elastic_tensor&quot;}</span>
-
-    <span class="c1">#     properties: 想要查询的数据, 默认值: properties=[&#39;output.elastic_tensor.raw&#39;]</span>
-    <span class="c1">#     &#39;&#39;&#39;</span>
     <span class="c1">#     results = self.query(criteria=criteria, properties=properties, load=load)</span>
     <span class="c1">#     parsed_results = self._parse_results(results, properties)</span>
     <span class="c1">#     return pd.DataFrame(parsed_results[properties[0]])</span>
@@ -267,11 +262,6 @@
     <span class="c1">#                              criteria: dict = {&quot;name&quot;:&quot;fit_elastic_tensor&quot;},</span>
     <span class="c1">#                              properties: dict | list = [&#39;output.derived_properties&#39;],</span>
     <span class="c1">#                              load: bool = False):</span>
-    <span class="c1">#     &#39;&#39;&#39;</span>
-    <span class="c1">#     criteria: 查询条件, 默认值: criteria = {&quot;name&quot;:&quot;fit_elastic_tensor&quot;}</span>
-        
-    <span class="c1">#     properties: 想要查询的数据, 默认值: properties=[&#39;output.derived_properties&#39;]</span>
-    <span class="c1">#     &#39;&#39;&#39;</span>
     <span class="c1">#     results = self.query(criteria=criteria, properties=properties, load=load)</span>
     <span class="c1">#     parsed_results = self._parse_results(results, properties)</span>
     <span class="c1">#     elastic_properties = parsed_results[properties[0]]</span>

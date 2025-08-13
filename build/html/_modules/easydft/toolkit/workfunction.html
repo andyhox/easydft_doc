@@ -87,6 +87,7 @@
 <span class="sd">    This class extracts the planar-averaged electrostatic potential along the z-direction</span>
 <span class="sd">    from VASP output files (POSCAR, LOCPOT, OUTCAR), computes the work function, and</span>
 <span class="sd">    provides options to save the data and plot the results.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -254,7 +255,7 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            Exception: If plotting fails.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_fig</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">work_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_function</span>
