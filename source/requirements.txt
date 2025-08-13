@@ -1,4 +1,4 @@
 sphinx
 myst_parser
-rst2pdf.pdfbuilder
+rst2pdf
 sphinx_rtd_theme
