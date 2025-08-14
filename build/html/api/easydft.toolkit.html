@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../">
+<html class="writer-html5" lang="chinese" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -13,7 +13,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/documentation_options.js?v=db039d95"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -57,6 +57,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/content.html">案例</a></li>
 </ul>
 
         </div>
@@ -130,20 +131,20 @@ Features:
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>begin</strong> (<em>int</em>) – Start frame, default 0</p></li>
-<li><p><strong>end</strong> (<em>int</em>) – End frame, default None (all frames)</p></li>
-<li><p><strong>timestep</strong> (<em>float</em>) – Time step (fs), default 1.0</p></li>
-<li><p><strong>output_pdb</strong> (<em>str/bool</em>) – <ul>
+<li><p><strong>begin</strong> (<em>int</em>) -- Start frame, default 0</p></li>
+<li><p><strong>end</strong> (<em>int</em>) -- End frame, default None (all frames)</p></li>
+<li><p><strong>timestep</strong> (<em>float</em>) -- Time step (fs), default 1.0</p></li>
+<li><p><strong>output_pdb</strong> (<em>str/bool</em>) -- <ul>
 <li><p>str: Specify output path</p></li>
-<li><p>True: Use default path “XDATCAR.pdb”</p></li>
+<li><p>True: Use default path &quot;XDATCAR.pdb&quot;</p></li>
 <li><p>False/None: Do not output</p></li>
 </ul>
 </p></li>
-<li><p><strong>interval</strong> (<em>int</em>) – Output interval, default 1</p></li>
-<li><p><strong>unwrap_pbc</strong> (<em>bool</em>) – Whether to handle periodic boundary, default False</p></li>
-<li><p><strong>center_atom</strong> (<em>int</em>) – Center atom (1-based), default None</p></li>
-<li><p><strong>plot_profiles</strong> (<em>bool</em>) – Whether to plot curves, default False</p></li>
-<li><p><strong>output_prefix</strong> (<em>str</em>) – Output prefix, default “”</p></li>
+<li><p><strong>interval</strong> (<em>int</em>) -- Output interval, default 1</p></li>
+<li><p><strong>unwrap_pbc</strong> (<em>bool</em>) -- Whether to handle periodic boundary, default False</p></li>
+<li><p><strong>center_atom</strong> (<em>int</em>) -- Center atom (1-based), default None</p></li>
+<li><p><strong>plot_profiles</strong> (<em>bool</em>) -- Whether to plot curves, default False</p></li>
+<li><p><strong>output_prefix</strong> (<em>str</em>) -- Output prefix, default &quot;&quot;</p></li>
 </ul>
 </dd>
 </dl>
@@ -164,8 +165,8 @@ Inherits from EnergyTempReader.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>positions</strong> (<em>numpy.ndarray</em>) – Atomic coordinates</p></li>
-<li><p><strong>center_atom</strong> (<em>int</em>) – Index of the center atom (0-based)</p></li>
+<li><p><strong>positions</strong> (<em>numpy.ndarray</em>) -- Atomic coordinates</p></li>
+<li><p><strong>center_atom</strong> (<em>int</em>) -- Index of the center atom (0-based)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -175,7 +176,7 @@ Inherits from EnergyTempReader.</p>
 <dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>IndexError</strong> – Raised if the specified atom does not exist.</p>
+<dd class="field-even"><p><strong>IndexError</strong> -- Raised if the specified atom does not exist.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -186,7 +187,7 @@ Inherits from EnergyTempReader.</p>
 <dd><p>Parse atomic positions for the specified frame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>step</strong> (<em>int</em>) – Frame number (0-based)</p>
+<dd class="field-odd"><p><strong>step</strong> (<em>int</em>) -- Frame number (0-based)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Cartesian coordinates of atoms</p>
@@ -195,7 +196,7 @@ Inherits from EnergyTempReader.</p>
 <dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – Raised if the frame number is out of range.</p>
+<dd class="field-even"><p><strong>ValueError</strong> -- Raised if the frame number is out of range.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -207,8 +208,8 @@ Inherits from EnergyTempReader.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>begin</strong> (<em>int</em>) – Start frame (0-based)</p></li>
-<li><p><strong>end</strong> (<em>int</em>) – End frame (None means last frame)</p></li>
+<li><p><strong>begin</strong> (<em>int</em>) -- Start frame (0-based)</p></li>
+<li><p><strong>end</strong> (<em>int</em>) -- End frame (None means last frame)</p></li>
 </ul>
 </dd>
 </dl>
@@ -221,8 +222,8 @@ Inherits from EnergyTempReader.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>current_pos</strong> (<em>numpy.ndarray</em>) – Current frame coordinates</p></li>
-<li><p><strong>prev_pos</strong> (<em>numpy.ndarray</em>) – Previous frame coordinates</p></li>
+<li><p><strong>current_pos</strong> (<em>numpy.ndarray</em>) -- Current frame coordinates</p></li>
+<li><p><strong>prev_pos</strong> (<em>numpy.ndarray</em>) -- Previous frame coordinates</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -241,9 +242,9 @@ Inherits from EnergyTempReader.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>frame_data</strong> (<em>numpy.ndarray</em>) – Atomic coordinates</p></li>
-<li><p><strong>frame_number</strong> (<em>int</em>) – Frame number</p></li>
-<li><p><strong>output_file</strong> (<em>str</em>) – Output file path</p></li>
+<li><p><strong>frame_data</strong> (<em>numpy.ndarray</em>) -- Atomic coordinates</p></li>
+<li><p><strong>frame_number</strong> (<em>int</em>) -- Frame number</p></li>
+<li><p><strong>output_file</strong> (<em>str</em>) -- Output file path</p></li>
 </ul>
 </dd>
 </dl>
@@ -402,7 +403,7 @@ Supports automatic parsing of vibrational frequencies, imaginary frequencies, el
 <dd><p>Calculate the zero-point energy and Helmholtz free energy correction for adsorbates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>{‘zpe’: float, ‘helmholtz_energy’: float}</p>
+<dd class="field-odd"><p>{'zpe': float, 'helmholtz_energy': float}</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>dict</p>
@@ -417,14 +418,14 @@ Supports automatic parsing of vibrational frequencies, imaginary frequencies, el
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>spin</strong> (<em>float</em>) – Number of unpaired electrons / 2.</p></li>
-<li><p><strong>atoms</strong> – ASE Atoms object or list of atomic symbols.</p></li>
-<li><p><strong>symmetry_number</strong> (<em>int</em>) – Molecular symmetry number (can be obtained by parse_symmetrynumber).</p></li>
-<li><p><strong>geometry</strong> (<em>str</em>) – ‘linear’/’nonlinear’/’monoatomic’.</p></li>
+<li><p><strong>spin</strong> (<em>float</em>) -- Number of unpaired electrons / 2.</p></li>
+<li><p><strong>atoms</strong> -- ASE Atoms object or list of atomic symbols.</p></li>
+<li><p><strong>symmetry_number</strong> (<em>int</em>) -- Molecular symmetry number (can be obtained by parse_symmetrynumber).</p></li>
+<li><p><strong>geometry</strong> (<em>str</em>) -- 'linear'/'nonlinear'/'monoatomic'.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>{‘zpe’, ‘gibbs_energy’, ‘enthalpy’, ‘entropy’}</p>
+<dd class="field-even"><p>{'zpe', 'gibbs_energy', 'enthalpy', 'entropy'}</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
@@ -491,11 +492,11 @@ Supports automatic parsing of vibrational frequencies, imaginary frequencies, el
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>output_path</strong> (<em>Path</em>) – Directory to save NEB path</p></li>
-<li><p><strong>initial_structure</strong> (<em>Structure</em>) – Initial structure</p></li>
-<li><p><strong>final_structure</strong> (<em>Structure</em>) – Final structure</p></li>
-<li><p><strong>nimages</strong> (<em>int</em>) – Number of intermediate images (total images = nimages+2)</p></li>
-<li><p><strong>idpp_params</strong> (<em>dict</em>) – IDPP algorithm parameters</p></li>
+<li><p><strong>output_path</strong> (<em>Path</em>) -- Directory to save NEB path</p></li>
+<li><p><strong>initial_structure</strong> (<em>Structure</em>) -- Initial structure</p></li>
+<li><p><strong>final_structure</strong> (<em>Structure</em>) -- Final structure</p></li>
+<li><p><strong>nimages</strong> (<em>int</em>) -- Number of intermediate images (total images = nimages+2)</p></li>
+<li><p><strong>idpp_params</strong> (<em>dict</em>) -- IDPP algorithm parameters</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -521,11 +522,11 @@ Supports automatic parsing of vibrational frequencies, imaginary frequencies, el
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> (<em>Path</em>) – Directory containing NEB images</p></li>
-<li><p><strong>nimages</strong> (<em>int</em>) – Number of intermediate images</p></li>
-<li><p><strong>temp</strong> (<em>float</em>) – Temperature (K)</p></li>
-<li><p><strong>element</strong> (<em>str</em>) – Element for diffusion coefficient calculation</p></li>
-<li><p><strong>calc_D_factor</strong> (<em>bool</em>) – Whether to calculate the diffusion factor</p></li>
+<li><p><strong>path</strong> (<em>Path</em>) -- Directory containing NEB images</p></li>
+<li><p><strong>nimages</strong> (<em>int</em>) -- Number of intermediate images</p></li>
+<li><p><strong>temp</strong> (<em>float</em>) -- Temperature (K)</p></li>
+<li><p><strong>element</strong> (<em>str</em>) -- Element for diffusion coefficient calculation</p></li>
+<li><p><strong>calc_D_factor</strong> (<em>bool</em>) -- Whether to calculate the diffusion factor</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -536,8 +537,8 @@ Supports automatic parsing of vibrational frequencies, imaginary frequencies, el
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>FileNotFoundError</strong> – If the path or OSZICAR file does not exist</p></li>
-<li><p><strong>ValueError</strong> – If required parameters are missing</p></li>
+<li><p><strong>FileNotFoundError</strong> -- If the path or OSZICAR file does not exist</p></li>
+<li><p><strong>ValueError</strong> -- If required parameters are missing</p></li>
 </ul>
 </dd>
 </dl>
@@ -550,8 +551,8 @@ Supports automatic parsing of vibrational frequencies, imaginary frequencies, el
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>potcar_path</strong> (<em>str</em>) – Path to the POTCAR file</p></li>
-<li><p><strong>element</strong> (<em>str</em>) – Element symbol</p></li>
+<li><p><strong>potcar_path</strong> (<em>str</em>) -- Path to the POTCAR file</p></li>
+<li><p><strong>element</strong> (<em>str</em>) -- Element symbol</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -611,12 +612,12 @@ entries.json</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>entries</strong> – List[ComputedEntry]</p></li>
-<li><p><strong>mode</strong> – ‘simple’ | ‘compound’
-‘simple’: ordinary phase diagram, elements must be specified
-‘compound’: compound phase diagram, terminal_compositions must be specified</p></li>
-<li><p><strong>elements</strong> – List of elements (required if mode=’simple’)</p></li>
-<li><p><strong>terminal_compositions</strong> – Terminal compositions (required if mode=’compound’)</p></li>
+<li><p><strong>entries</strong> -- List[ComputedEntry]</p></li>
+<li><p><strong>mode</strong> -- 'simple' | 'compound'
+'simple': ordinary phase diagram, elements must be specified
+'compound': compound phase diagram, terminal_compositions must be specified</p></li>
+<li><p><strong>elements</strong> -- List of elements (required if mode='simple')</p></li>
+<li><p><strong>terminal_compositions</strong> -- Terminal compositions (required if mode='compound')</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -626,7 +627,7 @@ entries.json</p>
 <dd class="field-odd"><p>stable_entry_id</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If required parameters are missing or mode is not supported</p>
+<dd class="field-even"><p><strong>ValueError</strong> -- If required parameters are missing or mode is not supported</p>
 </dd>
 </dl>
 </dd></dl>
@@ -647,7 +648,7 @@ entries.json</p>
 <dd><p>Convert an ASE molecule object to a pymatgen Molecule.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>absorption_molecule</strong> (<em>str</em>) – Molecule name</p>
+<dd class="field-odd"><p><strong>absorption_molecule</strong> (<em>str</em>) -- Molecule name</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>pymatgen Molecule object</p>
@@ -665,8 +666,8 @@ entries.json</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>slab</strong> (<em>Slab</em><em>|</em><em>Structure</em>) – Slab structure</p></li>
-<li><p><strong>adsorp_gap</strong> (<em>float</em>) – Adsorption height</p></li>
+<li><p><strong>slab</strong> (<em>Slab</em><em>|</em><em>Structure</em>) -- Slab structure</p></li>
+<li><p><strong>adsorp_gap</strong> (<em>float</em>) -- Adsorption height</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -693,9 +694,9 @@ Supports applying various strains to the structure, including lattice, volume, a
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>structure</strong> (<em>Structure</em>) – Initial structure</p></li>
-<li><p><strong>strain_list</strong> (<em>List</em><em>[</em><em>float</em><em>]</em>) – List of strains, e.g. [-0.01, 0, 0.01]</p></li>
-<li><p><strong>mode</strong> (<em>str</em>) – Strain mode, can be ‘alpha’, ‘beta’, or ‘gamma’</p></li>
+<li><p><strong>structure</strong> (<em>Structure</em>) -- Initial structure</p></li>
+<li><p><strong>strain_list</strong> (<em>List</em><em>[</em><em>float</em><em>]</em>) -- List of strains, e.g. [-0.01, 0, 0.01]</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) -- Strain mode, can be 'alpha', 'beta', or 'gamma'</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -714,9 +715,9 @@ Supports applying various strains to the structure, including lattice, volume, a
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>structure</strong> (<em>Structure</em>) – Initial structure</p></li>
-<li><p><strong>strain_list</strong> (<em>list</em>) – List of strains, e.g. [-0.01, 0, 0.01]</p></li>
-<li><p><strong>mode</strong> (<em>str</em>) – Strain mode, such as ‘a’, ‘b’, ‘c’, or ‘all’</p></li>
+<li><p><strong>structure</strong> (<em>Structure</em>) -- Initial structure</p></li>
+<li><p><strong>strain_list</strong> (<em>list</em>) -- List of strains, e.g. [-0.01, 0, 0.01]</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) -- Strain mode, such as 'a', 'b', 'c', or 'all'</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -735,8 +736,8 @@ Supports applying various strains to the structure, including lattice, volume, a
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>structure</strong> (<em>Structure</em>) – Initial structure</p></li>
-<li><p><strong>strain_list</strong> (<em>list</em>) – List of strains, e.g. [-0.01, 0, 0.01]</p></li>
+<li><p><strong>structure</strong> (<em>Structure</em>) -- Initial structure</p></li>
+<li><p><strong>strain_list</strong> (<em>list</em>) -- List of strains, e.g. [-0.01, 0, 0.01]</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -776,12 +777,12 @@ Supports applying various strains to the structure, including lattice, volume, a
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>termination</strong> (<em>tuple</em>) – Termination</p></li>
-<li><p><strong>gap</strong> (<em>float</em>) – Gap</p></li>
-<li><p><strong>vacuum_over_film</strong> (<em>float</em>) – Vacuum thickness above the film</p></li>
-<li><p><strong>film_thickness</strong> (<em>float</em>) – Film thickness</p></li>
-<li><p><strong>substrate_thickness</strong> (<em>float</em>) – Substrate thickness</p></li>
-<li><p><strong>in_layers</strong> (<em>bool</em>) – Whether in units of layers</p></li>
+<li><p><strong>termination</strong> (<em>tuple</em>) -- Termination</p></li>
+<li><p><strong>gap</strong> (<em>float</em>) -- Gap</p></li>
+<li><p><strong>vacuum_over_film</strong> (<em>float</em>) -- Vacuum thickness above the film</p></li>
+<li><p><strong>film_thickness</strong> (<em>float</em>) -- Film thickness</p></li>
+<li><p><strong>substrate_thickness</strong> (<em>float</em>) -- Substrate thickness</p></li>
+<li><p><strong>in_layers</strong> (<em>bool</em>) -- Whether in units of layers</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -791,7 +792,7 @@ Supports applying various strains to the structure, including lattice, volume, a
 <dd class="field-odd"><p>list</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – Raised if no interface is generated</p>
+<dd class="field-even"><p><strong>ValueError</strong> -- Raised if no interface is generated</p>
 </dd>
 </dl>
 </dd></dl>
@@ -811,9 +812,9 @@ Supports slab generation, splitting, fixing, strain, and other operations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>structure</strong> (<em>Slab</em><em>|</em><em>Structure</em>) – Slab or structure</p></li>
-<li><p><strong>strain_list</strong> (<em>list</em>) – List of strains</p></li>
-<li><p><strong>mode</strong> (<em>str</em>) – Strain mode</p></li>
+<li><p><strong>structure</strong> (<em>Slab</em><em>|</em><em>Structure</em>) -- Slab or structure</p></li>
+<li><p><strong>strain_list</strong> (<em>list</em>) -- List of strains</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) -- Strain mode</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -832,11 +833,11 @@ Supports slab generation, splitting, fixing, strain, and other operations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>structure</strong> (<em>Structure</em>) – Initial structure</p></li>
-<li><p><strong>miller_index</strong> (<em>tuple</em>) – Miller index</p></li>
-<li><p><strong>min_slab_size</strong> (<em>float</em>) – Slab thickness</p></li>
-<li><p><strong>min_vacuum_size</strong> (<em>float</em>) – Vacuum thickness</p></li>
-<li><p><strong>shift</strong> (<em>float</em>) – Slab shift</p></li>
+<li><p><strong>structure</strong> (<em>Structure</em>) -- Initial structure</p></li>
+<li><p><strong>miller_index</strong> (<em>tuple</em>) -- Miller index</p></li>
+<li><p><strong>min_slab_size</strong> (<em>float</em>) -- Slab thickness</p></li>
+<li><p><strong>min_vacuum_size</strong> (<em>float</em>) -- Vacuum thickness</p></li>
+<li><p><strong>shift</strong> (<em>float</em>) -- Slab shift</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -854,7 +855,7 @@ Supports slab generation, splitting, fixing, strain, and other operations.</p>
 <dd><p>Orthogonalize the slab lattice.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>slab</strong> (<em>Slab</em>) – Slab structure</p>
+<dd class="field-odd"><p><strong>slab</strong> (<em>Slab</em>) -- Slab structure</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Orthogonalized slab</p>
@@ -872,9 +873,9 @@ Supports slab generation, splitting, fixing, strain, and other operations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>slab</strong> (<em>Structure</em>) – Slab structure</p></li>
-<li><p><strong>min_fix_ratio</strong> (<em>float</em>) – Fractional coordinate threshold for fixing lower atoms</p></li>
-<li><p><strong>max_fix_ratio</strong> (<em>float</em>) – Fractional coordinate threshold for fixing upper atoms (optional)</p></li>
+<li><p><strong>slab</strong> (<em>Structure</em>) -- Slab structure</p></li>
+<li><p><strong>min_fix_ratio</strong> (<em>float</em>) -- Fractional coordinate threshold for fixing lower atoms</p></li>
+<li><p><strong>max_fix_ratio</strong> (<em>float</em>) -- Fractional coordinate threshold for fixing upper atoms (optional)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -893,10 +894,10 @@ Supports slab generation, splitting, fixing, strain, and other operations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>structure</strong> (<em>Structure</em>) – Initial structure</p></li>
-<li><p><strong>miller_index</strong> (<em>tuple</em>) – Miller index</p></li>
-<li><p><strong>min_slab_size</strong> (<em>float</em>) – Slab thickness</p></li>
-<li><p><strong>min_vacuum_size</strong> (<em>float</em>) – Vacuum thickness</p></li>
+<li><p><strong>structure</strong> (<em>Structure</em>) -- Initial structure</p></li>
+<li><p><strong>miller_index</strong> (<em>tuple</em>) -- Miller index</p></li>
+<li><p><strong>min_slab_size</strong> (<em>float</em>) -- Slab thickness</p></li>
+<li><p><strong>min_vacuum_size</strong> (<em>float</em>) -- Vacuum thickness</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -915,12 +916,12 @@ Supports slab generation, splitting, fixing, strain, and other operations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>structure</strong> (<em>Structure</em>) – Initial structure</p></li>
-<li><p><strong>miller_index</strong> (<em>tuple</em>) – Miller index</p></li>
-<li><p><strong>min_slab_size</strong> (<em>float</em>) – Slab thickness</p></li>
-<li><p><strong>min_vacuum_size</strong> (<em>float</em>) – Vacuum thickness</p></li>
-<li><p><strong>shift</strong> (<em>float</em>) – Slab shift</p></li>
-<li><p><strong>in_unit_planes</strong> (<em>bool</em>) – Whether to generate in unit planes</p></li>
+<li><p><strong>structure</strong> (<em>Structure</em>) -- Initial structure</p></li>
+<li><p><strong>miller_index</strong> (<em>tuple</em>) -- Miller index</p></li>
+<li><p><strong>min_slab_size</strong> (<em>float</em>) -- Slab thickness</p></li>
+<li><p><strong>min_vacuum_size</strong> (<em>float</em>) -- Vacuum thickness</p></li>
+<li><p><strong>shift</strong> (<em>float</em>) -- Slab shift</p></li>
+<li><p><strong>in_unit_planes</strong> (<em>bool</em>) -- Whether to generate in unit planes</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -939,8 +940,8 @@ Supports slab generation, splitting, fixing, strain, and other operations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>slab</strong> (<em>Slab</em><em>|</em><em>Structure</em>) – Slab structure</p></li>
-<li><p><strong>boundary_frac</strong> (<em>float</em>) – Interface fraction</p></li>
+<li><p><strong>slab</strong> (<em>Slab</em><em>|</em><em>Structure</em>) -- Slab structure</p></li>
+<li><p><strong>boundary_frac</strong> (<em>float</em>) -- Interface fraction</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -959,9 +960,9 @@ Supports slab generation, splitting, fixing, strain, and other operations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>slab</strong> (<em>Slab</em><em>|</em><em>Structure</em>) – Slab structure</p></li>
-<li><p><strong>boundary_frac</strong> (<em>float</em>) – Interface fraction</p></li>
-<li><p><strong>cubic_size</strong> (<em>int</em>) – Molecule box size</p></li>
+<li><p><strong>slab</strong> (<em>Slab</em><em>|</em><em>Structure</em>) -- Slab structure</p></li>
+<li><p><strong>boundary_frac</strong> (<em>float</em>) -- Interface fraction</p></li>
+<li><p><strong>cubic_size</strong> (<em>int</em>) -- Molecule box size</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -982,13 +983,13 @@ Supports slab generation, splitting, fixing, strain, and other operations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>structure</strong> (<em>Union</em><em>[</em><em>Slab</em><em>, </em><em>Structure</em><em>]</em>) – The input structure (pymatgen Slab or Structure object).</p></li>
-<li><p><strong>substitute_element</strong> (<em>Union</em><em>[</em><em>Element</em><em>, </em><em>str</em><em>]</em>) – The element to be substituted (can be Element or string).</p></li>
-<li><p><strong>dopant</strong> (<em>Union</em><em>[</em><em>Element</em><em>, </em><em>str</em><em>, </em><em>None</em><em>]</em>) – The dopant element to substitute in, or None/”vac”/”vacancy” for vacancy.</p></li>
-<li><p><strong>dopant_num</strong> (<em>int</em>) – Number of sites to substitute or remove.</p></li>
-<li><p><strong>max_structures</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum number of generated structures to return. Default is 20.</p></li>
-<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to save the generated structures as CIF files. Default is True.</p></li>
-<li><p><strong>save_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory to save the CIF files. Required if save is True.</p></li>
+<li><p><strong>structure</strong> (<em>Union</em><em>[</em><em>Slab</em><em>, </em><em>Structure</em><em>]</em>) -- The input structure (pymatgen Slab or Structure object).</p></li>
+<li><p><strong>substitute_element</strong> (<em>Union</em><em>[</em><em>Element</em><em>, </em><em>str</em><em>]</em>) -- The element to be substituted (can be Element or string).</p></li>
+<li><p><strong>dopant</strong> (<em>Union</em><em>[</em><em>Element</em><em>, </em><em>str</em><em>, </em><em>None</em><em>]</em>) -- The dopant element to substitute in, or None/&quot;vac&quot;/&quot;vacancy&quot; for vacancy.</p></li>
+<li><p><strong>dopant_num</strong> (<em>int</em>) -- Number of sites to substitute or remove.</p></li>
+<li><p><strong>max_structures</strong> (<em>int</em><em>, </em><em>optional</em>) -- Maximum number of generated structures to return. Default is 20.</p></li>
+<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) -- Whether to save the generated structures as CIF files. Default is True.</p></li>
+<li><p><strong>save_path</strong> (<em>str</em><em>, </em><em>optional</em>) -- Directory to save the CIF files. Required if save is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1001,7 +1002,7 @@ Supports slab generation, splitting, fixing, strain, and other operations.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
 <li><p>Symmetry operations are ignored.</p></li>
-<li><p>If dopant is None, “vac”, “vacancy”, or “none”, the selected sites will be removed (vacancy).</p></li>
+<li><p>If dopant is None, &quot;vac&quot;, &quot;vacancy&quot;, or &quot;none&quot;, the selected sites will be removed (vacancy).</p></li>
 <li><p>If dopant_num is 0, returns a copy of the original structure.</p></li>
 <li><p>If the number of possible combinations exceeds max_structures, a random subset is returned.</p></li>
 <li><p>If save is True and save_path is provided, the generated structures are saved as CIF files in the specified directory.</p></li>
@@ -1038,10 +1039,10 @@ provides options to save the data and plot the results.</p>
 <span class="sig-name descname"><span class="pre">plot_wf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/workfunction.html#WorkFuncAnalyzer.plot_wf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.workfunction.WorkFuncAnalyzer.plot_wf" title="Link to this definition"></a></dt>
 <dd><p>Plot the planar-averaged electrostatic potential and work function.</p>
 <p>The plot includes the Fermi level, vacuum level, and the calculated work function.
-The figure is saved as ‘planar_average_plot.png’ in the output_path directory.</p>
+The figure is saved as 'planar_average_plot.png' in the output_path directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>Exception</strong> – If plotting fails.</p>
+<dd class="field-odd"><p><strong>Exception</strong> -- If plotting fails.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1050,10 +1051,10 @@ The figure is saved as ‘planar_average_plot.png’ in the output_path director
 <dt class="sig sig-object py" id="easydft.toolkit.workfunction.WorkFuncAnalyzer.save_to_csv">
 <span class="sig-name descname"><span class="pre">save_to_csv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/easydft/toolkit/workfunction.html#WorkFuncAnalyzer.save_to_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#easydft.toolkit.workfunction.WorkFuncAnalyzer.save_to_csv" title="Link to this definition"></a></dt>
 <dd><p>Save the extracted electrostatic potential data to a CSV file.</p>
-<p>The file is saved as ‘workfunction.csv’ in the output_path directory.</p>
+<p>The file is saved as 'workfunction.csv' in the output_path directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>Exception</strong> – If saving fails.</p>
+<dd class="field-odd"><p><strong>Exception</strong> -- If saving fails.</p>
 </dd>
 </dl>
 </dd></dl>

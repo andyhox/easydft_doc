@@ -26,9 +26,8 @@ easydft 适用于所有用户，能够集成主流 DFT 软件，并基于 `pymat
 - `jobflow-remote-quickstart <https://matgenix.github.io/jobflow-remote/user/quickstart.html>`_
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 3
    :caption: 目录
-   :hidden:
    
    api/modules
-   
+   docs/content
