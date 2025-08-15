@@ -1,6 +1,7 @@
 from pymatgen.core import Structure
 from pymatgen.io.vasp.outputs import Oszicar
 from pymatgen.io.vasp.inputs import Potcar
+from pymatgen.analysis.transition_state import NEBAnalysis
 from pymatgen.analysis.diffusion.neb.pathfinder import IDPPSolver
 from pymatgen.analysis.diffusion.analyzer import get_conversion_factor
 from pathlib import Path
@@ -23,7 +24,8 @@ class IDPP_path:
         initial_structure: Structure, 
         final_structure: Structure, 
         nimages: int = 5,
-        idpp_params: dict = None) -> List[Structure]:
+        idpp_params: dict = None,
+        save_output: bool = True) -> List[Structure]:
         """
         Generate the IDPP path and save as POSCAR files.
         
@@ -36,12 +38,14 @@ class IDPP_path:
         Returns:
             List[Structure]: List of optimized path structures
         """
+        # Generate the IDPP path
         solver = IDPPSolver.from_endpoints(
             endpoints=[initial_structure, final_structure],
             nimages=nimages,
             sort_tol=1.0
         )
 
+        # 设置默认IDPP参数
         default_params = {
             "maxiter": 1000,
             "tol": 1e-5,
@@ -53,119 +57,193 @@ class IDPP_path:
         if idpp_params:
             default_params.update(idpp_params)
 
+        # Get optimized path
         optimized_path = solver.run(**default_params)
         
-        for i, structure in enumerate(optimized_path):
-            image_dir = os.path.join(output_path, f"{i:02d}")
-            os.makedirs(image_dir, exist_ok=True)
-            
-            poscar_path = os.path.join(image_dir, "POSCAR")
-            structure.to(filename=str(poscar_path), fmt="poscar")
+        if save_output:
+            # Save each image
+            for i, structure in enumerate(optimized_path):
+                image_dir = os.path.join(output_path, f"{i:02d}")
+                os.makedirs(image_dir, exist_ok=True)
+                
+                poscar_path = os.path.join(image_dir, "POSCAR")
+                structure.to(filename=str(poscar_path), fmt="poscar")
         
         
         return optimized_path
 
 class NEB_analysis:
     """
-    NEB path energy barrier and diffusion property analysis tool.
+    Class for analyzing NEB (Nudged Elastic Band) paths, including energy barrier calculation and diffusion property analysis.
+
+    This class provides methods to:
+    - Load and analyze NEB calculation results from a directory.
+    - Extract and plot the energy profile along the NEB path.
+    - Calculate the energy barrier.
+    - Optionally, compute diffusion-related properties such as hop displacement, pre-exponential factor (D0), diffusion coefficient (D), conversion factor, and ionic conductivity.
+
+    Attributes:
+        path (str or Path): The directory containing NEB calculation results.
+        results (NEBAnalysis): The NEBAnalysis object containing parsed NEB results.
+
+    Methods:
+        __init__(path): Initialize the NEB_analysis object and load NEB results.
+        _neb_results(path): Load NEB results from the specified directory.
+        plot: Property to get the matplotlib figure of the NEB energy profile.
+        get_pomass_from_potcar(potcar_path, element): Class method to extract atomic mass from a POTCAR file.
+        sort_results(...): Analyze the NEB path to obtain the energy barrier and, optionally, diffusion properties.
     """
-    
-    @classmethod
-    def get_pomass_from_potcar(cls, potcar_path: str, element: str):
+
+    def __init__(
+        self,
+        path,
+        ):
         """
-        Get the atomic mass of the specified element from the POTCAR file.
-        
+        Initialize the NEB_analysis object.
+
         Args:
-            potcar_path (str): Path to the POTCAR file
-            element (str): Element symbol
+            path (str or Path): Path to the directory containing NEB calculation results.
+        """
+        self.path = path
+        self._neb_results()
+
+    def _neb_results(self):
+        """
+        Load NEB results from the specified directory.
+
+        Args:
+            path (str or Path): Path to the NEB calculation directory.
+
         Returns:
-            float: Atomic mass (amu)
+            NEBAnalysis: The NEBAnalysis object containing parsed NEB results.
+        """
+        results = NEBAnalysis.from_dir(self.path)
+        self.results = results
+        return self.results
+
+    def plot(self, title: str = None):
+        """
+        Plot the NEB (Nudged Elastic Band) energy profile.
+
+        This method generates and returns a matplotlib Axes object showing the energy profile along the NEB path.
+        Optionally, a title can be set for the plot.
+
+        Args:
+            title (str, optional): The title to display on the plot. Defaults to None.
+
+        Returns:
+            matplotlib.axes.Axes: The matplotlib Axes object containing the NEB energy profile plot.
+        """
+        ax = self.results.get_plot()
+        ax.set_title(title, fontsize=26)
+        return ax
+
+    @classmethod
+    def get_atomic_mass_from_potcar(cls, potcar_path: str, element: str):
+        """
+        Get the atomic mass of a specified element from a POTCAR file.
+
+        This method parses the POTCAR file to extract the atomic mass (POMASS) for the given element symbol.
+        The mass is returned in kilograms.
+
+        Args:
+            potcar_path (str): The file path to the POTCAR file.
+            element (str): The element symbol (e.g., "Li", "Na", "O").
+
+        Returns:
+            float: The atomic mass of the specified element in kilograms.
+
+        Raises:
+            KeyError: If the specified element is not found in the POTCAR file.
+            FileNotFoundError: If the POTCAR file does not exist.
         """
         with open(potcar_path, 'r') as f:
             content = f.read()
-        
+
         pattern = re.compile(
             r'VRHFIN\s*=\s*(\w+):.*?POMASS\s*=\s*([\d.]+)',
             re.DOTALL
         )
-        mass_dict = {m.group(1): float(m.group(2)) 
+        mass_dict = {m.group(1): float(m.group(2))
                 for m in pattern.finditer(content)}
-        return mass_dict[element]
-    @classmethod
-    def analysis(
-        cls,
-        path: Path,
-        nimages: int,
+        return mass_dict[element]*1.660539e-27
+
+    def sort_results(
+        self,
+        calc_D_factor: bool = False,
+        nimages: int = None,
         temp: float = None,
         element: str = None,
-        calc_D_factor: bool = False,
+        element_mass: float = None,
         ) -> pd.DataFrame:
         """
-        NEB path energy barrier and diffusion property analysis.
-        
+        Analyze the NEB path to obtain the energy barrier and, optionally, diffusion properties.
+
         Args:
-            path (Path): Directory containing NEB images
-            nimages (int): Number of intermediate images
-            temp (float): Temperature (K)
-            element (str): Element for diffusion coefficient calculation
-            calc_D_factor (bool): Whether to calculate the diffusion factor
+            calc_D_factor (bool, optional): Whether to calculate diffusion properties (hop displacement, D0, D, factor, and conductivity).
+            nimages (int, optional): Number of intermediate images (not including initial and final).
+            temp (float, optional): Temperature in Kelvin, required if calc_D_factor is True.
+            element (str, optional): Element symbol for diffusion coefficient calculation, required if calc_D_factor is True.
+            element_mass (float, optional): Atomic mass of the element (in kg), required if calc_D_factor is True.
+
         Returns:
-            pd.DataFrame: Table of energy barrier and diffusion properties
+            pd.DataFrame: DataFrame containing the energy barrier and, if requested, diffusion properties.
+
         Raises:
-            FileNotFoundError: If the path or OSZICAR file does not exist
-            ValueError: If required parameters are missing
+            FileNotFoundError: If the specified path or required files do not exist.
+            ValueError: If required parameters for diffusion calculation are missing.
+
+        Notes:
+            - The energy barrier is calculated as the difference between the maximum and minimum energies along the NEB path.
+            - If calc_D_factor is True, the function also computes the hop displacement, pre-exponential factor (D0), diffusion coefficient (D), conversion factor, and ionic conductivity (sigma).
         """
-        path = Path(path) if isinstance(path, str) else path
-        if not path.exists():
-            raise FileNotFoundError(f"Path {path} does not exist")
-            
-        if calc_D_factor and (temp is None or element is None):
-            raise ValueError("temp, element and mass required for calc_D_factor")
-        
+
+        if calc_D_factor and (temp is None or element is None or element_mass is None or nimages is None):
+            raise ValueError("nimages, temp, element and mass required for calc_D_factor")
+
+        # Boltzmann constant
         kb = 1.380649e-23
-        
+
+        # dict for storing all results
         sort_data = {}
-        energy_list = []
-        
-        images_dirs = [path/f"{i:02d}" for i in range(nimages+2)]
-        for i,folder in enumerate(images_dirs):
-            oszicar_path = folder/"OSZICAR"
-            if not oszicar_path.exists():
-                raise FileNotFoundError(f"OSZICAR not found in {folder}")
-            oszicar = Oszicar(oszicar_path)
-            final_energy = oszicar.final_energy
-            energy_list.append(final_energy)
-            sort_data[f"E_{i}"] = final_energy
-            
+
+        energy_list = self.results.energies
+
+        # diffusion energy barrier
         Ea = max(energy_list) - min(energy_list)
-        sort_data["Energy_barrier"] = Ea
-        
+        sort_data["Energy_barrier(eV)"] = Ea
+
         if calc_D_factor:
-            initial_structure = Structure.from_file(path/"00"/"CONTCAR")
-            final_structure = Structure.from_file(path/f"{nimages+1:02d}"/"CONTCAR")
-            
-            disp = np.array([s2.distance(s1) 
+            # get hop displacements
+            initial_structure = Structure.from_file(os.path.join(self.path,"00","POSCAR"))
+            final_structure = Structure.from_file(os.path.join(self.path,f"{nimages+1:02d}","POSCAR"))
+
+            disp = np.array([s2.distance(s1)
                             for s1, s2 in zip(initial_structure, final_structure)])
+            # unit: Angstrom
             mst_disp = np.sqrt(np.sum(disp**2))
+            # unit: cm
             l = mst_disp*1e-8
-            
+
+            # eV to J
             Ea_J = Ea * 1.60218e-19
-            
-            potcar = os.path.join(path, "00", "POTCAR")
-            mass = cls.get_pomass_from_potcar(potcar, element)*1.660539e-27
-                    
-            v = ((2*Ea_J)/(mass*l**2))**(1/2)
+
+            # vibration frequency.
+            v = ((2*Ea_J)/(element_mass*l**2))**(1/2)
             exp = math.exp(-Ea_J/(kb*temp))
-            D0 = v*l**2 
-            D = D0*exp 
+            # diffusion constant. Unit: (cm^2/s)
+            D0 = v*l**2
+            # diffusion coefficient. Unit: (cm^2/s)
+            D = D0*exp
             factor = get_conversion_factor(initial_structure, element, temp)
+            # Conductivity. Unit: (mS/cm)
             sigam = D * factor
             sort_data.update({
-                "hop_displacement": mst_disp,
-                "D0": D0,
-                "D": D,
+                "hop_displacement(angstrom)": mst_disp,
+                "D0(cm^2/s)": D0,
+                "D(cm^2/s)": D,
                 "factor": factor,
-                "sigma": sigam
+                "sigma(mS/cm)": sigam
                 })
 
             df = pd.DataFrame([sort_data])
