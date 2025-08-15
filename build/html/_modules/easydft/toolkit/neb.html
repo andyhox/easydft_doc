@@ -73,6 +73,7 @@
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.vasp.outputs</span><span class="w"> </span><span class="kn">import</span> <span class="n">Oszicar</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.vasp.inputs</span><span class="w"> </span><span class="kn">import</span> <span class="n">Potcar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.analysis.transition_state</span><span class="w"> </span><span class="kn">import</span> <span class="n">NEBAnalysis</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.analysis.diffusion.neb.pathfinder</span><span class="w"> </span><span class="kn">import</span> <span class="n">IDPPSolver</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.analysis.diffusion.analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_conversion_factor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
@@ -99,7 +100,8 @@
         <span class="n">initial_structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span> 
         <span class="n">final_structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span> 
         <span class="n">nimages</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
-        <span class="n">idpp_params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Structure</span><span class="p">]:</span>
+        <span class="n">idpp_params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">save_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Structure</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate the IDPP path and save as POSCAR files.</span>
 <span class="sd">        </span>
@@ -112,12 +114,14 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            List[Structure]: List of optimized path structures</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Generate the IDPP path</span>
         <span class="n">solver</span> <span class="o">=</span> <span class="n">IDPPSolver</span><span class="o">.</span><span class="n">from_endpoints</span><span class="p">(</span>
             <span class="n">endpoints</span><span class="o">=</span><span class="p">[</span><span class="n">initial_structure</span><span class="p">,</span> <span class="n">final_structure</span><span class="p">],</span>
             <span class="n">nimages</span><span class="o">=</span><span class="n">nimages</span><span class="p">,</span>
             <span class="n">sort_tol</span><span class="o">=</span><span class="mf">1.0</span>
         <span class="p">)</span>
 
+        <span class="c1"># 设置默认IDPP参数</span>
         <span class="n">default_params</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;maxiter&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
             <span class="s2">&quot;tol&quot;</span><span class="p">:</span> <span class="mf">1e-5</span><span class="p">,</span>
@@ -129,14 +133,17 @@
         <span class="k">if</span> <span class="n">idpp_params</span><span class="p">:</span>
             <span class="n">default_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">idpp_params</span><span class="p">)</span>
 
+        <span class="c1"># Get optimized path</span>
         <span class="n">optimized_path</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">default_params</span><span class="p">)</span>
         
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">structure</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">optimized_path</span><span class="p">):</span>
-            <span class="n">image_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">image_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            
-            <span class="n">poscar_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">image_dir</span><span class="p">,</span> <span class="s2">&quot;POSCAR&quot;</span><span class="p">)</span>
-            <span class="n">structure</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">poscar_path</span><span class="p">),</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;poscar&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">save_output</span><span class="p">:</span>
+            <span class="c1"># Save each image</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">structure</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">optimized_path</span><span class="p">):</span>
+                <span class="n">image_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">image_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                
+                <span class="n">poscar_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">image_dir</span><span class="p">,</span> <span class="s2">&quot;POSCAR&quot;</span><span class="p">)</span>
+                <span class="n">structure</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">poscar_path</span><span class="p">),</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;poscar&quot;</span><span class="p">)</span>
         
         
         <span class="k">return</span> <span class="n">optimized_path</span></div>
@@ -147,110 +154,177 @@
 <a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.neb.NEB_analysis">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NEB_analysis</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    NEB path energy barrier and diffusion property analysis tool.</span>
+<span class="sd">    Class for analyzing NEB (Nudged Elastic Band) paths, including energy barrier calculation and diffusion property analysis.</span>
+
+<span class="sd">    This class provides methods to:</span>
+<span class="sd">    - Load and analyze NEB calculation results from a directory.</span>
+<span class="sd">    - Extract and plot the energy profile along the NEB path.</span>
+<span class="sd">    - Calculate the energy barrier.</span>
+<span class="sd">    - Optionally, compute diffusion-related properties such as hop displacement, pre-exponential factor (D0), diffusion coefficient (D), conversion factor, and ionic conductivity.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        path (str or Path): The directory containing NEB calculation results.</span>
+<span class="sd">        results (NEBAnalysis): The NEBAnalysis object containing parsed NEB results.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
-<div class="viewcode-block" id="NEB_analysis.get_pomass_from_potcar">
-<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.neb.NEB_analysis.get_pomass_from_potcar">[docs]</a>
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_pomass_from_potcar</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">potcar_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">,</span>
+        <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the atomic mass of the specified element from the POTCAR file.</span>
-<span class="sd">        </span>
+<span class="sd">        Initialize the NEB_analysis object.</span>
+
 <span class="sd">        Args:</span>
-<span class="sd">            potcar_path (str): Path to the POTCAR file</span>
-<span class="sd">            element (str): Element symbol</span>
+<span class="sd">            path (str or Path): Path to the directory containing NEB calculation results.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_neb_results</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_neb_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load NEB results from the specified directory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (str or Path): Path to the NEB calculation directory.</span>
+
 <span class="sd">        Returns:</span>
-<span class="sd">            float: Atomic mass (amu)</span>
+<span class="sd">            NEBAnalysis: The NEBAnalysis object containing parsed NEB results.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">NEBAnalysis</span><span class="o">.</span><span class="n">from_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">results</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span>
+
+<div class="viewcode-block" id="NEB_analysis.plot">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.neb.NEB_analysis.plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot the NEB (Nudged Elastic Band) energy profile.</span>
+
+<span class="sd">        This method generates and returns a matplotlib Axes object showing the energy profile along the NEB path.</span>
+<span class="sd">        Optionally, a title can be set for the plot.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            title (str, optional): The title to display on the plot. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            matplotlib.axes.Axes: The matplotlib Axes object containing the NEB energy profile plot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">get_plot</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">26</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ax</span></div>
+
+
+<div class="viewcode-block" id="NEB_analysis.get_atomic_mass_from_potcar">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.neb.NEB_analysis.get_atomic_mass_from_potcar">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_atomic_mass_from_potcar</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">potcar_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the atomic mass of a specified element from a POTCAR file.</span>
+
+<span class="sd">        This method parses the POTCAR file to extract the atomic mass (POMASS) for the given element symbol.</span>
+<span class="sd">        The mass is returned in kilograms.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            potcar_path (str): The file path to the POTCAR file.</span>
+<span class="sd">            element (str): The element symbol (e.g., &quot;Li&quot;, &quot;Na&quot;, &quot;O&quot;).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: The atomic mass of the specified element in kilograms.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: If the specified element is not found in the POTCAR file.</span>
+<span class="sd">            FileNotFoundError: If the POTCAR file does not exist.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">potcar_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        
+
         <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
             <span class="sa">r</span><span class="s1">&#39;VRHFIN\s*=\s*(\w+):.*?POMASS\s*=\s*([\d.]+)&#39;</span><span class="p">,</span>
             <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span>
         <span class="p">)</span>
-        <span class="n">mass_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span> <span class="nb">float</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> 
+        <span class="n">mass_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span> <span class="nb">float</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
                 <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">pattern</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">content</span><span class="p">)}</span>
-        <span class="k">return</span> <span class="n">mass_dict</span><span class="p">[</span><span class="n">element</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="n">mass_dict</span><span class="p">[</span><span class="n">element</span><span class="p">]</span><span class="o">*</span><span class="mf">1.660539e-27</span></div>
 
-<div class="viewcode-block" id="NEB_analysis.analysis">
-<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.neb.NEB_analysis.analysis">[docs]</a>
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">analysis</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span>
-        <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
-        <span class="n">nimages</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+
+<div class="viewcode-block" id="NEB_analysis.sort_results">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.neb.NEB_analysis.sort_results">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sort_results</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">calc_D_factor</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">nimages</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">temp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">element</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">calc_D_factor</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">element_mass</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        NEB path energy barrier and diffusion property analysis.</span>
-<span class="sd">        </span>
+<span class="sd">        Analyze the NEB path to obtain the energy barrier and, optionally, diffusion properties.</span>
+
 <span class="sd">        Args:</span>
-<span class="sd">            path (Path): Directory containing NEB images</span>
-<span class="sd">            nimages (int): Number of intermediate images</span>
-<span class="sd">            temp (float): Temperature (K)</span>
-<span class="sd">            element (str): Element for diffusion coefficient calculation</span>
-<span class="sd">            calc_D_factor (bool): Whether to calculate the diffusion factor</span>
+<span class="sd">            calc_D_factor (bool, optional): Whether to calculate diffusion properties (hop displacement, D0, D, factor, and conductivity).</span>
+<span class="sd">            nimages (int, optional): Number of intermediate images (not including initial and final).</span>
+<span class="sd">            temp (float, optional): Temperature in Kelvin, required if calc_D_factor is True.</span>
+<span class="sd">            element (str, optional): Element symbol for diffusion coefficient calculation, required if calc_D_factor is True.</span>
+<span class="sd">            element_mass (float, optional): Atomic mass of the element (in kg), required if calc_D_factor is True.</span>
+
 <span class="sd">        Returns:</span>
-<span class="sd">            pd.DataFrame: Table of energy barrier and diffusion properties</span>
+<span class="sd">            pd.DataFrame: DataFrame containing the energy barrier and, if requested, diffusion properties.</span>
+
 <span class="sd">        Raises:</span>
-<span class="sd">            FileNotFoundError: If the path or OSZICAR file does not exist</span>
-<span class="sd">            ValueError: If required parameters are missing</span>
+<span class="sd">            FileNotFoundError: If the specified path or required files do not exist.</span>
+<span class="sd">            ValueError: If required parameters for diffusion calculation are missing.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            - The energy barrier is calculated as the difference between the maximum and minimum energies along the NEB path.</span>
+<span class="sd">            - If calc_D_factor is True, the function also computes the hop displacement, pre-exponential factor (D0), diffusion coefficient (D), conversion factor, and ionic conductivity (sigma).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">path</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> does not exist&quot;</span><span class="p">)</span>
-            
-        <span class="k">if</span> <span class="n">calc_D_factor</span> <span class="ow">and</span> <span class="p">(</span><span class="n">temp</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">element</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;temp, element and mass required for calc_D_factor&quot;</span><span class="p">)</span>
-        
+
+        <span class="k">if</span> <span class="n">calc_D_factor</span> <span class="ow">and</span> <span class="p">(</span><span class="n">temp</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">element</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">element_mass</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">nimages</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;nimages, temp, element and mass required for calc_D_factor&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Boltzmann constant</span>
         <span class="n">kb</span> <span class="o">=</span> <span class="mf">1.380649e-23</span>
-        
+
+        <span class="c1"># dict for storing all results</span>
         <span class="n">sort_data</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">energy_list</span> <span class="o">=</span> <span class="p">[]</span>
-        
-        <span class="n">images_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nimages</span><span class="o">+</span><span class="mi">2</span><span class="p">)]</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">folder</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">images_dirs</span><span class="p">):</span>
-            <span class="n">oszicar_path</span> <span class="o">=</span> <span class="n">folder</span><span class="o">/</span><span class="s2">&quot;OSZICAR&quot;</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">oszicar_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;OSZICAR not found in </span><span class="si">{</span><span class="n">folder</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">oszicar</span> <span class="o">=</span> <span class="n">Oszicar</span><span class="p">(</span><span class="n">oszicar_path</span><span class="p">)</span>
-            <span class="n">final_energy</span> <span class="o">=</span> <span class="n">oszicar</span><span class="o">.</span><span class="n">final_energy</span>
-            <span class="n">energy_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_energy</span><span class="p">)</span>
-            <span class="n">sort_data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;E_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">final_energy</span>
-            
+
+        <span class="n">energy_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">energies</span>
+
+        <span class="c1"># diffusion energy barrier</span>
         <span class="n">Ea</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">energy_list</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">energy_list</span><span class="p">)</span>
-        <span class="n">sort_data</span><span class="p">[</span><span class="s2">&quot;Energy_barrier&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ea</span>
-        
+        <span class="n">sort_data</span><span class="p">[</span><span class="s2">&quot;Energy_barrier(eV)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ea</span>
+
         <span class="k">if</span> <span class="n">calc_D_factor</span><span class="p">:</span>
-            <span class="n">initial_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s2">&quot;00&quot;</span><span class="o">/</span><span class="s2">&quot;CONTCAR&quot;</span><span class="p">)</span>
-            <span class="n">final_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">nimages</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">/</span><span class="s2">&quot;CONTCAR&quot;</span><span class="p">)</span>
-            
-            <span class="n">disp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">s2</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">s1</span><span class="p">)</span> 
+            <span class="c1"># get hop displacements</span>
+            <span class="n">initial_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span><span class="s2">&quot;00&quot;</span><span class="p">,</span><span class="s2">&quot;POSCAR&quot;</span><span class="p">))</span>
+            <span class="n">final_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">nimages</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span><span class="s2">&quot;POSCAR&quot;</span><span class="p">))</span>
+
+            <span class="n">disp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">s2</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">s1</span><span class="p">)</span>
                             <span class="k">for</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">initial_structure</span><span class="p">,</span> <span class="n">final_structure</span><span class="p">)])</span>
+            <span class="c1"># unit: Angstrom</span>
             <span class="n">mst_disp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">disp</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+            <span class="c1"># unit: cm</span>
             <span class="n">l</span> <span class="o">=</span> <span class="n">mst_disp</span><span class="o">*</span><span class="mf">1e-8</span>
-            
+
+            <span class="c1"># eV to J</span>
             <span class="n">Ea_J</span> <span class="o">=</span> <span class="n">Ea</span> <span class="o">*</span> <span class="mf">1.60218e-19</span>
-            
-            <span class="n">potcar</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;00&quot;</span><span class="p">,</span> <span class="s2">&quot;POTCAR&quot;</span><span class="p">)</span>
-            <span class="n">mass</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_pomass_from_potcar</span><span class="p">(</span><span class="n">potcar</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span><span class="o">*</span><span class="mf">1.660539e-27</span>
-                    
-            <span class="n">v</span> <span class="o">=</span> <span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">Ea_J</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">mass</span><span class="o">*</span><span class="n">l</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+            <span class="c1"># vibration frequency.</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">Ea_J</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">element_mass</span><span class="o">*</span><span class="n">l</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
             <span class="n">exp</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">Ea_J</span><span class="o">/</span><span class="p">(</span><span class="n">kb</span><span class="o">*</span><span class="n">temp</span><span class="p">))</span>
-            <span class="n">D0</span> <span class="o">=</span> <span class="n">v</span><span class="o">*</span><span class="n">l</span><span class="o">**</span><span class="mi">2</span> 
-            <span class="n">D</span> <span class="o">=</span> <span class="n">D0</span><span class="o">*</span><span class="n">exp</span> 
+            <span class="c1"># diffusion constant. Unit: (cm^2/s)</span>
+            <span class="n">D0</span> <span class="o">=</span> <span class="n">v</span><span class="o">*</span><span class="n">l</span><span class="o">**</span><span class="mi">2</span>
+            <span class="c1"># diffusion coefficient. Unit: (cm^2/s)</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">D0</span><span class="o">*</span><span class="n">exp</span>
             <span class="n">factor</span> <span class="o">=</span> <span class="n">get_conversion_factor</span><span class="p">(</span><span class="n">initial_structure</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span>
+            <span class="c1"># Conductivity. Unit: (mS/cm)</span>
             <span class="n">sigam</span> <span class="o">=</span> <span class="n">D</span> <span class="o">*</span> <span class="n">factor</span>
             <span class="n">sort_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
-                <span class="s2">&quot;hop_displacement&quot;</span><span class="p">:</span> <span class="n">mst_disp</span><span class="p">,</span>
-                <span class="s2">&quot;D0&quot;</span><span class="p">:</span> <span class="n">D0</span><span class="p">,</span>
-                <span class="s2">&quot;D&quot;</span><span class="p">:</span> <span class="n">D</span><span class="p">,</span>
+                <span class="s2">&quot;hop_displacement(angstrom)&quot;</span><span class="p">:</span> <span class="n">mst_disp</span><span class="p">,</span>
+                <span class="s2">&quot;D0(cm^2/s)&quot;</span><span class="p">:</span> <span class="n">D0</span><span class="p">,</span>
+                <span class="s2">&quot;D(cm^2/s)&quot;</span><span class="p">:</span> <span class="n">D</span><span class="p">,</span>
                 <span class="s2">&quot;factor&quot;</span><span class="p">:</span> <span class="n">factor</span><span class="p">,</span>
-                <span class="s2">&quot;sigma&quot;</span><span class="p">:</span> <span class="n">sigam</span>
+                <span class="s2">&quot;sigma(mS/cm)&quot;</span><span class="p">:</span> <span class="n">sigam</span>
                 <span class="p">})</span>
 
             <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">sort_data</span><span class="p">])</span>

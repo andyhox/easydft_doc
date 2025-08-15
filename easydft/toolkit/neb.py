@@ -85,13 +85,6 @@ class NEB_analysis:
     Attributes:
         path (str or Path): The directory containing NEB calculation results.
         results (NEBAnalysis): The NEBAnalysis object containing parsed NEB results.
-
-    Methods:
-        __init__(path): Initialize the NEB_analysis object and load NEB results.
-        _neb_results(path): Load NEB results from the specified directory.
-        plot: Property to get the matplotlib figure of the NEB energy profile.
-        get_pomass_from_potcar(potcar_path, element): Class method to extract atomic mass from a POTCAR file.
-        sort_results(...): Analyze the NEB path to obtain the energy barrier and, optionally, diffusion properties.
     """
 
     def __init__(

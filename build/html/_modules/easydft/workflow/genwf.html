@@ -74,7 +74,8 @@
 <span class="sd">This module is used to generate VASP workflows, supporting various tasks such as structure optimization, static calculation, non-self-consistent calculation, adsorption energy, and adhesion energy.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span><span class="p">,</span> <span class="n">Lattice</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.vasp.sets</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPRelaxSet</span><span class="p">,</span> <span class="n">MPStaticSet</span><span class="p">,</span> <span class="n">MPNonSCFSet</span><span class="p">,</span> <span class="n">VaspInputSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core.surface</span><span class="w"> </span><span class="kn">import</span> <span class="n">Slab</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">atomate2.vasp.sets.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">RelaxSetGenerator</span><span class="p">,</span> <span class="n">StaticSetGenerator</span><span class="p">,</span> <span class="n">NonSCFSetGenerator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">atomate2.vasp.jobs.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">RelaxMaker</span><span class="p">,</span> <span class="n">StaticMaker</span><span class="p">,</span> <span class="n">NonSCFMaker</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">atomate2.vasp.flows.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">DoubleRelaxMaker</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">atomate2.vasp.run</span><span class="w"> </span><span class="kn">import</span> <span class="n">JobType</span>
@@ -85,6 +86,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">fireworks</span><span class="w"> </span><span class="kn">import</span> <span class="n">LaunchPad</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">easydft.toolkit.structure_modify</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlabModify</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
@@ -99,8 +101,8 @@
     
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> 
-        <span class="n">structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span>
-        <span class="n">use_custodian</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">structure</span><span class="p">:</span> <span class="n">Structure</span> <span class="o">|</span> <span class="n">Slab</span><span class="p">,</span>
+        <span class="n">use_custodian</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize the VASP workflow generator.</span>
@@ -121,10 +123,11 @@
 <span class="sd">            str: Default name</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">formula</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span><span class="n">reduced_formula</span>
+        <span class="c1"># 获取当前日期</span>
         <span class="n">date_str</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">formula</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">date_str</span><span class="si">}</span><span class="s2">&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_flow_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_flow_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the workflow name. If not specified, generate automatically and issue a warning.</span>
 
@@ -143,10 +146,9 @@
 <a class="viewcode-back" href="../../../api/easydft.workflow.html#easydft.workflow.genwf.GenWF.double_relax_flow">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">double_relax_flow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> 
-        <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">job_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">set1</span><span class="p">:</span> <span class="n">VaspInputSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">set2</span><span class="p">:</span> <span class="n">VaspInputSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">flow_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">set1</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RelaxSetGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">set2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RelaxSetGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flow</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Double relaxation workflow.</span>
@@ -162,15 +164,17 @@
         <span class="n">flow_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_flow_name</span><span class="p">(</span><span class="s2">&quot;double_relax&quot;</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">set1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">set1</span> <span class="o">=</span> <span class="n">MPRelaxSet</span><span class="p">()</span>
+            <span class="n">set1</span> <span class="o">=</span> <span class="n">RelaxSetGenerator</span><span class="p">()</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;set1 is not defined, use default MPRelaxSet()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">set2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">set2</span> <span class="o">=</span> <span class="n">MPRelaxSet</span><span class="p">()</span>
+            <span class="n">set2</span> <span class="o">=</span> <span class="n">RelaxSetGenerator</span><span class="p">()</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;set2 is not defined, use default MPRelaxSet()&#39;</span><span class="p">)</span>
+        <span class="c1"># 初始化Maker</span>
         <span class="n">relax1_maker</span> <span class="o">=</span> <span class="n">RelaxMaker</span><span class="p">(</span><span class="n">input_set_generator</span><span class="o">=</span><span class="n">set1</span><span class="p">,</span><span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">})</span>
         <span class="n">relax2_maker</span> <span class="o">=</span> <span class="n">RelaxMaker</span><span class="p">(</span><span class="n">input_set_generator</span><span class="o">=</span><span class="n">set2</span><span class="p">,</span><span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">})</span>
-        <span class="n">doublerelax_maker</span> <span class="o">=</span> <span class="n">DoubleRelaxMaker</span><span class="p">(</span><span class="n">relax1_maker</span><span class="p">,</span> <span class="n">relax2_maker</span><span class="p">)</span>
+        <span class="n">doublerelax_maker</span> <span class="o">=</span> <span class="n">DoubleRelaxMaker</span><span class="p">(</span><span class="n">relax_maker1</span><span class="o">=</span><span class="n">relax1_maker</span><span class="p">,</span> <span class="n">relax_maker2</span><span class="o">=</span><span class="n">relax2_maker</span><span class="p">)</span>
         
+        <span class="c1"># 创建任务链</span>
         <span class="n">doublerelax_job</span> <span class="o">=</span> <span class="n">doublerelax_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span>
         <span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">doublerelax_job</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">flow_name</span><span class="p">)</span>
         <span class="n">flow</span> <span class="o">=</span> <span class="n">add_metadata_to_flow</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;flow_name&quot;</span><span class="p">:</span> <span class="n">flow_name</span><span class="p">})</span>
@@ -181,9 +185,9 @@
 <a class="viewcode-back" href="../../../api/easydft.workflow.html#easydft.workflow.genwf.GenWF.relax2scf_flow">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">relax2scf_flow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">relaxset</span><span class="p">:</span> <span class="n">VaspInputSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">scfset</span><span class="p">:</span> <span class="n">VaspInputSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">flow_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">relaxset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RelaxSetGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scfset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StaticSetGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flow</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Relaxation + static calculation workflow.</span>
@@ -198,18 +202,20 @@
         <span class="n">flow_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_flow_name</span><span class="p">(</span><span class="s2">&quot;relax2scf&quot;</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">relaxset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">relaxset</span> <span class="o">=</span> <span class="n">MPRelaxSet</span><span class="p">()</span>
+            <span class="n">relaxset</span> <span class="o">=</span> <span class="n">RelaxSetGenerator</span><span class="p">()</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;relaxset is not defined, use default MPRelaxSet()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">scfset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">scfset</span> <span class="o">=</span> <span class="n">MPStaticSet</span><span class="p">()</span>
+            <span class="n">scfset</span> <span class="o">=</span> <span class="n">StaticSetGenerator</span><span class="p">()</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;staticset is not defined, use default MPStaticSet()&#39;</span><span class="p">)</span>
+        <span class="c1"># 初始化Maker</span>
         <span class="n">relax_maker</span> <span class="o">=</span> <span class="n">RelaxMaker</span><span class="p">(</span><span class="n">input_set_generator</span><span class="o">=</span><span class="n">relaxset</span><span class="p">,</span><span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">})</span>
         <span class="n">static_maker</span> <span class="o">=</span> <span class="n">StaticMaker</span><span class="p">(</span><span class="n">input_set_generator</span><span class="o">=</span><span class="n">scfset</span><span class="p">,</span><span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">})</span>
         
+        <span class="c1"># 创建任务链</span>
         <span class="n">relax_job</span> <span class="o">=</span> <span class="n">relax_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span>
         <span class="n">static_job</span> <span class="o">=</span> <span class="n">static_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">relax_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">prev_dir</span><span class="o">=</span><span class="n">relax_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">dir_name</span><span class="p">)</span>
-        
-        <span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">([</span><span class="n">relax_job</span><span class="p">,</span> <span class="n">static_job</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">flow_name</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">static_job</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+        <span class="n">jobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">relax_job</span><span class="p">,</span> <span class="n">static_job</span><span class="p">]</span>
+        <span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">jobs</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">static_job</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">flow_name</span><span class="p">,</span> <span class="p">)</span>
         <span class="n">flow</span> <span class="o">=</span> <span class="n">add_metadata_to_flow</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;flow_name&quot;</span><span class="p">:</span> <span class="n">flow_name</span><span class="p">})</span>
         
         <span class="k">return</span> <span class="n">flow</span></div>
@@ -219,9 +225,9 @@
 <a class="viewcode-back" href="../../../api/easydft.workflow.html#easydft.workflow.genwf.GenWF.scf2nonscf_flow">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">scf2nonscf_flow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> 
-        <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">scfset</span><span class="p">:</span> <span class="n">VaspInputSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">nonscfset</span><span class="p">:</span> <span class="n">VaspInputSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">flow_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scfset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StaticSetGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">nonscfset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NonSCFSetGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flow</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        SCF + NonSCF calculation workflow.</span>
@@ -236,17 +242,19 @@
         <span class="n">flow_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_flow_name</span><span class="p">(</span><span class="s2">&quot;scf2nonscf&quot;</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">scfset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">scfset</span> <span class="o">=</span> <span class="n">MPStaticSet</span><span class="p">()</span>
+            <span class="n">scfset</span> <span class="o">=</span> <span class="n">StaticSetGenerator</span><span class="p">()</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;relaxset is not defined, use default MPRelaxSet()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">nonscfset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">nonscfset</span> <span class="o">=</span> <span class="n">MPNonSCFSet</span><span class="p">()</span>
+            <span class="n">nonscfset</span> <span class="o">=</span> <span class="n">NonSCFSetGenerator</span><span class="p">()</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;staticset is not defined, use default MPStaticSet()&#39;</span><span class="p">)</span>
+        <span class="c1"># 初始化Maker</span>
         <span class="n">static_maker</span> <span class="o">=</span> <span class="n">StaticMaker</span><span class="p">(</span><span class="n">input_set_generator</span><span class="o">=</span><span class="n">scfset</span><span class="p">,</span><span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">})</span>
         <span class="n">nonscf_maker</span> <span class="o">=</span> <span class="n">NonSCFMaker</span><span class="p">(</span><span class="n">input_set_generator</span><span class="o">=</span><span class="n">nonscfset</span><span class="p">,</span><span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">})</span>
         
+        <span class="c1"># 创建任务链</span>
         <span class="n">static_job</span> <span class="o">=</span> <span class="n">static_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span>
         <span class="n">nonscf_job</span> <span class="o">=</span> <span class="n">nonscf_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">static_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">prev_dir</span><span class="o">=</span><span class="n">static_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">dir_name</span><span class="p">)</span>
-        <span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">([</span><span class="n">static_job</span><span class="p">,</span> <span class="n">nonscf_job</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">flow_name</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="p">[</span><span class="n">nonscf_job</span><span class="o">.</span><span class="n">output</span><span class="p">])</span>
+        <span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">([</span><span class="n">static_job</span><span class="p">,</span> <span class="n">nonscf_job</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">flow_name</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">nonscf_job</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
         <span class="n">flow</span> <span class="o">=</span> <span class="n">add_metadata_to_flow</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;flow_name&quot;</span><span class="p">:</span> <span class="n">flow_name</span><span class="p">})</span>
         
         <span class="k">return</span> <span class="n">flow</span></div>
@@ -256,10 +264,10 @@
 <a class="viewcode-back" href="../../../api/easydft.workflow.html#easydft.workflow.genwf.GenWF.relax2scf2nonscf_flow">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">relax2scf2nonscf_flow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">relaxset</span><span class="p">:</span> <span class="n">VaspInputSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">scfset</span><span class="p">:</span> <span class="n">VaspInputSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">nonscfset</span><span class="p">:</span> <span class="n">VaspInputSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">flow_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">relaxset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RelaxSetGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scfset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StaticSetGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">nonscfset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NonSCFSetGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flow</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Relaxation + SCF + NonSCF calculation workflow.</span>
@@ -276,18 +284,20 @@
         <span class="n">flow_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_flow_name</span><span class="p">(</span><span class="s2">&quot;relax2scf2nonscf&quot;</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">relaxset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">relaxset</span> <span class="o">=</span> <span class="n">MPRelaxSet</span><span class="p">()</span>
+            <span class="n">relaxset</span> <span class="o">=</span> <span class="n">RelaxSetGenerator</span><span class="p">()</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;relaxset is not defined, use default MPRelaxSet()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">scfset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">scfset</span> <span class="o">=</span> <span class="n">MPStaticSet</span><span class="p">()</span>
+            <span class="n">scfset</span> <span class="o">=</span> <span class="n">StaticSetGenerator</span><span class="p">()</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;relaxset is not defined, use default MPStaticSet()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">nonscfset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">nonscfset</span> <span class="o">=</span> <span class="n">MPNonSCFSet</span><span class="p">()</span>
+            <span class="n">nonscfset</span> <span class="o">=</span> <span class="n">NonSCFSetGenerator</span><span class="p">()</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;staticset is not defined, use default MPNonSCFSet()&#39;</span><span class="p">)</span>
+        <span class="c1"># 初始化Maker</span>
         <span class="n">relax_maker</span> <span class="o">=</span> <span class="n">RelaxMaker</span><span class="p">(</span><span class="n">input_set_generator</span><span class="o">=</span><span class="n">relaxset</span><span class="p">,</span><span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">})</span>
         <span class="n">static_maker</span> <span class="o">=</span> <span class="n">StaticMaker</span><span class="p">(</span><span class="n">input_set_generator</span><span class="o">=</span><span class="n">scfset</span><span class="p">,</span><span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">})</span>
         <span class="n">nonscf_maker</span> <span class="o">=</span> <span class="n">NonSCFMaker</span><span class="p">(</span><span class="n">input_set_generator</span><span class="o">=</span><span class="n">nonscfset</span><span class="p">,</span><span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">})</span>
         
+        <span class="c1"># 创建任务链</span>
         <span class="n">relax_job</span> <span class="o">=</span> <span class="n">relax_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span>
         <span class="n">static_job</span> <span class="o">=</span> <span class="n">static_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">relax_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">prev_dir</span><span class="o">=</span><span class="n">relax_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">dir_name</span><span class="p">)</span>
         <span class="n">nonscf_job</span> <span class="o">=</span> <span class="n">nonscf_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">static_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">prev_dir</span><span class="o">=</span><span class="n">static_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">dir_name</span><span class="p">)</span>
@@ -302,45 +312,49 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">adsorption_flow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">boundary_frac</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="n">fix_frac</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">slabrelax_set</span><span class="p">:</span> <span class="n">VaspInputSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">molrelax_set</span><span class="p">:</span> <span class="n">VaspInputSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">slabstatic_set</span><span class="p">:</span> <span class="n">VaspInputSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">molstatic_set</span><span class="p">:</span> <span class="n">VaspInputSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">substrate_fix_frac</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">flow_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">slabrelax_set</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RelaxSetGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">molrelax_set</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RelaxSetGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">slabstatic_set</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StaticSetGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">molstatic_set</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StaticSetGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cubic_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flow</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adsorption energy workflow. Only supports models with clear interface boundaries.</span>
+<span class="sd">        Generate an adsorption energy workflow. This workflow is suitable for models with clear interface boundaries.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            boundary_frac (float): Interface fraction</span>
-<span class="sd">            fix_frac (float): Fraction of fixed atoms in the slab</span>
-<span class="sd">            flow_name (str): Workflow name</span>
-<span class="sd">            slabrelax_set (VaspInputSet): Input set for slab relaxation</span>
-<span class="sd">            molrelax_set (VaspInputSet): Input set for molecule relaxation</span>
-<span class="sd">            slabstatic_set (VaspInputSet): Input set for slab static calculation</span>
-<span class="sd">            molstatic_set (VaspInputSet): Input set for molecule static calculation</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            boundary_frac (float): Fractional position of the interface between the substrate and the adsorbed molecule (0~1).</span>
+<span class="sd">            substrate_fix_frac (float): Fraction of atoms in the substrate to be fixed during relaxation.</span>
+<span class="sd">            flow_name (str, optional): Name of the workflow. If None, a default name will be generated.</span>
+<span class="sd">            slabrelax_set (RelaxSetGenerator, optional): Input set generator for slab relaxation. If None, a default will be used.</span>
+<span class="sd">            molrelax_set (RelaxSetGenerator, optional): Input set generator for molecule relaxation. If None, a default will be used.</span>
+<span class="sd">            slabstatic_set (StaticSetGenerator, optional): Input set generator for slab static calculation. If None, a default will be used.</span>
+<span class="sd">            molstatic_set (StaticSetGenerator, optional): Input set generator for molecule static calculation. If None, a default will be used.</span>
+<span class="sd">            cubic_size (int, optional): The size of the cubic box for molecule extraction. Default is 20.</span>
+
 <span class="sd">        Returns:</span>
-<span class="sd">            Flow: Adsorption energy workflow</span>
+<span class="sd">            Flow: The constructed adsorption energy workflow, including relaxation and static calculations for the adsorbed system, the clean slab, and the molecule.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">flow_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_flow_name</span><span class="p">(</span><span class="s2">&quot;adsorption_flow&quot;</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">)</span>
-        <span class="n">base_structure</span><span class="p">,</span> <span class="n">mol_structure</span> <span class="o">=</span> <span class="n">SlabModify</span><span class="o">.</span><span class="n">split_slab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">boundary_frac</span><span class="p">)</span>
-        <span class="n">fixed_base_strucutre</span> <span class="o">=</span> <span class="n">SlabModify</span><span class="o">.</span><span class="n">fix_slab</span><span class="p">(</span><span class="n">base_structure</span><span class="p">,</span> <span class="n">fix_frac</span><span class="p">)</span>
-        <span class="n">fixed_abs_structure</span> <span class="o">=</span> <span class="n">SlabModify</span><span class="o">.</span><span class="n">fix_slab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">fix_frac</span><span class="p">)</span>
+        <span class="n">base_structure</span><span class="p">,</span> <span class="n">mol_structure</span> <span class="o">=</span> <span class="n">SlabModify</span><span class="o">.</span><span class="n">split_mol</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">boundary_frac</span><span class="p">,</span> <span class="n">cubic_size</span><span class="p">)</span>
+        <span class="n">fixed_base_strucutre</span> <span class="o">=</span> <span class="n">SlabModify</span><span class="o">.</span><span class="n">fix_slab</span><span class="p">(</span><span class="n">base_structure</span><span class="p">,</span> <span class="n">substrate_fix_frac</span><span class="p">)</span>
+        <span class="n">fixed_abs_structure</span> <span class="o">=</span> <span class="n">SlabModify</span><span class="o">.</span><span class="n">fix_slab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">substrate_fix_frac</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">slabrelax_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">slabrelax_set</span> <span class="o">=</span> <span class="n">MPRelaxSet</span><span class="p">(</span><span class="n">user_incar_settings</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ISIF&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+            <span class="n">slabrelax_set</span> <span class="o">=</span> <span class="n">RelaxSetGenerator</span><span class="p">(</span><span class="n">user_incar_settings</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ISIF&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;slabrelax_set is not defined, use default MPRelaxSet()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">molrelax_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">molrelax_set</span> <span class="o">=</span> <span class="n">MPRelaxSet</span><span class="p">(</span><span class="n">user_incar_settings</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ISIF&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+            <span class="n">molrelax_set</span> <span class="o">=</span> <span class="n">RelaxSetGenerator</span><span class="p">(</span><span class="n">user_incar_settings</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ISIF&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;molrelax_set is not defined, use default MPRelaxSet()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">slabstatic_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">slabstatic_set</span> <span class="o">=</span> <span class="n">MPStaticSet</span><span class="p">()</span>
+            <span class="n">slabstatic_set</span> <span class="o">=</span> <span class="n">StaticSetGenerator</span><span class="p">()</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;slabstatic_set is not defined, use default MPStaticSet()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">molstatic_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">molstatic_set</span> <span class="o">=</span> <span class="n">MPStaticSet</span><span class="p">()</span>
+            <span class="n">molstatic_set</span> <span class="o">=</span> <span class="n">StaticSetGenerator</span><span class="p">()</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;molstatic_set is not defined, use default MPStaticSet()&#39;</span><span class="p">)</span>
         
+        <span class="c1"># 初始化Maker</span>
         <span class="n">absrelax_maker</span> <span class="o">=</span> <span class="n">RelaxMaker</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="s1">&#39;abs_relax&#39;</span><span class="p">,</span>
             <span class="n">input_set_generator</span><span class="o">=</span><span class="n">slabrelax_set</span><span class="p">,</span>
@@ -372,6 +386,7 @@
             <span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">}</span>
             <span class="p">)</span>
         
+        <span class="c1"># 创建任务链</span>
         <span class="n">abs_relax_job</span> <span class="o">=</span> <span class="n">absrelax_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">fixed_abs_structure</span><span class="p">)</span>
         <span class="n">abs_static_job</span> <span class="o">=</span> <span class="n">absstatic_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">abs_relax_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">prev_dir</span><span class="o">=</span><span class="n">abs_relax_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">dir_name</span><span class="p">)</span>
         <span class="n">base_relax_job</span> <span class="o">=</span> <span class="n">slabrelax_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">fixed_base_strucutre</span><span class="p">)</span>
@@ -389,38 +404,59 @@
 <a class="viewcode-back" href="../../../api/easydft.workflow.html#easydft.workflow.genwf.GenWF.adhesive_work_flow">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">adhesive_work_flow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">slabA_structure</span><span class="p">:</span><span class="n">Structure</span><span class="p">,</span>
-        <span class="n">slabB_structure</span><span class="p">:</span><span class="n">Structure</span><span class="p">,</span>
-        <span class="n">fix_frac</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">slabrelax_set</span><span class="p">:</span> <span class="n">VaspInputSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">slabstatic_set</span><span class="p">:</span> <span class="n">VaspInputSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">boundary_frac</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">film_fix_frac</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">substrate_fix_frac</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">double_fix_heter</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">flow_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">slabrelax_set</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RelaxSetGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">slabstatic_set</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StaticSetGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adhesion energy workflow. Only supports models with clear interface boundaries.</span>
+<span class="sd">        Construct an adhesion energy workflow for heterostructures with a clear interface boundary.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            slabA_structure (Structure): Structure of slab A</span>
-<span class="sd">            slabB_structure (Structure): Structure of slab B</span>
-<span class="sd">            fix_frac (float): Fraction of fixed atoms</span>
-<span class="sd">            flow_name (str): Workflow name</span>
-<span class="sd">            slabrelax_set (VaspInputSet): Input set for slab relaxation</span>
-<span class="sd">            slabstatic_set (VaspInputSet): Input set for slab static calculation</span>
+<span class="sd">        This workflow splits the input structure into film and substrate parts at the specified interface position,</span>
+<span class="sd">        applies selective dynamics (fixing atoms) to each part and the combined heterostructure, and then performs</span>
+<span class="sd">        relaxation and static calculations for each. Finally, it computes the adhesion energy per unit area.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            boundary_frac (float): Fractional z-coordinate (0~1) indicating the interface between film and substrate.</span>
+<span class="sd">            film_fix_frac (float, optional): Fractional z-coordinate threshold for fixing atoms in the film during relaxation.</span>
+<span class="sd">                If None, defaults to half the z-span of the film.</span>
+<span class="sd">            substrate_fix_frac (float, optional): Fractional z-coordinate threshold for fixing atoms in the substrate during relaxation.</span>
+<span class="sd">                If None, defaults to half the z-span of the substrate.</span>
+<span class="sd">            double_fix_heter (bool, optional): If True, fix both film and substrate regions in the heterostructure during relaxation.</span>
+<span class="sd">                If False, only fix the substrate region. Default is False.</span>
+<span class="sd">            flow_name (str, optional): Name of the workflow. If None, a default name will be generated.</span>
+<span class="sd">            slabrelax_set (RelaxSetGenerator, optional): Input set generator for slab relaxation. If None, a default will be used.</span>
+<span class="sd">            slabstatic_set (StaticSetGenerator, optional): Input set generator for slab static calculation. If None, a default will be used.</span>
+
 <span class="sd">        Returns:</span>
-<span class="sd">            Flow: Adhesion energy workflow</span>
+<span class="sd">            Flow: The constructed jobflow Flow object representing the adhesion energy workflow.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">flow_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_flow_name</span><span class="p">(</span><span class="s2">&quot;adhesive_work_flow&quot;</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">)</span>
-        <span class="n">fixed_slabA_structure</span> <span class="o">=</span> <span class="n">SlabModify</span><span class="o">.</span><span class="n">fix_slab</span><span class="p">(</span><span class="n">slabA_structure</span><span class="p">,</span> <span class="n">fix_frac</span><span class="p">)</span>
-        <span class="n">fixed_slabB_structure</span> <span class="o">=</span> <span class="n">SlabModify</span><span class="o">.</span><span class="n">fix_slab</span><span class="p">(</span><span class="n">slabB_structure</span><span class="p">,</span> <span class="n">fix_frac</span><span class="p">)</span>
-        <span class="n">fixed_AB_structure</span> <span class="o">=</span> <span class="n">SlabModify</span><span class="o">.</span><span class="n">fix_slab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">fix_frac</span><span class="p">)</span>
+        <span class="n">film</span><span class="p">,</span> <span class="n">substrate</span> <span class="o">=</span> <span class="n">SlabModify</span><span class="o">.</span><span class="n">split_heter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">boundary_frac</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">film_fix_frac</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">film_fix_frac</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_parse_z_frac_coords</span><span class="p">(</span><span class="n">film</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">substrate_fix_frac</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">substrate_fix_frac</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_parse_z_frac_coords</span><span class="p">(</span><span class="n">substrate</span><span class="p">)</span>
+        
+        <span class="n">fixed_film_structure</span> <span class="o">=</span> <span class="n">SlabModify</span><span class="o">.</span><span class="n">fix_slab</span><span class="p">(</span><span class="n">film</span><span class="p">,</span> <span class="n">max_fix_ratio</span><span class="o">=</span><span class="n">film_fix_frac</span><span class="p">)</span>
+        <span class="n">fixed_substrate_structure</span> <span class="o">=</span> <span class="n">SlabModify</span><span class="o">.</span><span class="n">fix_slab</span><span class="p">(</span><span class="n">substrate</span><span class="p">,</span> <span class="n">min_fix_ratio</span><span class="o">=</span><span class="n">substrate_fix_frac</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">double_fix_heter</span><span class="p">:</span>
+            <span class="n">fixed_AB_structure</span> <span class="o">=</span> <span class="n">SlabModify</span><span class="o">.</span><span class="n">fix_slab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">min_fix_ratio</span><span class="o">=</span><span class="n">substrate_fix_frac</span><span class="p">,</span> <span class="n">max_fix_ratio</span><span class="o">=</span><span class="n">film_fix_frac</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fixed_AB_structure</span> <span class="o">=</span> <span class="n">SlabModify</span><span class="o">.</span><span class="n">fix_slab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">min_fix_ratio</span><span class="o">=</span><span class="n">substrate_fix_frac</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">slabrelax_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">slabrelax_set</span> <span class="o">=</span> <span class="n">MPRelaxSet</span><span class="p">(</span><span class="n">user_incar_settings</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ISIF&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+            <span class="n">slabrelax_set</span> <span class="o">=</span> <span class="n">RelaxSetGenerator</span><span class="p">(</span><span class="n">user_incar_settings</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ISIF&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;slabrelax_set is not defined, use default MPRelaxSet()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">slabstatic_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">slabstatic_set</span> <span class="o">=</span> <span class="n">MPStaticSet</span><span class="p">()</span>
+            <span class="n">slabstatic_set</span> <span class="o">=</span> <span class="n">StaticSetGenerator</span><span class="p">()</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;slabstatic_set is not defined, use default MPStaticSet()&#39;</span><span class="p">)</span>
         
+        <span class="c1"># Initialize Makers</span>
         <span class="n">slabA_relax_maker</span> <span class="o">=</span> <span class="n">RelaxMaker</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="s1">&#39;slabA_relax&#39;</span><span class="p">,</span>
             <span class="n">input_set_generator</span><span class="o">=</span><span class="n">slabrelax_set</span><span class="p">,</span>
@@ -453,22 +489,42 @@
             <span class="p">)</span>
         
         
-        <span class="n">slab_area</span> <span class="o">=</span> <span class="n">SlabModify</span><span class="o">.</span><span class="n">slab_area</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span>
+        <span class="c1"># Get the cross-sectional area of the AB structure</span>
+        <span class="n">slab_area</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">surface_area</span>
         
-        <span class="n">slabA_relax_job</span> <span class="o">=</span> <span class="n">slabA_relax_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">fixed_slabA_structure</span><span class="p">)</span>
-        <span class="n">slabB_relax_job</span> <span class="o">=</span> <span class="n">slabB_relax_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">fixed_slabB_structure</span><span class="p">)</span>
+        <span class="c1"># Create job chain</span>
+        <span class="n">slabA_relax_job</span> <span class="o">=</span> <span class="n">slabA_relax_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">fixed_film_structure</span><span class="p">)</span>
+        <span class="n">slabB_relax_job</span> <span class="o">=</span> <span class="n">slabB_relax_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">fixed_substrate_structure</span><span class="p">)</span>
         <span class="n">AB_relax_job</span> <span class="o">=</span> <span class="n">AB_relax_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">fixed_AB_structure</span><span class="p">)</span>
         <span class="n">slabA_static_job</span> <span class="o">=</span> <span class="n">slabA_static_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">slabA_relax_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">prev_dir</span><span class="o">=</span><span class="n">slabA_relax_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">dir_name</span><span class="p">)</span>
         <span class="n">slabB_static_job</span> <span class="o">=</span> <span class="n">slabB_static_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">slabB_relax_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">prev_dir</span><span class="o">=</span><span class="n">slabB_relax_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">dir_name</span><span class="p">)</span>
         <span class="n">AB_static_job</span> <span class="o">=</span> <span class="n">AB_static_maker</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">AB_relax_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">prev_dir</span><span class="o">=</span><span class="n">AB_relax_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">dir_name</span><span class="p">)</span>
-        <span class="n">Eadhesive_job</span> <span class="o">=</span> <span class="p">(</span><span class="n">AB_static_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">energy</span> <span class="o">-</span> <span class="n">slabA_static_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">energy</span> <span class="o">-</span> <span class="n">slabB_static_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">energy</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">slab_area</span>
+        
+        <span class="n">Eadhesive_job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_Eadhesive</span><span class="p">(</span>
+            <span class="n">AB_static_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">energy</span><span class="p">,</span> 
+            <span class="n">slabA_static_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">energy</span><span class="p">,</span> 
+            <span class="n">slabB_static_job</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">energy</span><span class="p">,</span>
+            <span class="n">slab_area</span><span class="p">)</span>
         
         <span class="n">flow</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">([</span><span class="n">slabA_relax_job</span><span class="p">,</span> <span class="n">slabB_relax_job</span><span class="p">,</span> <span class="n">AB_relax_job</span><span class="p">,</span> <span class="n">slabA_static_job</span><span class="p">,</span> <span class="n">slabB_static_job</span><span class="p">,</span> <span class="n">AB_static_job</span><span class="p">,</span> <span class="n">Eadhesive_job</span><span class="p">],</span>
                     <span class="n">name</span><span class="o">=</span><span class="n">flow_name</span><span class="p">,</span>
                     <span class="n">output</span><span class="o">=</span><span class="p">[</span><span class="n">Eadhesive_job</span><span class="o">.</span><span class="n">output</span><span class="p">])</span>
         
         <span class="k">return</span> <span class="n">flow</span></div>
-</div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_z_frac_coords</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">slab</span><span class="p">:</span> <span class="n">Slab</span> <span class="o">|</span> <span class="n">Structure</span><span class="p">,</span>
+        <span class="p">):</span>
+        <span class="n">z_coords</span> <span class="o">=</span> <span class="p">[</span><span class="n">site</span><span class="o">.</span><span class="n">frac_coords</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">slab</span><span class="o">.</span><span class="n">sites</span><span class="p">]</span>
+        <span class="n">max_z</span><span class="p">,</span> <span class="n">min_z</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">z_coords</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">z_coords</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">min_z</span> <span class="o">+</span> <span class="n">max_z</span><span class="p">)</span>
+    
+    <span class="nd">@job</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calc_Eadhesive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E_AB</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">E_A</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">E_B</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">area</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return adhesion energy per area with the 1/2 factor for two interfaces.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">E_AB</span> <span class="o">-</span> <span class="n">E_A</span> <span class="o">-</span> <span class="n">E_B</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">area</span><span class="p">)</span></div>
 
         
 <div class="viewcode-block" id="SubWF">
@@ -482,11 +538,12 @@
 <div class="viewcode-block" id="SubWF.sub_jfremote">
 <a class="viewcode-back" href="../../../api/easydft.workflow.html#easydft.workflow.genwf.SubWF.sub_jfremote">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sub_jfremote</span><span class="p">(</span><span class="n">flow</span><span class="p">:</span><span class="n">Flow</span><span class="p">,</span>
-                     <span class="n">project</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                     <span class="n">worker</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                     <span class="n">resources</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                     <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sub_jfremote</span><span class="p">(</span>
+        <span class="n">flow</span><span class="p">:</span><span class="n">Flow</span><span class="p">,</span>
+        <span class="n">project</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">worker</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">resources</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Submit the workflow using jobflow_remote.</span>
 

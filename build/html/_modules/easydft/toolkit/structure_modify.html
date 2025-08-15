@@ -345,7 +345,7 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">fix_slab</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> 
                  <span class="n">slab</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span> 
-                 <span class="n">min_fix_ratio</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+                 <span class="n">min_fix_ratio</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">max_fix_ratio</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -447,10 +447,11 @@
 <div class="viewcode-block" id="SlabModify.split_heter">
 <a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.structure_modify.SlabModify.split_heter">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">split_heter</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
-                   <span class="n">slab</span><span class="p">:</span> <span class="n">Slab</span><span class="o">|</span><span class="n">Structure</span><span class="p">,</span>
-                   <span class="n">boundary_frac</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-                   <span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">split_heter</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">slab</span><span class="p">:</span> <span class="n">Slab</span><span class="o">|</span><span class="n">Structure</span><span class="p">,</span>
+        <span class="n">boundary_frac</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Split the heterojunction slab by the interface to generate film and substrate structures.</span>
 <span class="sd">        </span>
@@ -478,11 +479,13 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Heterojunction interface generation and modification tool.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">film_structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span>
-                 <span class="n">substrate_structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span>
-                 <span class="n">film_miller_index</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
-                 <span class="n">substrate_miller_index</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
-                 <span class="n">zslgen</span> <span class="o">=</span> <span class="n">ZSLGenerator</span><span class="p">()):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">film_structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span>
+        <span class="n">substrate_structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span>
+        <span class="n">film_miller_index</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+        <span class="n">substrate_miller_index</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+        <span class="n">zslgen</span> <span class="o">=</span> <span class="n">ZSLGenerator</span><span class="p">()):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize the heterojunction modifier.</span>
 <span class="sd">        </span>
@@ -544,9 +547,11 @@
         
         <span class="n">termination</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">termination</span><span class="p">)</span>
 
-        <span class="n">interfaces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cib</span><span class="o">.</span><span class="n">get_interfaces</span><span class="p">(</span><span class="n">termination</span><span class="o">=</span><span class="n">termination</span><span class="p">,</span> <span class="n">gap</span><span class="o">=</span><span class="n">gap</span><span class="p">,</span> <span class="n">vacuum_over_film</span><span class="o">=</span><span class="n">vacuum_over_film</span><span class="p">,</span> 
-                                       <span class="n">film_thickness</span><span class="o">=</span><span class="n">film_thickness</span><span class="p">,</span> <span class="n">substrate_thickness</span><span class="o">=</span><span class="n">substrate_thickness</span><span class="p">,</span> 
-                                       <span class="n">in_layers</span><span class="o">=</span><span class="n">in_layers</span><span class="p">)</span>
+        <span class="n">interfaces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cib</span><span class="o">.</span><span class="n">get_interfaces</span><span class="p">(</span>
+            <span class="n">termination</span><span class="o">=</span><span class="n">termination</span><span class="p">,</span> <span class="n">gap</span><span class="o">=</span><span class="n">gap</span><span class="p">,</span> <span class="n">vacuum_over_film</span><span class="o">=</span><span class="n">vacuum_over_film</span><span class="p">,</span> 
+            <span class="n">film_thickness</span><span class="o">=</span><span class="n">film_thickness</span><span class="p">,</span> <span class="n">substrate_thickness</span><span class="o">=</span><span class="n">substrate_thickness</span><span class="p">,</span> 
+            <span class="n">in_layers</span><span class="o">=</span><span class="n">in_layers</span><span class="p">)</span>
+        
         <span class="k">if</span> <span class="ow">not</span> <span class="n">interfaces</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No interfaces generated by gen_heter_interface&quot;</span><span class="p">)</span>
 
