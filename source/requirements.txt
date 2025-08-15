@@ -7,3 +7,4 @@ pymatgen-analysis-diffusion
 pymatgen-analysis-defects
 ase
 jobflow-remote
+atomate2
