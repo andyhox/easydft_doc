@@ -8,3 +8,4 @@ pymatgen-analysis-defects
 ase
 jobflow-remote
 atomate2
+fireworks

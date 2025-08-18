@@ -245,8 +245,8 @@ class SlabModify:
     @classmethod
     def fix_slab(cls, 
                  slab: Structure, 
-                 min_fix_ratio: Union[float, None] = None,
-                 max_fix_ratio: Union[float, None] = None,
+                 min_fix_ratio: Union[float, 0.0] = 0.0,
+                 max_fix_ratio: Union[float, 1.0] = 1.0,
                  ):
         """
         Fix part of the atoms in the slab structure (selective dynamics).

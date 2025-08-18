@@ -399,7 +399,8 @@ class GenWF:
         
         
         # Get the cross-sectional area of the AB structure
-        slab_area = self.structure.surface_area
+        matrix = self.structure.lattice.matrix
+        slab_area = float(np.linalg.norm(np.cross(matrix[0], matrix[1])))
         
         # Create job chain
         slabA_relax_job = slabA_relax_maker.make(fixed_film_structure)
@@ -417,7 +418,7 @@ class GenWF:
         
         flow = Flow([slabA_relax_job, slabB_relax_job, AB_relax_job, slabA_static_job, slabB_static_job, AB_static_job, Eadhesive_job],
                     name=flow_name,
-                    output=[Eadhesive_job.output])
+                    output=Eadhesive_job.output)
         
         return flow
     
@@ -429,8 +430,9 @@ class GenWF:
         max_z, min_z = max(z_coords), min(z_coords)
         return (min_z + max_z)
     
+    @staticmethod
     @job
-    def _calc_Eadhesive(self, E_AB: float, E_A: float, E_B: float, area: float) -> float:
+    def _calc_Eadhesive(E_AB: float, E_A: float, E_B: float, area: float) -> float:
         """Return adhesion energy per area with the 1/2 factor for two interfaces."""
         return (E_AB - E_A - E_B) / (2.0 * area)
         
