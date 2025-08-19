@@ -306,7 +306,13 @@ class GenWF:
         mol_relax_job = molrelax_maker.make(mol_structure)
         mol_static_job = molstatic_maker.make(structure=mol_relax_job.output.structure, prev_dir=mol_relax_job.output.dir_name)
         
-        flow = Flow([abs_relax_job, abs_static_job, base_relax_job, base_static_job, mol_relax_job, mol_static_job], name=flow_name)
+        Eads_job = self._calc_Eads(
+            E_AB = abs_static_job.output.output.energy,
+            E_A = base_static_job.output.output.energy,
+            E_B = mol_static_job.output.output.energy
+        )
+        
+        flow = Flow([abs_relax_job, abs_static_job, base_relax_job, base_static_job, mol_relax_job, mol_static_job, Eads_job], name=flow_name, output=Eads_job.output)
         flow = add_metadata_to_flow(flow, {"flow_name": flow_name})
         
         return flow
@@ -435,7 +441,12 @@ class GenWF:
     def _calc_Eadhesive(E_AB: float, E_A: float, E_B: float, area: float) -> float:
         """Return adhesion energy per area with the 1/2 factor for two interfaces."""
         return (E_AB - E_A - E_B) / (2.0 * area)
-        
+    
+    @staticmethod
+    @job
+    def _calc_Eads(E_AB: float, E_A: float, E_B: float) -> float:
+        return (E_AB - E_A - E_B)
+    
 class SubWF:
     """
     Workflow submission utility class.

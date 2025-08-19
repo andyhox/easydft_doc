@@ -1,0 +1,257 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="chinese" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>异质结建模操作 &mdash; easydft 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d75fae25" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=db039d95"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="Slab结构操作" href="2_slab.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            easydft
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">easydft</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../content.html">案例</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../chapter_1.html">结构操作篇</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="1_strain.html">生成应变结构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_slab.html">Slab结构操作</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">异质结建模操作</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">easydft</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../content.html">案例</a></li>
+          <li class="breadcrumb-item"><a href="../chapter_1.html">结构操作篇</a></li>
+      <li class="breadcrumb-item active">异质结建模操作</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/docs/1_structure_modify/3_heterojunciton.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>异质结建模操作<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p>异质结建模关键参数除了<code class="docutils literal notranslate"><span class="pre">film</span></code>和<code class="docutils literal notranslate"><span class="pre">substrate</span></code>结构以及对应的<code class="docutils literal notranslate"><span class="pre">miller</span> <span class="pre">index</span></code>之外，还需要读取指定的<code class="docutils literal notranslate"><span class="pre">film</span></code>和<code class="docutils literal notranslate"><span class="pre">substrate</span></code>的暴露面，即<code class="docutils literal notranslate"><span class="pre">termination</span></code>参数。</p>
+<p>因此在生成异质结之间，需要先选择合适的<code class="docutils literal notranslate"><span class="pre">termination</span></code>参数，可以通过下列代码把所有对应的<code class="docutils literal notranslate"><span class="pre">termination</span></code>列出来：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">easydft.toolkit.structure_modify</span><span class="w"> </span><span class="kn">import</span> <span class="n">HeterojunctionModify</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span>
+
+<span class="n">film_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;./LiF.cif&#39;</span><span class="p">)</span>
+<span class="n">substrate_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;./Si.vasp&#39;</span><span class="p">)</span>
+
+<span class="n">hetergen</span> <span class="o">=</span> <span class="n">HeterojunctionModify</span><span class="p">(</span>
+    <span class="n">film_structure</span><span class="o">=</span><span class="n">film_structure</span><span class="p">,</span>
+    <span class="n">substrate_structure</span><span class="o">=</span><span class="n">substrate_structure</span><span class="p">,</span>
+    <span class="n">film_miller_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">substrate_miller_index</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+
+<span class="n">terminations</span> <span class="o">=</span> <span class="n">hetergen</span><span class="o">.</span><span class="n">terminations</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">terminations</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>输出结果返回一个列表：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[(&#39;LiF_P4/mmm_2&#39;, &#39;Si_P4/mmm_1&#39;)]
+</pre></div>
+</div>
+<p>选择对应的<code class="docutils literal notranslate"><span class="pre">termination</span></code>进行建模.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">easydft.toolkit.structure_modify</span><span class="w"> </span><span class="kn">import</span> <span class="n">HeterojunctionModify</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span>
+
+<span class="n">film_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;./LiF.cif&#39;</span><span class="p">)</span>
+<span class="n">substrate_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;./Si.vasp&#39;</span><span class="p">)</span>
+
+<span class="n">hetergen</span> <span class="o">=</span> <span class="n">HeterojunctionModify</span><span class="p">(</span>
+    <span class="n">film_structure</span><span class="o">=</span><span class="n">film_structure</span><span class="p">,</span>
+    <span class="n">substrate_structure</span><span class="o">=</span><span class="n">substrate_structure</span><span class="p">,</span>
+    <span class="n">film_miller_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">substrate_miller_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+
+<span class="n">terminations</span> <span class="o">=</span> <span class="n">hetergen</span><span class="o">.</span><span class="n">terminations</span>
+
+<span class="n">heter_structures</span> <span class="o">=</span> <span class="n">hetergen</span><span class="o">.</span><span class="n">gen_heter_interface</span><span class="p">(</span><span class="n">termination</span><span class="o">=</span><span class="n">terminations</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">heter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">heter_structures</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;total structures: </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>输出：total structures: 446</p>
+<p>为什么会生成这么多结构呢？</p>
+<p>实际上代码内部进行晶面匹配的时候会设置相应的cutoff：</p>
+<ul class="simple">
+<li><p>max_area_ratio_tol=0.09</p></li>
+<li><p>max_area=400</p></li>
+<li><p>max_length_tol=0.03</p></li>
+<li><p>max_angle_tol=0.01</p></li>
+</ul>
+<p>代码会输出所有面积小于400的异质结结构。</p>
+<p>当然，在实际使用中，不需要每个结构都输出，446个结构是按照由简到繁，原子数由少到多排列的，一般情况下我们只需要用第一个结构即可。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">easydft.toolkit.structure_modify</span><span class="w"> </span><span class="kn">import</span> <span class="n">HeterojunctionModify</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span>
+
+<span class="n">film_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;./LiF.cif&#39;</span><span class="p">)</span>
+<span class="n">substrate_structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;./Si.vasp&#39;</span><span class="p">)</span>
+
+<span class="n">hetergen</span> <span class="o">=</span> <span class="n">HeterojunctionModify</span><span class="p">(</span>
+    <span class="n">film_structure</span><span class="o">=</span><span class="n">film_structure</span><span class="p">,</span>
+    <span class="n">substrate_structure</span><span class="o">=</span><span class="n">substrate_structure</span><span class="p">,</span>
+    <span class="n">film_miller_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">substrate_miller_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+
+<span class="n">terminations</span> <span class="o">=</span> <span class="n">hetergen</span><span class="o">.</span><span class="n">terminations</span>
+
+<span class="n">heter_structures</span> <span class="o">=</span> <span class="n">hetergen</span><span class="o">.</span><span class="n">gen_heter_interface</span><span class="p">(</span><span class="n">termination</span><span class="o">=</span><span class="n">terminations</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">heter_lists</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">heter_structures</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">heter_lists</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>输出：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Full Formula (Li16 Si20 F16)
+Reduced Formula: Li4Si5F4
+abc   :   8.405334   8.405334  28.028714
+angles:  90.000000  90.000000  90.000000
+pbc   :       True       True       True
+Sites (52)
+  #  SP       a      b         c    bulk_equivalent  bulk_wyckoff    interface_label
+---  ----  ----  -----  --------  -----------------  --------------  -----------------
+  0  Li+   0      0     0.60523                   0  a               film
+  1  Li+   0      0.5   0.60523                   0  a               film
+  2  Li+   0.25   0.25  0.60523                   0  a               film
+  3  Li+   0.5    0     0.60523                   0  a               film
+  4  Li+   0.25   0.75  0.60523                   0  a               film
+  5  Li+   0.5    0.5   0.60523                   0  a               film
+  6  Li+   0.75   0.25  0.60523                   0  a               film
+  7  Li+   0.75   0.75  0.60523                   0  a               film
+  8  Li+   0.25   0     0.532386                  0  a               film
+  9  Li+   0.25   0.5   0.532386                  0  a               film
+ 10  Li+   0.5    0.25  0.532386                  0  a               film
+ 11  Li+   0.75   0     0.532386                  0  a               film
+ 12  Li+   0.5    0.75  0.532386                  0  a               film
+ 13  Li+   0.75   0.5   0.532386                  0  a               film
+ 14  Li+   0      0.25  0.532386                  0  a               film
+ 15  Li+   1      0.75  0.532386                  0  a               film
+ 16  Si    0.7    0.6   0.461031                  0  a               substrate
+ 17  Si    0.1    0.8   0.461031                  0  a               substrate
+ 18  Si    0.5   -0     0.461031                  0  a               substrate
+ 19  Si    0.9    0.2   0.461031                  0  a               substrate
+ 20  Si    0.3    0.4   0.461031                  0  a               substrate
+ 21  Si    0.2    0.6   0.318784                  0  a               substrate
+ 22  Si    0.6    0.8   0.318784                  0  a               substrate
+ 23  Si    0     -0     0.318784                  0  a               substrate
+ 24  Si    0.4    0.2   0.318784                  0  a               substrate
+ 25  Si    0.8    0.4   0.318784                  0  a               substrate
+ 26  Si    0.6    0.3   0.366199                  0  a               substrate
+ 27  Si    0      0.5   0.366199                  0  a               substrate
+ 28  Si    0.4    0.7   0.366199                  0  a               substrate
+ 29  Si    0.8    0.9   0.366199                  0  a               substrate
+ 30  Si    0.2    0.1   0.366199                  0  a               substrate
+ 31  Si    0.5    0.5   0.413615                  0  a               substrate
+ 32  Si    0.9    0.7   0.413615                  0  a               substrate
+ 33  Si    0.3    0.9   0.413615                  0  a               substrate
+ 34  Si    0.7    0.1   0.413615                  0  a               substrate
+ 35  Si    0.1    0.3   0.413615                  0  a               substrate
+ 36  F-    0      0     0.532386                  4  b               film
+ 37  F-    0      0.5   0.532386                  4  b               film
+ 38  F-    0.25   0.25  0.532386                  4  b               film
+ 39  F-    0.5    0     0.532386                  4  b               film
+ 40  F-    0.25   0.75  0.532386                  4  b               film
+ 41  F-    0.5    0.5   0.532386                  4  b               film
+ 42  F-    0.75   0.25  0.532386                  4  b               film
+ 43  F-    0.75   0.75  0.532386                  4  b               film
+ 44  F-    0.25   0     0.60523                   4  b               film
+ 45  F-    0.25   0.5   0.60523                   4  b               film
+ 46  F-    0.5    0.25  0.60523                   4  b               film
+ 47  F-    0.75   0     0.60523                   4  b               film
+ 48  F-    0.5    0.75  0.60523                   4  b               film
+ 49  F-    0.75   0.5   0.60523                   4  b               film
+ 50  F-    0      0.25  0.60523                   4  b               film
+ 51  F-    1      0.75  0.60523                   4  b               film
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="2_slab.html" class="btn btn-neutral float-left" title="Slab结构操作" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, andyhox.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
