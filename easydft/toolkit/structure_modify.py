@@ -13,6 +13,7 @@ from typing import Union, Any, Optional, List
 from itertools import combinations
 import numpy as np
 import random
+import math
 import os
 
 class BulkModify:
@@ -524,19 +525,21 @@ def gen_substitute_structures(
     if dopant_num == 0:
         return [structure.copy()]  
 
-    all_combos = list(combinations(substitute_indices, dopant_num))
-
-    if len(all_combos) > max_structures:
-        sampled_combos = random.sample(all_combos, max_structures)
-    else:
-        sampled_combos = all_combos
-
     structures = []
+    seen_combos = set()
 
     if save and save_path:
         os.makedirs(save_path, exist_ok=True)
 
-    for count, combo in enumerate(sampled_combos, start=1):
+    max_possible = math.comb(total_substitute, dopant_num)
+    n_to_generate = min(max_structures, max_possible)
+
+    while len(structures) < n_to_generate:
+        combo = tuple(sorted(random.sample(substitute_indices, dopant_num)))
+        if combo in seen_combos:
+            continue
+        seen_combos.add(combo)
+
         new_struct = structure.copy()
         if dopant is None:
             for idx in sorted(combo, reverse=True):
@@ -544,11 +547,11 @@ def gen_substitute_structures(
         else:
             for idx in combo:
                 new_struct.replace(idx, dopant)
+
         if save and save_path:
-            filename = f"struct{count}.cif"
+            filename = f"struct{len(structures)+1}.cif"
             new_struct.to(filename=os.path.join(save_path, filename))
-        
+
         structures.append(new_struct)
 
     return structures
-    
