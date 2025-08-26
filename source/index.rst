@@ -2,7 +2,7 @@ Introduction
 ============
 
 **easydft** 是一个用于材料科学和计算化学中 DFT 计算自动化的工具包。它通过自动任务生成、批量提交、结果收集与分析等功能简化了工作流程。
-easydft 适用于所有用户，能够集成主流 DFT 软件，并基于 `pymatgen`_、 `jobflow-remote`_、 `ASE`_ 以及多个 `open-source VASP_script`_ 提供高效的 DFT 自动化平台。
+easydft 适用于所有用户，能够集成主流 DFT 软件，并基于 `pymatgen`_、 `jobflow-remote`_、 `ASE`_ 以及 `open-source VASP_script`_ 提供高效的 DFT 自动化平台。
 
 .. _pymatgen: https://pymatgen.org/
 .. _jobflow-remote: https://matgenix.github.io/jobflow-remote/
