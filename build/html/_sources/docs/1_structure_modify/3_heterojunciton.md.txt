@@ -57,13 +57,13 @@ print(f"total structures: {i}")
 
 实际上代码内部进行晶面匹配的时候会设置相应的cutoff：
 
-- max_area_ratio_tol=0.09
+- max_area_ratio_tol=0.09<p></p>
 
-- max_area=400
+- max_area=400<p></p>
 
-- max_length_tol=0.03
+- max_length_tol=0.03<p></p>
 
-- max_angle_tol=0.01
+- max_angle_tol=0.01<p></p>
 
 代码会输出所有面积小于400的异质结结构。
 

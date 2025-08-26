@@ -1,0 +1,319 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="chinese" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>环境配置 &mdash; easydft 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d75fae25" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=db039d95"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="工作流篇" href="../chapter_2.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            easydft
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">easydft</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../content.html">案例</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../chapter_1.html">结构操作篇</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../chapter_2.html">工作流篇</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">环境配置</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mongodb-atlas"><strong>注册并创建 MongoDB Atlas 账户</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jobflow-remote"><strong>jobflow-remote</strong> 环境配置</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#atomate2"><strong>atomate2</strong> 环境配置</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">easydft</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../content.html">案例</a></li>
+          <li class="breadcrumb-item"><a href="../chapter_2.html">工作流篇</a></li>
+      <li class="breadcrumb-item active">环境配置</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/docs/2_workflow/1_enviroment.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>环境配置<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">easydft</span></code>工作流主要基于<code class="docutils literal notranslate"><span class="pre">jobflow-remote</span></code>,再此基础上还调用了<code class="docutils literal notranslate"><span class="pre">atomate2</span></code>和<code class="docutils literal notranslate"><span class="pre">jobflow</span></code>.</p>
+<section id="mongodb-atlas">
+<h2><strong>注册并创建 MongoDB Atlas 账户</strong><a class="headerlink" href="#mongodb-atlas" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">MongoDB</span> <span class="pre">Atlas</span></code>，这是一个由 MongoDB 官方提供的云数据库服务，具有高可用性、自动备份和简化的管理等优势。我们在使用<code class="docutils literal notranslate"><span class="pre">Fireworks</span></code>或<code class="docutils literal notranslate"><span class="pre">jobflow-remote</span></code>工作流，抑或是只使用<code class="docutils literal notranslate"><span class="pre">atomate2</span></code>进行数据储存都需要用到。</p>
+<ul class="simple">
+<li><p>访问 MongoDB Atlas 官方网站(<a class="reference external" href="https://www.mongodb.com/cloud/atlas/register">https://www.mongodb.com/cloud/atlas/register</a>)，使用电子邮件地址或其他可用方式创建一个新账户。</p></li>
+<li><p><img alt="image" src="../../_images/image-20250207105330-0eltuoq.png" /></p></li>
+</ul>
+<section id="atlas">
+<h3><strong>创建新的 Atlas 集群</strong><a class="headerlink" href="#atlas" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>登录后，可以新建一个Project，命名为：<code class="docutils literal notranslate"><span class="pre">FireWorks_tutorials</span></code></p></li>
+<li><p><img alt="image" src="../../_images/image-20250207114037-dnzqhn5.png" /></p></li>
+<li><p>进入<code class="docutils literal notranslate"><span class="pre">FireWorks_tutorials</span></code>项目后，系统会提示创建第一个集群。选择“Create”按钮：</p></li>
+<li><p><img alt="image" src="../../_images/image-20250207113623-p088q0q.png" /></p></li>
+<li><p>在集群页面中，勾选“Free”。</p></li>
+<li><p><img alt="image" src="../../_images/image-20250207114223-nwzvscj.png" /></p></li>
+<li><p>继续下拉页面，“Configurations”中可以命名集群名字，记住取消勾选“Preload sample dataset”</p></li>
+<li><p><img alt="image" src="../../_images/image-20250207114523-bkc3r3a.png" /></p></li>
+<li><p>最后点击“Create Deployment”，等待。</p></li>
+<li><p>设置一个初始的用户，即管理员。</p></li>
+<li><p><img alt="image" src="../../_images/image-20250207140846-qkill2k.png" /></p></li>
+<li><p>继续下一步，先跳过链接方式，点击“close”。</p></li>
+</ul>
+</section>
+<section id="ip">
+<h3><strong>设置IP地址</strong><a class="headerlink" href="#ip" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>左侧菜单栏选择“Network Access”。</p></li>
+<li><p><img alt="image" src="../../_images/image-20250207141401-eqn8dp3.png" /></p></li>
+<li><p>点击“Edit”，随后选择“ALLOW ACCESS FROM ANYWHERE&quot;，“Confirm”确认。</p></li>
+<li><p><img alt="image" src="../../_images/image-20250207141720-i0n0v3o.png" /></p></li>
+<li><p><img alt="image" src="../../_images/image-20250207141802-8p227ox.png" /></p></li>
+<li><p>这样可保证从任意IP均可以访问<code class="docutils literal notranslate"><span class="pre">MongoDB</span> <span class="pre">Atlas</span></code> 。</p></li>
+</ul>
+</section>
+<section id="id2">
+<h3><strong>用户管理</strong><a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>左侧菜单栏选择“Database Access”。</p></li>
+<li><p><img alt="image" src="../../_images/image-20250207142202-ab8yptn.png" /></p></li>
+<li><p>新建User</p></li>
+<li><p><img alt="image" src="../../_images/image-20250207142259-wq33t0l.png" /></p></li>
+<li><p>通过用户名，密码的方式新增用户，同时可以设置对应的“身份”。</p></li>
+<li><p><img alt="image" src="../../_images/image-20250207142547-whkndk6.png" /></p></li>
+<li><p>后续需要多个User直接重复上述的操作即可。</p></li>
+</ul>
+</section>
+<section id="id3">
+<h3>连接到集群<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<ul>
+<li><p>在超算上进行远程连接推荐使用<code class="docutils literal notranslate"><span class="pre">mongodb+srv</span></code> 进行连接，链接可在MongoDB Atlas集群上获取，点击“Connect”。<img alt="image" src="../../_images/image-20250207180039-7xdccjj.png" /></p></li>
+<li><p>选择“Drivers”</p>
+<p><img alt="image" src="../../_images/image-20250207180216-axl1yx2.png" /></p>
+</li>
+<li><p>选择合适的编程语言及版本，复制<code class="docutils literal notranslate"><span class="pre">mongodb+srv</span></code>链接。</p>
+<p><img alt="image" src="../../_images/image-20250207180502-zp2plud.png" /></p>
+</li>
+<li><p>复制到对应的yaml文件中即可</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>host: mongodb+srv://&lt;db_user&gt;:&lt;db_password&gt;@cluster0.sad4a.mongodb.net/?retryWrites=true&amp;w=majority&amp;appName=Cluster0
+name: fireworks
+uri_store: true
+</pre></div>
+</div>
+<p>&lt;db_user&gt;和&lt;db_password&gt;替换成你的集群上创建的用户以及密码</p>
+</li>
+</ul>
+</section>
+</section>
+<section id="jobflow-remote">
+<h2><strong>jobflow-remote</strong> 环境配置<a class="headerlink" href="#jobflow-remote" title="Link to this heading"></a></h2>
+<section id="id4">
+<h3>安装 jobflow-remote<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<section id="pip">
+<h4>pip 一键安装<a class="headerlink" href="#pip" title="Link to this heading"></a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>jobflow-remote
+</pre></div>
+</div>
+<p>如果需要使用<code class="docutils literal notranslate"><span class="pre">WebGui</span></code>功能，可以一并安装<code class="docutils literal notranslate"><span class="pre">python-fasthtml</span></code></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>python-fasthtml
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id5">
+<h3>部署方式<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">jobflow-remote</span></code>提供了三种部署方式：<code class="docutils literal notranslate"><span class="pre">All-in-one</span></code>、<code class="docutils literal notranslate"><span class="pre">User-Workstation</span></code>和<code class="docutils literal notranslate"><span class="pre">Full-split</span></code>。其中个人用户推荐使用<code class="docutils literal notranslate"><span class="pre">All-in-one</span></code>和<code class="docutils literal notranslate"><span class="pre">User-Workstation</span></code>两种方式，本文也主要介绍两种方式的配置方法。</p>
+<section id="all-in-one">
+<h4><strong>All-in-one</strong><a class="headerlink" href="#all-in-one" title="Link to this heading"></a></h4>
+<p><img alt="image" src="../../_images/image-20250213210558-dw70f6l.png" /></p>
+<p>顾名思义，即用户(<code class="docutils literal notranslate"><span class="pre">User</span></code>)，调度中心(<code class="docutils literal notranslate"><span class="pre">RUNNER</span></code>)，计算节点(<code class="docutils literal notranslate"><span class="pre">WORKER</span></code>)全部部署在超算。后续所有操作均在超算用户目录进行。</p>
+<p>新建一个项目</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>jf<span class="w"> </span>project<span class="w"> </span>generate<span class="w"> </span>jftest
+</pre></div>
+</div>
+<p>此时会在家目录下<code class="docutils literal notranslate"><span class="pre">~/.jfremote</span></code>文件夹中生成<code class="docutils literal notranslate"><span class="pre">jftest.yaml</span></code>文件，里面包含了一个项目的所有配置信息，且不同的项目有不同的<code class="docutils literal notranslate"><span class="pre">yaml</span></code>配置文件控制。</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>name: jftest
+workers:
+  example_worker:
+    type: local
+    scheduler_type: slurm
+    work_dir: /path/to/run/folder
+    pre_run: 
+		module load vasp
+		source /path/to/python/environment/activate &lt;jfremote_conda_environment&gt;
+    timeout_execute: 60
+queue:
+  store:
+    type: MongoStore
+    host: mongodb+srv://&lt;user_name&gt;:&lt;user_password&gt;@cluster0.fvlq3.mongodb.net/?retryWrites=true&amp;w=majority&amp;appName=Cluster0
+    database: jftest
+    collection_name: jobs
+exec_config: {}
+jobstore:
+  docs_store:
+    type: MongoStore
+    database: vasp
+    host: mongodb+srv://&lt;user_name&gt;:&lt;user_password&gt;@cluster0.fvlq3.mongodb.net/?retryWrites=true&amp;w=majority&amp;appName=Cluster0
+    collection_name: outputs
+  additional_stores:
+    data:
+      type: GridFSStore
+      database: vasp
+      host: mongodb+srv://&lt;user_name&gt;:&lt;user_password&gt;@cluster0.fvlq3.mongodb.net/?retryWrites=true&amp;w=majority&amp;appName=Cluster0
+      collection_name: outputs_blobs
+</pre></div>
+</div>
+<ul>
+<li><p>name：自定义的项目名称</p></li>
+<li><p>workers</p>
+<p>计算节点配置：<code class="docutils literal notranslate"><span class="pre">All-in-one</span></code>模式type即为local，scheduler_type为作业系统类型，work_dir为计算任务目录，pre_run可理解为加载计算用到的各类模组；</p>
+</li>
+<li><p>queue</p>
+<p>队列信息配置：<code class="docutils literal notranslate"><span class="pre">jobflow_remote</span></code>储存任务和工作流信息的数据库</p>
+</li>
+<li><p>jobstore</p>
+<p>计算任务输出储存配置：如果运行的是<code class="docutils literal notranslate"><span class="pre">vasp</span></code>任务，该配置参考<code class="docutils literal notranslate"><span class="pre">atomate2</span></code>中<code class="docutils literal notranslate"><span class="pre">jobflow.yaml</span></code>的配置即可<a class="reference external" href="https://materialsproject.github.io/atomate2/user/install.html#">https://materialsproject.github.io/atomate2/user/install.html#</a></p>
+</li>
+</ul>
+</section>
+<section id="user-workstation">
+<h4>User-Workstation<a class="headerlink" href="#user-workstation" title="Link to this heading"></a></h4>
+<p><img alt="image" src="../../_images/image-20250214103207-mp6om9m.png" /></p>
+<p>该部署方式用于远程连接计算节点提交工作流，本地（个人PC）来调度工作流信息，与<code class="docutils literal notranslate"><span class="pre">All-in-one</span></code>的config区别主要体现在<code class="docutils literal notranslate"><span class="pre">worker</span></code>的设置上：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>workers:
+  example_worker:
+    type: remote
+    scheduler_type: slurm
+    work_dir: /remote/work_dir
+    pre_run: |
+      module load vasp
+    timeout_execute: 60
+    host: &lt;remote.host.net&gt;
+    user: &lt;remote.user&gt;
+    password: &lt;PASSWORD&gt;
+</pre></div>
+</div>
+<p>type改为remote表示计算节点是远程节点；work_dir也要正确的对应到远程计算节点的计算任务工作目录；host、user、password即远程<code class="docutils literal notranslate"><span class="pre">ssh</span></code>对应的地址，用户，以及登录密码</p>
+<p>其余的设置与<code class="docutils literal notranslate"><span class="pre">All-in-one</span></code>部署类似。</p>
+</section>
+</section>
+</section>
+<section id="atomate2">
+<h2><strong>atomate2</strong> 环境配置<a class="headerlink" href="#atomate2" title="Link to this heading"></a></h2>
+<p>使用工作流调用<code class="docutils literal notranslate"><span class="pre">atomate2</span></code>包里的预设工作流时,需要同时配置好<code class="docutils literal notranslate"><span class="pre">atomate2</span></code>.</p>
+<p>在配置好<code class="docutils literal notranslate"><span class="pre">MongoDB</span> <span class="pre">Atlas</span></code>和<code class="docutils literal notranslate"><span class="pre">jobflow-remote</span></code>之后,<code class="docutils literal notranslate"><span class="pre">atomate2</span></code>的配置就简单许多.在任意工作目录下新建命名为atomate2的文件夹,并新建config和logs文件夹:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>atomate2
+├── config
+└── logs
+</pre></div>
+</div>
+<p>在config文件夹新建<code class="docutils literal notranslate"><span class="pre">jobflow.yaml</span></code>文件,里面的设置可以直接复制<code class="docutils literal notranslate"><span class="pre">jobflow-remote</span></code>中项目yaml文件中关于job_store的配置:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>JOB_STORE:
+  docs_store:
+    type: MongoStore
+    database: vasp
+    host: mongodb+srv://&lt;user_name&gt;:&lt;user_password&gt;@cluster0.fvlq3.mongodb.net/?retryWrites=true&amp;w=majority&amp;appName=Cluster0
+    collection_name: outputs
+  additional_stores:
+    data:
+      type: GridFSStore
+      database: vasp
+      host: mongodb+srv://&lt;user_name&gt;:&lt;user_password&gt;@cluster0.fvlq3.mongodb.net/?retryWrites=true&amp;w=majority&amp;appName=Cluster0
+      collection_name: outputs_blobs
+</pre></div>
+</div>
+<p>然后再新建<code class="docutils literal notranslate"><span class="pre">atomate2.yaml</span></code>文件,里面配置的是程序运行命令,如:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>VASP_CMD: mpirun vasp_std 
+</pre></div>
+</div>
+<p>更多可设置的参数请参考官网,如果使用vasp进行计算,请至少配置<code class="docutils literal notranslate"><span class="pre">VASP_CMD</span></code>.</p>
+<p>最后,在<code class="docutils literal notranslate"><span class="pre">.bashrc</span></code>文件中添加上述配置文件的路径即可:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>export ATOMATE2_CONFIG_FILE=&quot;&lt;&lt;INSTALL_DIR&gt;&gt;/config/atomate2.yaml&quot;
+export JOBFLOW_CONFIG_FILE=&quot;&lt;&lt;INSTALL_DIR&gt;&gt;/config/jobflow.yaml&quot;
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../chapter_2.html" class="btn btn-neutral float-left" title="工作流篇" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, andyhox.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

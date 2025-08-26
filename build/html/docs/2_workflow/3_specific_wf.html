@@ -1,0 +1,180 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="chinese" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>特定工作流 &mdash; easydft 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d75fae25" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=db039d95"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="通用工作流" href="2_preset_wf.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            easydft
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">easydft</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../content.html">案例</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../chapter_1.html">结构操作篇</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../chapter_2.html">工作流篇</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="1_enviroment.html">环境配置</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_preset_wf.html">通用工作流</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">特定工作流</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">吸附能计算工作流</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">粘附功计算工作流</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">easydft</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../content.html">案例</a></li>
+          <li class="breadcrumb-item"><a href="../chapter_2.html">工作流篇</a></li>
+      <li class="breadcrumb-item active">特定工作流</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/docs/2_workflow/3_specific_wf.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>特定工作流<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p>除了一些通用工作流之外,针对具体性质的计算,<code class="docutils literal notranslate"><span class="pre">easydft</span></code>还预设了一些更加具体的全自动工作，不仅包含计算任务的串联,还包含了数据后处理.</p>
+<section id="id2">
+<h2>吸附能计算工作流<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">atomate2.vasp.sets.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">RelaxSetGenerator</span><span class="p">,</span> <span class="n">StaticSetGenerator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">easydft.workflow.genwf</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenWF</span>
+
+<span class="n">structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;./ads.vasp&#39;</span><span class="p">)</span>
+<span class="n">wf</span> <span class="o">=</span> <span class="n">GenWF</span><span class="p">(</span><span class="n">structure</span><span class="p">,</span> <span class="n">use_custodian</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">slab_relax_set</span> <span class="o">=</span> <span class="n">RelaxSetGenerator</span><span class="p">(</span><span class="n">user_incar_settings</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;EDIFFG&#39;</span><span class="p">:</span><span class="o">-</span><span class="mf">0.01</span><span class="p">,</span> <span class="s2">&quot;ISIF&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">})</span>
+<span class="n">slab_static_set</span> <span class="o">=</span> <span class="n">StaticSetGenerator</span><span class="p">(</span><span class="n">user_incar_settings</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;EDIFF&#39;</span><span class="p">:</span><span class="mf">1e-7</span><span class="p">})</span>
+<span class="n">mol_relax_set</span> <span class="o">=</span> <span class="n">RelaxSetGenerator</span><span class="p">(</span><span class="n">user_incar_settings</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;EDIFFG&#39;</span><span class="p">:</span><span class="o">-</span><span class="mf">0.01</span><span class="p">,</span> <span class="s2">&quot;ISIF&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">})</span>
+<span class="n">mol_static_set</span> <span class="o">=</span> <span class="n">StaticSetGenerator</span><span class="p">(</span><span class="n">user_incar_settings</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;EDIFF&#39;</span><span class="p">:</span><span class="mf">1e-7</span><span class="p">})</span>
+
+<span class="n">adsorption</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">adsorption_flow</span><span class="p">(</span>
+    <span class="n">boundary_frac</span><span class="o">=</span><span class="mf">0.55</span><span class="p">,</span> 
+    <span class="n">substrate_fix_frac</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> 
+    <span class="n">slabrelax_set</span><span class="o">=</span><span class="n">slab_relax_set</span><span class="p">,</span>
+    <span class="n">slabstatic_set</span><span class="o">=</span><span class="n">slab_static_set</span><span class="p">,</span>
+    <span class="n">molrelax_set</span><span class="o">=</span><span class="n">mol_relax_set</span><span class="p">,</span>
+    <span class="n">molstatic_set</span><span class="o">=</span><span class="n">mol_static_set</span><span class="p">,</span>
+    <span class="n">cubic_size</span><span class="o">=</span><span class="mi">20</span>
+    <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">adsorption</span><span class="p">)</span>
+<span class="n">adsorption</span><span class="o">.</span><span class="n">draw_graph</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>可视化工作流:</p>
+<p><img alt="" src="../../_images/ads_wf.png" /></p>
+<p>使用<code class="docutils literal notranslate"><span class="pre">adsorption_flow()</span></code>需根据计算结构额外传入<code class="docutils literal notranslate"><span class="pre">boundary_frac</span></code>, <code class="docutils literal notranslate"><span class="pre">substrate_fix_frac</span></code>和<code class="docutils literal notranslate"><span class="pre">cubic_size</span></code>参数:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">boundary_frac</span></code>: 吸附模型中吸附质和吸附基底的分界坐标,不是唯一值,只需要选取吸附质和吸附基底之间任一分数坐标即可;<p></p></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">substrate_fix_frac</span></code>: 计算中需要固定的基底原子,对于结构中小于传入分数坐标的原子都会被固定, 如果你的结构是二维材料,直接传入<code class="docutils literal notranslate"><span class="pre">0</span></code>即可;<p></p></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cubic_size</span></code>: 单独计算分子/吸附质的晶格大小.<p></p></p></li>
+</ul>
+</section>
+<section id="id3">
+<h2>粘附功计算工作流<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<p>跟吸附能工作流类似:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">easydft.workflow.genwf</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenWF</span>
+
+<span class="n">structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;./heterojunction.vasp&#39;</span><span class="p">)</span>
+<span class="n">wf</span> <span class="o">=</span> <span class="n">GenWF</span><span class="p">(</span><span class="n">structure</span><span class="p">,</span> <span class="n">use_custodian</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">adhesive_work</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">adhesive_work_flow</span><span class="p">(</span><span class="n">boundary_frac</span><span class="o">=</span><span class="mf">0.55</span><span class="p">,</span> <span class="n">substrate_fix_frac</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">film_fix_frac</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">double_fix_heter</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">adhesive_work</span><span class="p">)</span>
+<span class="n">adhesive_work</span><span class="o">.</span><span class="n">draw_graph</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">boudary_frac</span></code>: 同样需要传入异质结分界分数坐标;<p></p></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double_fix_heter</span></code>: 对于原子数较多的模型, 可以固定表层和底层原子,只优化界面处原子, 此时需要经验构建合理层间距, 默认关闭<p></p></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">substrate_fix_frac</span></code>和<code class="docutils literal notranslate"><span class="pre">film_fix_frac</span></code>: 需要固定的原子,film结构固定的是(film_fix_frac ~ 1.0)之间的原子, 当<code class="docutils literal notranslate"><span class="pre">double_fix_heter</span> <span class="pre">=</span> <span class="pre">False</span></code>时, 即使传入<code class="docutils literal notranslate"><span class="pre">film_fix_frac</span></code>也不会固定film结构原子.<p></p></p></li>
+</ul>
+<p><strong>注: 若<code class="docutils literal notranslate"><span class="pre">substrate_fix_frac</span></code>和<code class="docutils literal notranslate"><span class="pre">film_fix_frac</span></code>不指定数值,则默认分别固定substrate和film一半原子.</strong></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="2_preset_wf.html" class="btn btn-neutral float-left" title="通用工作流" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, andyhox.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

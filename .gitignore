@@ -1,1 +1,3 @@
-
+dist/
+easydft.egg-info/
+setup.py

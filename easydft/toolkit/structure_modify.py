@@ -106,7 +106,6 @@ class BulkModify:
         lattice = structure.lattice
         strained_structures = {}
 
-        # 选择施加应变的角度
         if mode == 'alpha':
             angle_index = 0
         elif mode == 'beta':
@@ -116,17 +115,14 @@ class BulkModify:
         else:
             raise ValueError("Invalid mode. Use 'alpha', 'beta', 'gamma'.")
 
-        # 获取初始的角度参数
         initial_angles = [lattice.alpha, lattice.beta, lattice.gamma]
 
         for strain in strain_list:
-            # 复制初始角度
-            new_angles = initial_angles[:]
             
-            # 对指定角度施加应变
+            new_angles = initial_angles[:]           
+            
             new_angles[angle_index] *= (1 + strain)
-
-            # 创建新的晶格
+            
             new_lattice = Lattice.from_parameters(lattice.a, lattice.b, lattice.c, *new_angles)
             new_structure = Structure(new_lattice, structure.species, structure.frac_coords)
             strained_structures[strain] = new_structure
@@ -262,26 +258,22 @@ class SlabModify:
 
         fixed_atoms = []
         if max_fix_ratio is None:
-            # 标记固定的原子
             for site in slab.sites:
-                # 如果原子的分数坐标在要固定的层数范围内，则固定原子
                 if site.frac_coords[2] <= min_fix_ratio:
-                    fixed_atoms.append([False, False, False])  # 固定
+                    fixed_atoms.append([False, False, False])
                 else:
-                    fixed_atoms.append([True, True, True])  # 不固定
+                    fixed_atoms.append([True, True, True])
 
-            # 为 slab 添加选择性动态属性
             slab.add_site_property("selective_dynamics", fixed_atoms)
             return slab
         else:
             for site in slab.sites:
-                # 如果原子的分数坐标在要固定的层数范围内，则固定原子
+                
                 if site.frac_coords[2] <= min_fix_ratio or site.frac_coords[2] >= max_fix_ratio:
-                    fixed_atoms.append([False, False, False])  # 固定
+                    fixed_atoms.append([False, False, False])  
                 else:
-                    fixed_atoms.append([True, True, True])  # 不固定
+                    fixed_atoms.append([True, True, True])  
 
-            # 为 slab 添加选择性动态属性
             slab.add_site_property("selective_dynamics", fixed_atoms)
             return slab
 
@@ -315,23 +307,18 @@ class SlabModify:
         Returns:
             (mol_structure, base_structure): Molecule structure and base structure
         """
-        # 分解结构
+        
         mol_sites = [site for site in slab.sites if site.frac_coords[2] > boundary_frac]
         base_sites = [site for site in slab.sites if site.frac_coords[2] <= boundary_frac]
         
-        # 生成mol盒子，base结构
         mol_structure = Structure.from_sites(mol_sites)
         new_lattice = Lattice.cubic(cubic_size)
-        # 计算分子在笛卡尔坐标下的中心
+        
         cart_coords = mol_structure.cart_coords
         center = np.mean(cart_coords, axis=0)
-        # 计算平移向量，将分子中心移到盒子中心
         shift_vector = np.array([cubic_size/2, cubic_size/2, cubic_size/2]) - center
-        # 对所有原子进行平移
         new_cart_coords = cart_coords + shift_vector
-        # 将新坐标转换为在新晶格下的分数坐标
         new_frac_coords = new_lattice.get_fractional_coords(new_cart_coords)
-        # 用新的晶格、原有的原子种类和新分数坐标构造新的结构
         mol_structure = Structure(new_lattice, mol_structure.species, new_frac_coords)
         
         base_structure = Structure.from_sites(base_sites)
@@ -353,11 +340,10 @@ class SlabModify:
         Returns:
             (film_structure, substrate_structure): Film structure and substrate structure
         """
-        # 分解结构
+
         film_sites = [site for site in slab.sites if site.frac_coords[2] > boundary_frac]
         substrate_sites = [site for site in slab.sites if site.frac_coords[2] <= boundary_frac]
         
-        # 生成mol盒子，base结构
         film_structure = Structure.from_sites(film_sites)
         substrate_structure = Structure.from_sites(substrate_sites)
         
@@ -440,21 +426,21 @@ class HeterojunctionModify:
 
         return interfaces
     
-class AbsorptionModify:
+class AdsorptionModify:
     """
     Molecular adsorption related structure processing tool.
     """
     @classmethod
-    def ase2pmg(cls, absorption_molecule: str) -> Molecule:
+    def ase2pmg(cls, adsorption_molecule: str) -> Molecule:
         '''
         Convert an ASE molecule object to a pymatgen Molecule.
         
         Args:
-            absorption_molecule (str): Molecule name
+            adsorption_molecule (str): Molecule name
         Returns:
             Molecule: pymatgen Molecule object
         '''
-        ase_molecule = molecule(absorption_molecule)
+        ase_molecule = molecule(adsorption_molecule)
         pmg_molecule = AseAtomsAdaptor.get_molecule(ase_molecule)
         return pmg_molecule
 

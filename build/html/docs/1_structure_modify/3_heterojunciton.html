@@ -19,6 +19,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="掺杂结构操作" href="4_substitute.html" />
     <link rel="prev" title="Slab结构操作" href="2_slab.html" /> 
 </head>
 
@@ -49,8 +50,10 @@
 <li class="toctree-l3"><a class="reference internal" href="1_strain.html">生成应变结构</a></li>
 <li class="toctree-l3"><a class="reference internal" href="2_slab.html">Slab结构操作</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">异质结建模操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_substitute.html">掺杂结构操作</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_2.html">工作流篇</a></li>
 </ul>
 </li>
 </ul>
@@ -132,10 +135,10 @@
 <p>为什么会生成这么多结构呢？</p>
 <p>实际上代码内部进行晶面匹配的时候会设置相应的cutoff：</p>
 <ul class="simple">
-<li><p>max_area_ratio_tol=0.09</p></li>
-<li><p>max_area=400</p></li>
-<li><p>max_length_tol=0.03</p></li>
-<li><p>max_angle_tol=0.01</p></li>
+<li><p>max_area_ratio_tol=0.09<p></p></p></li>
+<li><p>max_area=400<p></p></p></li>
+<li><p>max_length_tol=0.03<p></p></p></li>
+<li><p>max_angle_tol=0.01<p></p></p></li>
 </ul>
 <p>代码会输出所有面积小于400的异质结结构。</p>
 <p>当然，在实际使用中，不需要每个结构都输出，446个结构是按照由简到繁，原子数由少到多排列的，一般情况下我们只需要用第一个结构即可。</p>
@@ -229,6 +232,7 @@ Sites (52)
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="2_slab.html" class="btn btn-neutral float-left" title="Slab结构操作" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="4_substitute.html" class="btn btn-neutral float-right" title="掺杂结构操作" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

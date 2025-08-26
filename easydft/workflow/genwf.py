@@ -251,7 +251,7 @@ class GenWF:
         flow_name = self._get_flow_name("adsorption_flow", flow_name)
         base_structure, mol_structure = SlabModify.split_mol(self.structure, boundary_frac, cubic_size)
         fixed_base_strucutre = SlabModify.fix_slab(base_structure, substrate_fix_frac)
-        fixed_abs_structure = SlabModify.fix_slab(self.structure, substrate_fix_frac)
+        fixed_ads_structure = SlabModify.fix_slab(self.structure, substrate_fix_frac)
         
         if slabrelax_set is None:
             slabrelax_set = RelaxSetGenerator(user_incar_settings={"ISIF": 2})
@@ -267,13 +267,13 @@ class GenWF:
             warnings.warn(f'molstatic_set is not defined, use default MPStaticSet()')
         
         # 初始化Maker
-        absrelax_maker = RelaxMaker(
-            name='abs_relax',
+        adsrelax_maker = RelaxMaker(
+            name='ads_relax',
             input_set_generator=slabrelax_set,
             run_vasp_kwargs={"job_type":self.jobtype}
             )
-        absstatic_maker = StaticMaker(
-            name='abs_static',
+        adsstatic_maker = StaticMaker(
+            name='ads_static',
             input_set_generator=slabstatic_set,
             run_vasp_kwargs={"job_type":self.jobtype}
             )
@@ -299,20 +299,20 @@ class GenWF:
             )
         
         # 创建任务链
-        abs_relax_job = absrelax_maker.make(fixed_abs_structure)
-        abs_static_job = absstatic_maker.make(structure=abs_relax_job.output.structure, prev_dir=abs_relax_job.output.dir_name)
+        ads_relax_job = adsrelax_maker.make(fixed_ads_structure)
+        ads_static_job = adsstatic_maker.make(structure=ads_relax_job.output.structure, prev_dir=ads_relax_job.output.dir_name)
         base_relax_job = slabrelax_maker.make(fixed_base_strucutre)
         base_static_job = slabstatic_maker.make(structure=base_relax_job.output.structure, prev_dir=base_relax_job.output.dir_name)
         mol_relax_job = molrelax_maker.make(mol_structure)
         mol_static_job = molstatic_maker.make(structure=mol_relax_job.output.structure, prev_dir=mol_relax_job.output.dir_name)
         
         Eads_job = self._calc_Eads(
-            E_AB = abs_static_job.output.output.energy,
+            E_AB = ads_static_job.output.output.energy,
             E_A = base_static_job.output.output.energy,
             E_B = mol_static_job.output.output.energy
         )
         
-        flow = Flow([abs_relax_job, abs_static_job, base_relax_job, base_static_job, mol_relax_job, mol_static_job, Eads_job], name=flow_name, output=Eads_job.output)
+        flow = Flow([ads_relax_job, ads_static_job, base_relax_job, base_static_job, mol_relax_job, mol_static_job, Eads_job], name=flow_name, output=Eads_job.output)
         flow = add_metadata_to_flow(flow, {"flow_name": flow_name})
         
         return flow
@@ -417,9 +417,9 @@ class GenWF:
         AB_static_job = AB_static_maker.make(structure=AB_relax_job.output.structure, prev_dir=AB_relax_job.output.dir_name)
         
         Eadhesive_job = self._calc_Eadhesive(
-            AB_static_job.output.energy, 
-            slabA_static_job.output.energy, 
-            slabB_static_job.output.energy,
+            AB_static_job.output.output.energy, 
+            slabA_static_job.output.output.energy, 
+            slabB_static_job.output.output.energy,
             slab_area)
         
         flow = Flow([slabA_relax_job, slabB_relax_job, AB_relax_job, slabA_static_job, slabB_static_job, AB_static_job, Eadhesive_job],
