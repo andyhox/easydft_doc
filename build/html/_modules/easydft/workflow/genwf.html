@@ -83,7 +83,6 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">jobflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Maker</span><span class="p">,</span> <span class="n">job</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">jobflow.managers.fireworks</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow_to_workflow</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">jobflow_remote</span><span class="w"> </span><span class="kn">import</span> <span class="n">submit_flow</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">fireworks</span><span class="w"> </span><span class="kn">import</span> <span class="n">LaunchPad</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">easydft.toolkit.structure_modify</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlabModify</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
@@ -567,23 +566,20 @@
 <span class="sd">            resources (dict): Resource configuration</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">submit_flow</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="n">flow</span><span class="p">,</span> <span class="n">worker</span><span class="o">=</span><span class="n">worker</span><span class="p">,</span> <span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">,</span> <span class="n">resources</span><span class="o">=</span><span class="n">resources</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-    
-<div class="viewcode-block" id="SubWF.sub_fireworks">
-<a class="viewcode-back" href="../../../api/easydft.workflow.html#easydft.workflow.genwf.SubWF.sub_fireworks">[docs]</a>
-    <span class="nd">@staticmethod</span>    
-    <span class="k">def</span><span class="w"> </span><span class="nf">sub_fireworks</span><span class="p">(</span><span class="n">flow</span><span class="p">:</span><span class="n">Flow</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Submit the workflow using Fireworks.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            flow (Flow): Workflow object</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">wf</span>  <span class="o">=</span> <span class="n">flow_to_workflow</span><span class="p">(</span><span class="n">flow</span><span class="p">)</span>
-        <span class="n">lp</span> <span class="o">=</span> <span class="n">LaunchPad</span><span class="o">.</span><span class="n">auto_load</span><span class="p">()</span>
-        <span class="n">lp</span><span class="o">.</span><span class="n">add_wf</span><span class="p">(</span><span class="n">wf</span><span class="p">)</span></div>
 </div>
 
+    
+    <span class="c1"># @staticmethod    </span>
+    <span class="c1"># def sub_fireworks(flow:Flow):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     Submit the workflow using Fireworks.</span>
+
+    <span class="c1">#     Args:</span>
+    <span class="c1">#         flow (Flow): Workflow object</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     wf  = flow_to_workflow(flow)</span>
+    <span class="c1">#     lp = LaunchPad.auto_load()</span>
+    <span class="c1">#     lp.add_wf(wf)</span>
 </pre></div>
 
            </div>

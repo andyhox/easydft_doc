@@ -157,8 +157,8 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> 
-        <span class="n">work_dir</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">vasprun_file</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">work_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">vasprun_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
         <span class="n">save_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> 
         <span class="n">output_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="p">):</span>
@@ -176,7 +176,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vasprun</span><span class="o">.</span><span class="n">complete_dos</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">symbols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vasprun</span><span class="o">.</span><span class="n">atomic_symbols</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_spin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vasprun</span><span class="o">.</span><span class="n">is_spin</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lorbit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vasprun</span><span class="o">.</span><span class="n">incar</span><span class="p">[</span><span class="s1">&#39;LORBIT&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lorbit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vasprun</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;LORBIT&#39;</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_parse_vasprun_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="p">:</span>
@@ -274,6 +274,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Orbital-projected DOS requires LORBIT &gt;= 11.&quot;</span><span class="p">)</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Energy&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dos</span><span class="o">.</span><span class="n">energies</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">dos</span><span class="o">.</span><span class="n">efermi</span><span class="p">}</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_dos_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;tdos&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dos</span><span class="o">.</span><span class="n">densities</span><span class="p">)</span>
         
         <span class="c1"># Initialize an empty dict to accumulate summed densities</span>
         <span class="n">orbital_dos_sum</span> <span class="o">=</span> <span class="p">{</span>
@@ -351,13 +352,13 @@
 </div>
 
 
-<div class="viewcode-block" id="BandstructureAnalyzer">
-<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.electronic_properties.BandstructureAnalyzer">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">BandstructureAnalyzer</span><span class="p">(</span><span class="n">Analyzer</span><span class="p">):</span>
+<div class="viewcode-block" id="BandStructureAnalyzer">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.electronic_properties.BandStructureAnalyzer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BandStructureAnalyzer</span><span class="p">(</span><span class="n">Analyzer</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">work_dir</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> 
-        <span class="n">vasprun_file</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">work_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">vasprun_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
         <span class="n">save_data</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">output_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="p">):</span>
@@ -416,8 +417,8 @@
             <span class="n">distances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">dist</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">distances</span>
     
-<div class="viewcode-block" id="BandstructureAnalyzer.parse_normal_bandstructure">
-<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.electronic_properties.BandstructureAnalyzer.parse_normal_bandstructure">[docs]</a>
+<div class="viewcode-block" id="BandStructureAnalyzer.parse_normal_bandstructure">
+<a class="viewcode-back" href="../../../api/easydft.toolkit.html#easydft.toolkit.electronic_properties.BandStructureAnalyzer.parse_normal_bandstructure">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_normal_bandstructure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parse normal bandstructure.</span>

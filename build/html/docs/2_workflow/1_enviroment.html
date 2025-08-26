@@ -19,6 +19,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="通用工作流" href="2_preset_wf.html" />
     <link rel="prev" title="工作流篇" href="../chapter_2.html" /> 
 </head>
 
@@ -48,11 +49,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../chapter_1.html">结构操作篇</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../chapter_2.html">工作流篇</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">环境配置</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#mongodb-atlas"><strong>注册并创建 MongoDB Atlas 账户</strong></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#jobflow-remote"><strong>jobflow-remote</strong> 环境配置</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#atomate2"><strong>atomate2</strong> 环境配置</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mongodb-atlas">注册并创建 MongoDB Atlas 账户</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jobflow-remote">jobflow-remote 环境配置</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#atomate2">atomate2 环境配置</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="2_preset_wf.html">通用工作流</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_specific_wf.html">特定工作流</a></li>
 </ul>
 </li>
 </ul>
@@ -89,14 +92,14 @@
 <h1>环境配置<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">easydft</span></code>工作流主要基于<code class="docutils literal notranslate"><span class="pre">jobflow-remote</span></code>,再此基础上还调用了<code class="docutils literal notranslate"><span class="pre">atomate2</span></code>和<code class="docutils literal notranslate"><span class="pre">jobflow</span></code>.</p>
 <section id="mongodb-atlas">
-<h2><strong>注册并创建 MongoDB Atlas 账户</strong><a class="headerlink" href="#mongodb-atlas" title="Link to this heading"></a></h2>
+<h2>注册并创建 MongoDB Atlas 账户<a class="headerlink" href="#mongodb-atlas" title="Link to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">MongoDB</span> <span class="pre">Atlas</span></code>，这是一个由 MongoDB 官方提供的云数据库服务，具有高可用性、自动备份和简化的管理等优势。我们在使用<code class="docutils literal notranslate"><span class="pre">Fireworks</span></code>或<code class="docutils literal notranslate"><span class="pre">jobflow-remote</span></code>工作流，抑或是只使用<code class="docutils literal notranslate"><span class="pre">atomate2</span></code>进行数据储存都需要用到。</p>
 <ul class="simple">
 <li><p>访问 MongoDB Atlas 官方网站(<a class="reference external" href="https://www.mongodb.com/cloud/atlas/register">https://www.mongodb.com/cloud/atlas/register</a>)，使用电子邮件地址或其他可用方式创建一个新账户。</p></li>
 <li><p><img alt="image" src="../../_images/image-20250207105330-0eltuoq.png" /></p></li>
 </ul>
 <section id="atlas">
-<h3><strong>创建新的 Atlas 集群</strong><a class="headerlink" href="#atlas" title="Link to this heading"></a></h3>
+<h3>创建新的 Atlas 集群<a class="headerlink" href="#atlas" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>登录后，可以新建一个Project，命名为：<code class="docutils literal notranslate"><span class="pre">FireWorks_tutorials</span></code></p></li>
 <li><p><img alt="image" src="../../_images/image-20250207114037-dnzqhn5.png" /></p></li>
@@ -113,7 +116,7 @@
 </ul>
 </section>
 <section id="ip">
-<h3><strong>设置IP地址</strong><a class="headerlink" href="#ip" title="Link to this heading"></a></h3>
+<h3>设置IP地址<a class="headerlink" href="#ip" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>左侧菜单栏选择“Network Access”。</p></li>
 <li><p><img alt="image" src="../../_images/image-20250207141401-eqn8dp3.png" /></p></li>
@@ -124,7 +127,7 @@
 </ul>
 </section>
 <section id="id2">
-<h3><strong>用户管理</strong><a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<h3>用户管理<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>左侧菜单栏选择“Database Access”。</p></li>
 <li><p><img alt="image" src="../../_images/image-20250207142202-ab8yptn.png" /></p></li>
@@ -157,7 +160,7 @@ uri_store: true
 </section>
 </section>
 <section id="jobflow-remote">
-<h2><strong>jobflow-remote</strong> 环境配置<a class="headerlink" href="#jobflow-remote" title="Link to this heading"></a></h2>
+<h2>jobflow-remote 环境配置<a class="headerlink" href="#jobflow-remote" title="Link to this heading"></a></h2>
 <section id="id4">
 <h3>安装 jobflow-remote<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
 <section id="pip">
@@ -175,7 +178,7 @@ uri_store: true
 <h3>部署方式<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">jobflow-remote</span></code>提供了三种部署方式：<code class="docutils literal notranslate"><span class="pre">All-in-one</span></code>、<code class="docutils literal notranslate"><span class="pre">User-Workstation</span></code>和<code class="docutils literal notranslate"><span class="pre">Full-split</span></code>。其中个人用户推荐使用<code class="docutils literal notranslate"><span class="pre">All-in-one</span></code>和<code class="docutils literal notranslate"><span class="pre">User-Workstation</span></code>两种方式，本文也主要介绍两种方式的配置方法。</p>
 <section id="all-in-one">
-<h4><strong>All-in-one</strong><a class="headerlink" href="#all-in-one" title="Link to this heading"></a></h4>
+<h4>All-in-one<a class="headerlink" href="#all-in-one" title="Link to this heading"></a></h4>
 <p><img alt="image" src="../../_images/image-20250213210558-dw70f6l.png" /></p>
 <p>顾名思义，即用户(<code class="docutils literal notranslate"><span class="pre">User</span></code>)，调度中心(<code class="docutils literal notranslate"><span class="pre">RUNNER</span></code>)，计算节点(<code class="docutils literal notranslate"><span class="pre">WORKER</span></code>)全部部署在超算。后续所有操作均在超算用户目录进行。</p>
 <p>新建一个项目</p>
@@ -250,7 +253,7 @@ jobstore:
 </section>
 </section>
 <section id="atomate2">
-<h2><strong>atomate2</strong> 环境配置<a class="headerlink" href="#atomate2" title="Link to this heading"></a></h2>
+<h2>atomate2 环境配置<a class="headerlink" href="#atomate2" title="Link to this heading"></a></h2>
 <p>使用工作流调用<code class="docutils literal notranslate"><span class="pre">atomate2</span></code>包里的预设工作流时,需要同时配置好<code class="docutils literal notranslate"><span class="pre">atomate2</span></code>.</p>
 <p>在配置好<code class="docutils literal notranslate"><span class="pre">MongoDB</span> <span class="pre">Atlas</span></code>和<code class="docutils literal notranslate"><span class="pre">jobflow-remote</span></code>之后,<code class="docutils literal notranslate"><span class="pre">atomate2</span></code>的配置就简单许多.在任意工作目录下新建命名为atomate2的文件夹,并新建config和logs文件夹:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>atomate2
@@ -291,6 +294,7 @@ export JOBFLOW_CONFIG_FILE=&quot;&lt;&lt;INSTALL_DIR&gt;&gt;/config/jobflow.yaml
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../chapter_2.html" class="btn btn-neutral float-left" title="工作流篇" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="2_preset_wf.html" class="btn btn-neutral float-right" title="通用工作流" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

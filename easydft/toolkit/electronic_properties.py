@@ -77,8 +77,8 @@ class DosAnalyzer(Analyzer):
 
     def __init__(
         self, 
-        work_dir: None,
-        vasprun_file: None, 
+        work_dir: Optional[str] = None,
+        vasprun_file: Optional[str] = None, 
         save_data: bool = True, 
         output_path: Optional[str] = None
         ):
@@ -96,7 +96,7 @@ class DosAnalyzer(Analyzer):
         self.dos = self.vasprun.complete_dos
         self.symbols = list(set(self.vasprun.atomic_symbols))
         self.is_spin = self.vasprun.is_spin
-        self.lorbit = self.vasprun.incar['LORBIT']
+        self.lorbit = self.vasprun.parameters['LORBIT']
 
     def _parse_vasprun_file(self):
         if self.work_dir:
@@ -189,6 +189,7 @@ class DosAnalyzer(Analyzer):
             raise ValueError(f"Orbital-projected DOS requires LORBIT >= 11.")
 
         data = {'Energy': self.dos.energies - self.dos.efermi}
+        data = self._add_dos_data(data, 'tdos', self.dos.densities)
         
         # Initialize an empty dict to accumulate summed densities
         orbital_dos_sum = {
@@ -261,11 +262,11 @@ class DosAnalyzer(Analyzer):
         self.save_to_csv(df, "element_dos.csv")
         return df
 
-class BandstructureAnalyzer(Analyzer):
+class BandStructureAnalyzer(Analyzer):
     def __init__(
         self,
-        work_dir: None, 
-        vasprun_file: None, 
+        work_dir: Optional[str] = None, 
+        vasprun_file: Optional[str] = None, 
         save_data: bool=True,
         output_path: Optional[str] = None
         ):
