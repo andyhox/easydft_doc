@@ -3,14 +3,14 @@
 `easydft`工作流主要基于`jobflow-remote`,再此基础上还调用了`atomate2`和`jobflow`.
 
 
-## **注册并创建 MongoDB Atlas 账户**
+## 注册并创建 MongoDB Atlas 账户
 
 `MongoDB Atlas`，这是一个由 MongoDB 官方提供的云数据库服务，具有高可用性、自动备份和简化的管理等优势。我们在使用`Fireworks`或`jobflow-remote`工作流，抑或是只使用`atomate2`进行数据储存都需要用到。
 
 - 访问 MongoDB Atlas 官方网站([https://www.mongodb.com/cloud/atlas/register](https://www.mongodb.com/cloud/atlas/register))，使用电子邮件地址或其他可用方式创建一个新账户。
 - ![image](assets/image-20250207105330-0eltuoq.png)
 
-### **创建新的 Atlas 集群**
+### 创建新的 Atlas 集群
 
 - 登录后，可以新建一个Project，命名为：`FireWorks_tutorials`
 - ![image](assets/image-20250207114037-dnzqhn5.png)
@@ -25,7 +25,7 @@
 - ![image](assets/image-20250207140846-qkill2k.png)
 - 继续下一步，先跳过链接方式，点击“close”。
 
-### **设置IP地址**
+### 设置IP地址
 
 - 左侧菜单栏选择“Network Access”。
 - ![image](assets/image-20250207141401-eqn8dp3.png)
@@ -34,7 +34,7 @@
 - ![image](assets/image-20250207141802-8p227ox.png)
 - 这样可保证从任意IP均可以访问`MongoDB Atlas` 。
 
-### **用户管理**
+### 用户管理
 
 - 左侧菜单栏选择“Database Access”。
 - ![image](assets/image-20250207142202-ab8yptn.png)
@@ -64,7 +64,7 @@
 
   <db_user>和<db_password>替换成你的集群上创建的用户以及密码
 
-## **jobflow-remote** 环境配置
+## jobflow-remote 环境配置
 
 ### 安装 jobflow-remote
 
@@ -84,7 +84,7 @@ pip install python-fasthtml
 
 `jobflow-remote`提供了三种部署方式：`All-in-one`、`User-Workstation`和`Full-split`。其中个人用户推荐使用`All-in-one`和`User-Workstation`两种方式，本文也主要介绍两种方式的配置方法。
 
-#### **All-in-one**
+#### All-in-one
 
 ![image](assets/image-20250213210558-dw70f6l.png)
 
@@ -166,7 +166,7 @@ type改为remote表示计算节点是远程节点；work_dir也要正确的对�
 
 其余的设置与`All-in-one`部署类似。
 
-## **atomate2** 环境配置
+## atomate2 环境配置
 
 使用工作流调用`atomate2`包里的预设工作流时,需要同时配置好`atomate2`.
 
