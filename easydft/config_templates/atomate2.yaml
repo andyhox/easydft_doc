@@ -1,0 +1,1 @@
+VASP_CMD: mpirun vasp_std 

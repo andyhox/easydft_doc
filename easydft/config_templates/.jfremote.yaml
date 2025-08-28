@@ -1,0 +1,27 @@
+name: easydft
+workers:
+  example_worker:
+    type: local
+    scheduler_type: slurm
+    work_dir: 
+    timeout_execute: 60
+queue:
+  store:
+    type: MongoStore
+    host: 
+    database: easydft
+    collection_name: jobs
+exec_config: {}
+jobstore:
+  JOB_STORE:
+  docs_store:
+    type: MongoStore
+    database: easydft
+    host: 
+    collection_name: outputs
+  additional_stores:
+    data:
+      type: GridFSStore
+      database: easydft
+      host: 
+      collection_name: outputs_blobs

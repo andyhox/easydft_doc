@@ -1,0 +1,12 @@
+JOB_STORE:
+  docs_store:
+    type: MongoURIStore
+    database: vasp
+    uri: 
+    collection_name: outputs
+  additional_stores:
+    data:
+      type: GridFSURIStore
+      database: vasp
+      uri: 
+      collection_name: outputs_blobs
