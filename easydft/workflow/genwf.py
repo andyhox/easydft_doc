@@ -88,10 +88,10 @@ class GenWF:
         
         if set1 is None:
             set1 = RelaxSetGenerator()
-            warnings.warn(f'set1 is not defined, use default MPRelaxSet()')
+            warnings.warn(f'set1 is not defined, use default RelaxSetGenerator()')
         if set2 is None:
             set2 = RelaxSetGenerator()
-            warnings.warn(f'set2 is not defined, use default MPRelaxSet()')
+            warnings.warn(f'set2 is not defined, use default RelaxSetGenerator()')
         # 初始化Maker
         relax1_maker = RelaxMaker(input_set_generator=set1,run_vasp_kwargs={"job_type":self.jobtype})
         relax2_maker = RelaxMaker(input_set_generator=set2,run_vasp_kwargs={"job_type":self.jobtype})
@@ -123,10 +123,10 @@ class GenWF:
         
         if relaxset is None:
             relaxset = RelaxSetGenerator()
-            warnings.warn(f'relaxset is not defined, use default MPRelaxSet()')
+            warnings.warn(f'relaxset is not defined, use default RelaxSetGenerator()')
         if scfset is None:
             scfset = StaticSetGenerator()
-            warnings.warn(f'staticset is not defined, use default MPStaticSet()')
+            warnings.warn(f'staticset is not defined, use default StaticSetGenerator()')
         # 初始化Maker
         relax_maker = RelaxMaker(input_set_generator=relaxset,run_vasp_kwargs={"job_type":self.jobtype})
         static_maker = StaticMaker(input_set_generator=scfset,run_vasp_kwargs={"job_type":self.jobtype})
@@ -160,10 +160,10 @@ class GenWF:
         
         if scfset is None:
             scfset = StaticSetGenerator()
-            warnings.warn(f'relaxset is not defined, use default MPRelaxSet()')
+            warnings.warn(f'relaxset is not defined, use default StaticSetGenerator()')
         if nonscfset is None:
             nonscfset = NonSCFSetGenerator()
-            warnings.warn(f'staticset is not defined, use default MPStaticSet()')
+            warnings.warn(f'staticset is not defined, use default NonSCFSetGenerator()')
         # 初始化Maker
         static_maker = StaticMaker(input_set_generator=scfset,run_vasp_kwargs={"job_type":self.jobtype})
         nonscf_maker = NonSCFMaker(input_set_generator=nonscfset,run_vasp_kwargs={"job_type":self.jobtype})
@@ -199,13 +199,13 @@ class GenWF:
         
         if relaxset is None:
             relaxset = RelaxSetGenerator()
-            warnings.warn(f'relaxset is not defined, use default MPRelaxSet()')
+            warnings.warn(f'relaxset is not defined, use default RelaxSetGenerator()')
         if scfset is None:
             scfset = StaticSetGenerator()
-            warnings.warn(f'relaxset is not defined, use default MPStaticSet()')
+            warnings.warn(f'relaxset is not defined, use default StaticSetGenerator()')
         if nonscfset is None:
             nonscfset = NonSCFSetGenerator()
-            warnings.warn(f'staticset is not defined, use default MPNonSCFSet()')
+            warnings.warn(f'staticset is not defined, use default NonSCFSetGenerator()')
         # 初始化Maker
         relax_maker = RelaxMaker(input_set_generator=relaxset,run_vasp_kwargs={"job_type":self.jobtype})
         static_maker = StaticMaker(input_set_generator=scfset,run_vasp_kwargs={"job_type":self.jobtype})
@@ -254,16 +254,16 @@ class GenWF:
         
         if slabrelax_set is None:
             slabrelax_set = RelaxSetGenerator(user_incar_settings={"ISIF": 2})
-            warnings.warn(f'slabrelax_set is not defined, use default MPRelaxSet()')
+            warnings.warn(f'slabrelax_set is not defined, use default RelaxSetGenerator()')
         if molrelax_set is None:
             molrelax_set = RelaxSetGenerator(user_incar_settings={"ISIF": 2})
-            warnings.warn(f'molrelax_set is not defined, use default MPRelaxSet()')
+            warnings.warn(f'molrelax_set is not defined, use default RelaxSetGenerator()')
         if slabstatic_set is None:
             slabstatic_set = StaticSetGenerator()
-            warnings.warn(f'slabstatic_set is not defined, use default MPStaticSet()')
+            warnings.warn(f'slabstatic_set is not defined, use default StaticSetGenerator()')
         if molstatic_set is None:
             molstatic_set = StaticSetGenerator()
-            warnings.warn(f'molstatic_set is not defined, use default MPStaticSet()')
+            warnings.warn(f'molstatic_set is not defined, use default StaticSetGenerator()')
         
         # 初始化Maker
         adsrelax_maker = RelaxMaker(
@@ -365,10 +365,10 @@ class GenWF:
         
         if slabrelax_set is None:
             slabrelax_set = RelaxSetGenerator(user_incar_settings={"ISIF": 2})
-            warnings.warn(f'slabrelax_set is not defined, use default MPRelaxSet()')
+            warnings.warn(f'slabrelax_set is not defined, use default RelaxSetGenerator()')
         if slabstatic_set is None:
             slabstatic_set = StaticSetGenerator()
-            warnings.warn(f'slabstatic_set is not defined, use default MPStaticSet()')
+            warnings.warn(f'slabstatic_set is not defined, use default StaticSetGenerator()')
         
         # Initialize Makers
         slabA_relax_maker = RelaxMaker(
@@ -450,7 +450,7 @@ class SubWF:
     """
     Workflow submission utility class.
 
-    Provides two submission methods: jobflow_remote and Fireworks.
+    Provides two submission methods: jobflow_remote.
     """
     @staticmethod
     def sub_jfremote(

@@ -183,21 +183,23 @@ class WorkFuncAnalyzer:
             work_func = self.work_function
             vac_level = self.vac_level
             efermi = self.efermi
-            plt.figure(figsize=(10, 6))
+            plt.figure(figsize=(9, 6))
             plt.plot(self.df['Z_direction'], self.df['Electrostatic_potential'], 'b-', linewidth=2)
             plt.axhline(y=efermi, color='r', linestyle='--', linewidth=1.5,
                         label=f'E-fermi = {efermi:.4f} eV')
             plt.axhline(y=vac_level, color='g', linestyle='--', linewidth=1.5,
                         label=f'Vacuum level = {vac_level:.4f} eV')
             plt.annotate(f'WorkFunction = {work_func:.4f} eV',
-                        xy=(self.df['Z_direction'].max() * 0.1, (vac_level + efermi) * 0.5),
+                        xy=(self.df['Z_direction'].max() * 0.5, (vac_level + efermi) * 0.5),
                         xytext=(10, 10),
                         textcoords='offset points',
                         fontsize=12,
                         ha='center')
-            plt.xlabel("Z direction (Å)", fontsize=14)
-            plt.ylabel("Electrostatic potential (eV)", fontsize=14)
-            plt.grid(True, linestyle='--', alpha=0.7)
+            plt.xlabel("Z direction (Å)", fontsize=20)
+            plt.xticks(fontsize=18)
+            plt.ylabel("Electrostatic potential (eV)", fontsize=20)
+            plt.yticks(fontsize=18)
+            # plt.grid(True, linestyle='--', alpha=0.7)
             plt.legend(fontsize=12)
             plt.tight_layout()
 

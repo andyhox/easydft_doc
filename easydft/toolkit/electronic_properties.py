@@ -1,8 +1,9 @@
-from pymatgen.io.vasp.outputs import Vasprun
+from pymatgen.io.vasp.outputs import Vasprun, Chgcar
 from pymatgen.electronic_structure.core import OrbitalType, Spin, Orbital
 from pymatgen.electronic_structure.bandstructure import BandStructureSymmLine, BandStructure
 from pymatgen.core.periodic_table import Element
 from easydft.core.parser import VasprunParser
+from pathlib import Path
 import pandas as pd
 import numpy as np
 from typing import Optional, Any
@@ -389,3 +390,77 @@ class BandStructureAnalyzer(Analyzer):
 # TODO: 
 #   - 实现投影能带（projected bandstructure）功能
 #   - 支持元素/轨道分波能带的提取与输出
+
+class ChargeAnalyzer:
+    
+    @staticmethod
+    def _parse_dim(path: Path):
+        vasprun_file = path / "vasprun.xml"
+        vasprun = Vasprun(vasprun_file)
+        return (
+            vasprun.parameters["NGX"],
+            vasprun.parameters["NGY"],
+            vasprun.parameters["NGZ"],
+        )
+    
+    @staticmethod
+    def _check_shape(shapes: list[tuple[int, int, int]]) -> bool:
+        if not shapes:
+            return False
+        reference = shapes[0]
+        return all(shape == reference for shape in shapes)
+    
+    @classmethod
+    def DifferenceChargeDensity(
+        cls,
+        root_path: Optional[str] = None,
+        save_dir: Optional[str] = None,
+    ):
+        root = Path(root_path).resolve()
+        save = Path(save_dir or root).resolve()
+        save.mkdir(parents=True, exist_ok=True)
+
+        dirs = {"AB": root / "AB", "A": root / "A", "B": root / "B"}
+
+        shapes = [cls._parse_dim(d) for d in dirs.values()]
+        if not cls._check_shape(shapes):
+            raise ValueError(f"Inconsistent FFT grid dimensions: {shapes}")
+
+        chg = {k: Chgcar.from_file(d / "CHGCAR") for k, d in dirs.items()}
+
+        diff = (
+            chg["AB"]
+            .linear_add(chg["A"], scale_factor=-1)
+            .linear_add(chg["B"], scale_factor=-1)
+        )
+
+        out_file = save / "chgdiff.cube"
+        diff.to_cube(str(out_file))
+        return out_file
+    
+    @classmethod
+    def DeformationChargeDensity(
+        cls,
+        root_path: Optional[str] = None,
+        save_dir: Optional[str] = None,
+    ):
+        root = Path(root_path).resolve()
+        save = Path(save_dir or root).resolve()
+        save.mkdir(parents=True, exist_ok=True)
+
+        dirs = {"scf": root / "scf", "atom": root / "atom"}
+
+        shapes = [cls._parse_dim(d) for d in dirs.values()]
+        if not cls._check_shape(shapes):
+            raise ValueError(f"Inconsistent FFT grid dimensions: {shapes}")
+
+        chg = {k: Chgcar.from_file(d / "CHGCAR") for k, d in dirs.items()}
+
+        diff = (
+            chg["scf"]
+            .linear_add(chg["atom"], scale_factor=-1)
+        )
+
+        out_file = save / "chgdiff.cube"
+        diff.to_cube(str(out_file))
+        return out_file

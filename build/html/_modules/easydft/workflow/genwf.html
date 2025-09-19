@@ -164,10 +164,10 @@
         
         <span class="k">if</span> <span class="n">set1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">set1</span> <span class="o">=</span> <span class="n">RelaxSetGenerator</span><span class="p">()</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;set1 is not defined, use default MPRelaxSet()&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;set1 is not defined, use default RelaxSetGenerator()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">set2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">set2</span> <span class="o">=</span> <span class="n">RelaxSetGenerator</span><span class="p">()</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;set2 is not defined, use default MPRelaxSet()&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;set2 is not defined, use default RelaxSetGenerator()&#39;</span><span class="p">)</span>
         <span class="c1"># 初始化Maker</span>
         <span class="n">relax1_maker</span> <span class="o">=</span> <span class="n">RelaxMaker</span><span class="p">(</span><span class="n">input_set_generator</span><span class="o">=</span><span class="n">set1</span><span class="p">,</span><span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">})</span>
         <span class="n">relax2_maker</span> <span class="o">=</span> <span class="n">RelaxMaker</span><span class="p">(</span><span class="n">input_set_generator</span><span class="o">=</span><span class="n">set2</span><span class="p">,</span><span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">})</span>
@@ -202,10 +202,10 @@
         
         <span class="k">if</span> <span class="n">relaxset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">relaxset</span> <span class="o">=</span> <span class="n">RelaxSetGenerator</span><span class="p">()</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;relaxset is not defined, use default MPRelaxSet()&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;relaxset is not defined, use default RelaxSetGenerator()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">scfset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">scfset</span> <span class="o">=</span> <span class="n">StaticSetGenerator</span><span class="p">()</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;staticset is not defined, use default MPStaticSet()&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;staticset is not defined, use default StaticSetGenerator()&#39;</span><span class="p">)</span>
         <span class="c1"># 初始化Maker</span>
         <span class="n">relax_maker</span> <span class="o">=</span> <span class="n">RelaxMaker</span><span class="p">(</span><span class="n">input_set_generator</span><span class="o">=</span><span class="n">relaxset</span><span class="p">,</span><span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">})</span>
         <span class="n">static_maker</span> <span class="o">=</span> <span class="n">StaticMaker</span><span class="p">(</span><span class="n">input_set_generator</span><span class="o">=</span><span class="n">scfset</span><span class="p">,</span><span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">})</span>
@@ -242,10 +242,10 @@
         
         <span class="k">if</span> <span class="n">scfset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">scfset</span> <span class="o">=</span> <span class="n">StaticSetGenerator</span><span class="p">()</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;relaxset is not defined, use default MPRelaxSet()&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;relaxset is not defined, use default StaticSetGenerator()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">nonscfset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">nonscfset</span> <span class="o">=</span> <span class="n">NonSCFSetGenerator</span><span class="p">()</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;staticset is not defined, use default MPStaticSet()&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;staticset is not defined, use default NonSCFSetGenerator()&#39;</span><span class="p">)</span>
         <span class="c1"># 初始化Maker</span>
         <span class="n">static_maker</span> <span class="o">=</span> <span class="n">StaticMaker</span><span class="p">(</span><span class="n">input_set_generator</span><span class="o">=</span><span class="n">scfset</span><span class="p">,</span><span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">})</span>
         <span class="n">nonscf_maker</span> <span class="o">=</span> <span class="n">NonSCFMaker</span><span class="p">(</span><span class="n">input_set_generator</span><span class="o">=</span><span class="n">nonscfset</span><span class="p">,</span><span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">})</span>
@@ -284,13 +284,13 @@
         
         <span class="k">if</span> <span class="n">relaxset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">relaxset</span> <span class="o">=</span> <span class="n">RelaxSetGenerator</span><span class="p">()</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;relaxset is not defined, use default MPRelaxSet()&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;relaxset is not defined, use default RelaxSetGenerator()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">scfset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">scfset</span> <span class="o">=</span> <span class="n">StaticSetGenerator</span><span class="p">()</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;relaxset is not defined, use default MPStaticSet()&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;relaxset is not defined, use default StaticSetGenerator()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">nonscfset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">nonscfset</span> <span class="o">=</span> <span class="n">NonSCFSetGenerator</span><span class="p">()</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;staticset is not defined, use default MPNonSCFSet()&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;staticset is not defined, use default NonSCFSetGenerator()&#39;</span><span class="p">)</span>
         <span class="c1"># 初始化Maker</span>
         <span class="n">relax_maker</span> <span class="o">=</span> <span class="n">RelaxMaker</span><span class="p">(</span><span class="n">input_set_generator</span><span class="o">=</span><span class="n">relaxset</span><span class="p">,</span><span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">})</span>
         <span class="n">static_maker</span> <span class="o">=</span> <span class="n">StaticMaker</span><span class="p">(</span><span class="n">input_set_generator</span><span class="o">=</span><span class="n">scfset</span><span class="p">,</span><span class="n">run_vasp_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;job_type&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jobtype</span><span class="p">})</span>
@@ -342,16 +342,16 @@
         
         <span class="k">if</span> <span class="n">slabrelax_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">slabrelax_set</span> <span class="o">=</span> <span class="n">RelaxSetGenerator</span><span class="p">(</span><span class="n">user_incar_settings</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ISIF&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;slabrelax_set is not defined, use default MPRelaxSet()&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;slabrelax_set is not defined, use default RelaxSetGenerator()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">molrelax_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">molrelax_set</span> <span class="o">=</span> <span class="n">RelaxSetGenerator</span><span class="p">(</span><span class="n">user_incar_settings</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ISIF&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;molrelax_set is not defined, use default MPRelaxSet()&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;molrelax_set is not defined, use default RelaxSetGenerator()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">slabstatic_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">slabstatic_set</span> <span class="o">=</span> <span class="n">StaticSetGenerator</span><span class="p">()</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;slabstatic_set is not defined, use default MPStaticSet()&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;slabstatic_set is not defined, use default StaticSetGenerator()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">molstatic_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">molstatic_set</span> <span class="o">=</span> <span class="n">StaticSetGenerator</span><span class="p">()</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;molstatic_set is not defined, use default MPStaticSet()&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;molstatic_set is not defined, use default StaticSetGenerator()&#39;</span><span class="p">)</span>
         
         <span class="c1"># 初始化Maker</span>
         <span class="n">adsrelax_maker</span> <span class="o">=</span> <span class="n">RelaxMaker</span><span class="p">(</span>
@@ -456,10 +456,10 @@
         
         <span class="k">if</span> <span class="n">slabrelax_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">slabrelax_set</span> <span class="o">=</span> <span class="n">RelaxSetGenerator</span><span class="p">(</span><span class="n">user_incar_settings</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ISIF&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;slabrelax_set is not defined, use default MPRelaxSet()&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;slabrelax_set is not defined, use default RelaxSetGenerator()&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">slabstatic_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">slabstatic_set</span> <span class="o">=</span> <span class="n">StaticSetGenerator</span><span class="p">()</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;slabstatic_set is not defined, use default MPStaticSet()&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;slabstatic_set is not defined, use default StaticSetGenerator()&#39;</span><span class="p">)</span>
         
         <span class="c1"># Initialize Makers</span>
         <span class="n">slabA_relax_maker</span> <span class="o">=</span> <span class="n">RelaxMaker</span><span class="p">(</span>
@@ -545,7 +545,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Workflow submission utility class.</span>
 
-<span class="sd">    Provides two submission methods: jobflow_remote and Fireworks.</span>
+<span class="sd">    Provides two submission methods: jobflow_remote.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="SubWF.sub_jfremote">
 <a class="viewcode-back" href="../../../api/easydft.workflow.html#easydft.workflow.genwf.SubWF.sub_jfremote">[docs]</a>

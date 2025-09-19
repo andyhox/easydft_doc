@@ -4,6 +4,7 @@ import shutil
 import yaml
 
 DEFAULT_CONFIG_DIR = Path.home() / ".config"
+DEFAULT_JFREMOTE_DIR = Path.home() / ".jfremote"
 DEFAULT_ATOMATE2_DIR = DEFAULT_CONFIG_DIR / "atomate2"
 DEFAULT_TEMPLATE_DIR = Path(__file__).parent / "config_templates"
 
@@ -27,17 +28,17 @@ def generate_default_config(mongo_uri: str, force: bool = False):
     config_dir.mkdir(parents=True, exist_ok=True)
     log_dir.mkdir(parents=True, exist_ok=True)
 
-    for fname in ["atomate2.yaml", "jobflow.yaml", ".jfremote.yaml"]:
+    for fname in ["atomate2.yaml", "jobflow.yaml", "easydft.yaml"]:
         src_file = DEFAULT_TEMPLATE_DIR / fname
-        if fname == ".jfremote.yaml":
-            dst_file = DEFAULT_CONFIG_DIR / fname
+        if fname == "easydft.yaml":
+            dst_file = DEFAULT_JFREMOTE_DIR / fname
         else:
             dst_file = config_dir / fname
 
         if not dst_file.exists() or force:
             shutil.copy(src_file, dst_file)
 
-        if fname in ["jobflow.yaml", ".jfremote.yaml"]:
+        if fname in ["jobflow.yaml", "easydft.yaml"]:
             with open(dst_file, "r", encoding="utf-8") as f:
                 cfg = yaml.safe_load(f) or {}
 
@@ -61,7 +62,6 @@ def update_bashrc():
 # >>> easydft config >>>
 export ATOMATE2_CONFIG_FILE="{DEFAULT_ATOMATE2_DIR / "config" / "atomate2.yaml"}"
 export JOBFLOW_CONFIG_FILE="{DEFAULT_ATOMATE2_DIR / "config" / "jobflow.yaml"}"
-export JFREMOTE_CONFIG_FILE="{DEFAULT_CONFIG_DIR / ".jfremote.yaml"}"
 # <<< easydft config <<<
 """
     content = bashrc.read_text(encoding="utf-8") if bashrc.exists() else ""
