@@ -413,16 +413,23 @@ class MDProcessor:
         
         Args:
             begin (int): Start frame, default 0
+            
             end (int): End frame, default None (all frames)
+            
             timestep (float): Time step (fs), default 1.0
+            
             output_pdb (str/bool):
                 - str: Specify output path
                 - True: Use default path "XDATCAR.pdb"
                 - False/None: Do not output
             interval (int): Output interval, default 1
+            
             unwrap_pbc (bool): Whether to handle periodic boundary, default False
+            
             center_atom (int): Center atom (1-based), default None
+            
             plot_profiles (bool): Whether to plot curves, default False
+            
             output_prefix (str): Output prefix, default ""
         """
         # Initialize parser

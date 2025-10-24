@@ -1,13 +1,18 @@
 from pymatgen.io.vasp.outputs import Vasprun, Chgcar
 from pymatgen.electronic_structure.core import OrbitalType, Spin, Orbital
 from pymatgen.electronic_structure.bandstructure import BandStructureSymmLine, BandStructure
+from pymatgen.electronic_structure.plotter import DosPlotter
 from pymatgen.core.periodic_table import Element
+from pymatgen.electronic_structure.dos import Dos
 from easydft.core.parser import VasprunParser
+import matplotlib.pyplot as plt
 from pathlib import Path
 import pandas as pd
 import numpy as np
 from typing import Optional, Any
 import os
+
+from scipy.constants import sigma
         
 
 class Analyzer():
@@ -81,7 +86,9 @@ class DosAnalyzer(Analyzer):
         work_dir: Optional[str] = None,
         vasprun_file: Optional[str] = None, 
         save_data: bool = True, 
-        output_path: Optional[str] = None
+        output_path: Optional[str] = None,
+        plot: bool = False,
+        sigma: Optional[float] = None
         ):
         
         """
@@ -95,9 +102,12 @@ class DosAnalyzer(Analyzer):
         self.vasprun_parser = VasprunParser(self.vasprun_file)
         self.vasprun = self.vasprun_parser.vasprun
         self.dos = self.vasprun.complete_dos
+        self.efermi = self.dos.efermi
         self.symbols = list(set(self.vasprun.atomic_symbols))
         self.is_spin = self.vasprun.is_spin
         self.lorbit = self.vasprun.parameters['LORBIT']
+        self.plot = plot
+        self.sigma = sigma
 
     def _parse_vasprun_file(self):
         if self.work_dir:
@@ -129,7 +139,7 @@ class DosAnalyzer(Analyzer):
         """
         if self.is_spin:
             data[f"{key}_up"] = densities[Spin.up]
-            data[f"{key}_down"] = densities[Spin.down]
+            data[f"{key}_down"] = -densities[Spin.down]
         else:
             data[key] = densities[Spin.up]
         return data
@@ -152,6 +162,26 @@ class DosAnalyzer(Analyzer):
                 return True
         return False
 
+    def _transform_dos(self, efermi, energies, densities, norm_vol: float|None = None) -> Dos:
+        return Dos(efermi=efermi, energies=energies, densities=densities, norm_vol=norm_vol)
+    
+    # def plot(
+    #     self,
+    #     target_set: dict | list,
+    #     type: str = 'element' | 'element_spd' | 'element_orbital',
+    #     save_plot: bool = True,
+    #     save_dir: Optional[str] = None,
+    #     plot_total: bool = True,
+    #     stack: bool = True,
+    #     xlim: Any = [-6,6],
+    #     ) -> plt.axes:
+        
+    #     if type == 'element':
+    #         for element in target_set:
+                
+        
+        
+    
     def parse_element_spd_dos(self) -> pd.DataFrame:
         """
         Parse element-projected (s/p/d) DOS.
@@ -164,7 +194,6 @@ class DosAnalyzer(Analyzer):
 
         for element in self.symbols:
             element_spd_dos = self.dos.get_element_spd_dos(Element(element))
-            
             for orb_name, orb_type in self.ORBITAL_MAP.items():
                 if orb_type in element_spd_dos:
                     densities = element_spd_dos[orb_type].densities
@@ -263,6 +292,136 @@ class DosAnalyzer(Analyzer):
         self.save_to_csv(df, "element_dos.csv")
         return df
 
+    def parse_specific_atoms_dos(self, indices: list) -> pd.DataFrame:
+        """
+        Parse and sum DOS for a list of specific atomic indices.
+
+        Args:
+            indices (list[int]): List of atom indices (0-based) to include.
+
+        Returns:
+            pd.DataFrame: DataFrame containing energy and summed DOS for specified atoms.
+        """
+        if not indices or not isinstance(indices, list):
+            raise ValueError("indices must be a non-empty list of integers.")
+
+        data = {'Energy': self.dos.energies - self.dos.efermi}
+        merged_dos = None
+
+        for i in indices:
+            site = self.vasprun.final_structure[i]
+            site_dos = self.dos.get_site_dos(site)
+            if merged_dos is None:
+                merged_dos = site_dos
+            else:
+                merged_dos += site_dos
+
+        if merged_dos is None:
+            raise ValueError("No valid DOS found for the provided atom indices.")
+
+        data = self._add_dos_data(data, "selected_atoms", merged_dos.densities)
+
+        df = pd.DataFrame(data)
+        self.save_to_csv(df, "selected_atoms_dos.csv")
+        return df
+    
+    def parse_specific_atoms_spd_dos(self, indices: list) -> pd.DataFrame:
+        """
+        Parse and sum s/p/d/f DOS for a list of specific atomic indices.
+
+        Args:
+            indices (list[int]): List of atom indices (0-based) to include.
+
+        Returns:
+            pd.DataFrame: DataFrame containing energy and summed spd DOS for specified atoms.
+        """
+        if not indices or not isinstance(indices, list):
+            raise ValueError("indices must be a non-empty list of integers.")
+
+        data = {'Energy': self.dos.energies - self.dos.efermi}
+        spd_sum = {}
+
+        # 初始化累加字典
+        for orb in self.ORBITAL_MAP.values():
+            spd_sum[orb] = {Spin.up: None, Spin.down: None}
+
+        # 遍历所有指定原子并逐轨道累加
+        for i in indices:
+            site = self.vasprun.final_structure[i]
+            site_spd_dos = self.dos.get_site_spd_dos(site)
+            for orb_type, dos_obj in site_spd_dos.items():
+                densities = dos_obj.densities
+                for spin in [Spin.up, Spin.down] if self.is_spin else [Spin.up]:
+                    if densities.get(spin) is None:
+                        continue
+                    if spd_sum[orb_type][spin] is None:
+                        spd_sum[orb_type][spin] = np.copy(densities[spin])
+                    else:
+                        spd_sum[orb_type][spin] += densities[spin]
+
+        # 添加到DataFrame
+        for orb_type, spin_dict in spd_sum.items():
+            if self._is_valid_dos(spin_dict):
+                orb_label = str(orb_type).split(".")[-1]
+                data = self._add_dos_data(data, f"selected_atoms_{orb_label}", spin_dict)
+
+        df = pd.DataFrame(data)
+        self.save_to_csv(df, "selected_atoms_spd_dos.csv")
+        return df
+
+    
+    def parse_specific_atoms_orbital_dos(self, indices: list) -> pd.DataFrame:
+        """
+        Parse and sum orbital-resolved DOS for a list of specific atomic indices,
+        automatically iterating over all defined orbitals.
+
+        Args:
+            indices (list[int]): List of atom indices (0-based) to include.
+
+        Returns:
+            pd.DataFrame: DataFrame containing energy and summed orbital DOS for specified atoms.
+        """
+        if not indices or not isinstance(indices, list):
+            raise ValueError("indices must be a non-empty list of integers.")
+
+        if self.lorbit < 11:
+            raise ValueError("Orbital-projected DOS requires LORBIT >= 11 in VASP INCAR.")
+
+        data = {'Energy': self.dos.energies - self.dos.efermi}
+
+        # Initialize accumulation dict
+        orb_sum = {orb_label: {Spin.up: None, Spin.down: None} for orb_label in self.SUB_ORBITAL_MAP}
+
+        # Loop over specified atoms and orbitals
+        for i in indices:
+            site = self.vasprun.final_structure[i]
+            for orb_label, orb in self.SUB_ORBITAL_MAP.items():
+                try:
+                    dos_obj = self.dos.get_site_orbital_dos(site, orb)
+                except TypeError:
+                    continue
+                if dos_obj is None:
+                    continue
+                densities = dos_obj.densities
+                for spin in [Spin.up, Spin.down] if self.is_spin else [Spin.up]:
+                    if densities.get(spin) is None:
+                        continue
+                    if orb_sum[orb_label][spin] is None:
+                        orb_sum[orb_label][spin] = np.copy(densities[spin])
+                    else:
+                        orb_sum[orb_label][spin] += densities[spin]
+
+        # Add to DataFrame
+        for orb_label, spin_dict in orb_sum.items():
+            if self._is_valid_dos(spin_dict):
+                data = self._add_dos_data(data, f"selected_atoms_{orb_label}", spin_dict)
+
+        df = pd.DataFrame(data)
+        self.save_to_csv(df, "selected_atoms_orbital_dos.csv")
+        return df
+
+
+    
 class BandStructureAnalyzer(Analyzer):
     def __init__(
         self,

@@ -349,6 +349,40 @@ class SlabModify:
         
         return film_structure, substrate_structure
     
+    @classmethod
+    def find_interface_boundary(cls, structure: Structure, axis: str = 'z') -> float:
+        """
+        Automatically detect the interface between film and substrate in a structure
+        by identifying the largest gap in atomic coordinates along a specified axis.
+
+        Args:
+            structure (Structure): A pymatgen Structure object representing the heterostructure.
+            axis (str, optional): Axis along which to analyze atomic coordinates. 
+                                Must be 'x', 'y', or 'z'. Default is 'z'.
+
+        Returns:
+            float: Fractional coordinate along the specified axis corresponding to 
+                the interface position (midpoint of the largest atomic coordinate gap).
+        """
+        
+        axis_index = {'x':0,'y':1,'z':2}[axis]
+        lattice = structure.lattice
+        coords = np.array([site.coords[axis_index] for site in structure])
+        coords.sort()
+        
+        dz = np.diff(coords)
+        jump_idx = np.argmax(dz)
+        z_lower = coords[jump_idx]
+        z_upper = coords[jump_idx + 1]
+        z_boundary = (z_lower + z_upper) / 2
+
+        cart_point = [0, 0, 0]
+        cart_point[axis_index] = z_boundary
+        boundary_frac = lattice.get_fractional_coords(cart_point)[axis_index]
+
+        return boundary_frac
+    
+    
 class HeterojunctionModify:
     """
     Heterojunction interface generation and modification tool.

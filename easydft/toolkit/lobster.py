@@ -1,4 +1,7 @@
 from pymatgen.io.lobster.inputs import Lobsterin
+from pymatgen.io.vasp.sets import LobsterSet
+from pymatgen.core import Structure
+from pymatgen.electronic_structure.cohp import CompleteCohp
 from typing import Optional, Union
 from os import PathLike
 from pathlib import Path
@@ -50,6 +53,7 @@ class Lobster:
                 option=option,
                 dict_for_basis=dict_for_basis
             )
+            lobster_set = LobsterSet(structure=Structure.from_file(POSCAR_file))
         # case 2: try to parse from calc_dir
         elif calc_dir:
             incar_path = calc_dir / "INCAR"
